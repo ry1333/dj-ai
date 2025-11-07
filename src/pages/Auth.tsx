@@ -25,24 +25,17 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-black via-neutral-900 to-black relative overflow-hidden">
-      {/* Animated background gradients */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
-
-      <div className="relative z-10 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-black via-neutral-900 to-black">
+      <div className="w-full max-w-md">
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <Link to="/">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
               RMXR
             </h1>
           </Link>
           <p className="text-white/60 text-sm">
-            {mode === 'signIn' ? 'Welcome back to the mix' : 'Join the music revolution'}
+            {mode === 'signIn' ? 'Welcome back' : 'Create your account'}
           </p>
         </div>
 
@@ -68,7 +61,7 @@ export default function AuthPage() {
             <div>
               <label className="block text-sm font-medium text-white/80 mb-2">Email</label>
               <input
-                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all"
+                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 transition-all"
                 value={email}
                 onChange={e=>setEmail(e.target.value)}
                 placeholder="you@example.com"
@@ -80,7 +73,7 @@ export default function AuthPage() {
             <div>
               <label className="block text-sm font-medium text-white/80 mb-2">Password</label>
               <input
-                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 transition-all"
                 value={password}
                 onChange={e=>setPassword(e.target.value)}
                 placeholder="••••••••"
@@ -99,7 +92,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-fuchsia-500 hover:from-cyan-600 hover:via-purple-600 hover:to-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-purple-500/50"
+            className="w-full rounded-xl bg-white hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-3 transition-all hover:scale-[1.02] active:scale-95"
           >
             {loading ? 'Please wait...' : mode==='signIn'?'Sign In':'Create Account'}
           </button>

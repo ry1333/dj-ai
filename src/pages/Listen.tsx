@@ -30,20 +30,20 @@ export default function Listen() {
           className="h-screen snap-start relative flex items-end justify-center"
           style={{
             background:
-              'radial-gradient(1200px 600px at 50% 0%, rgba(6,182,212,0.08), transparent), radial-gradient(900px 400px at 50% 100%, rgba(217,70,239,0.10), transparent)',
+              'radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.03), transparent), radial-gradient(900px 400px at 50% 100%, rgba(255,255,255,0.02), transparent)',
           }}
         >
           {/* user & caption */}
           <div className="absolute left-4 bottom-32 md:bottom-10 space-y-2 pointer-events-none max-w-[60%]">
-            <div className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <div className="font-bold text-lg text-white">
               {p.user}
             </div>
-            <div className="opacity-90 text-sm leading-relaxed">{p.caption}</div>
+            <div className="opacity-80 text-sm leading-relaxed">{p.caption}</div>
           </div>
 
           {/* content card */}
           <div className="w-full max-w-md mx-auto mb-28 md:mb-10 px-4">
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-neutral-900/80 to-black/80 backdrop-blur-xl p-5 shadow-2xl">
+            <div className="rounded-2xl border border-white/10 bg-neutral-900/80 backdrop-blur-xl p-5 shadow-2xl">
               <audio controls className="w-full [&::-webkit-media-controls-panel]:bg-neutral-800 [&::-webkit-media-controls-current-time-display]:text-white [&::-webkit-media-controls-time-remaining-display]:text-white" src={p.src} preload="metadata" />
             </div>
           </div>
