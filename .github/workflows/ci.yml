@@ -1,0 +1,17 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: corepack enable
+      - run: pnpm i --frozen-lockfile || npm ci
+      - run: pnpm lint || npm run lint || true
+      - run: npx tsc --noEmit || true
+      - run: pnpm build || npm run build
+      - run: npx depcheck || true
+      - name: Secret scan
+        uses: zricethezav/gitleaks-action@v2

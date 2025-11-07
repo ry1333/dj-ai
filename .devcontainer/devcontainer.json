@@ -1,0 +1,24 @@
+{
+  "name": "RMXR (DJ MVP)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": { "installZsh": "false" }
+  },
+  "forwardPorts": [5173],
+  "portsAttributes": { "5173": { "label": "Vite dev server", "onAutoForward": "notify" } },
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-playwright.playwright",
+        "github.copilot",
+        "github.copilot-chat"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}
