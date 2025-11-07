@@ -10,6 +10,7 @@ create table if not exists posts (
   challenge_id uuid,
   created_at timestamptz default now()
 );
+
 -- reactions
 create table if not exists reactions (
   id uuid primary key default gen_random_uuid(),
@@ -18,6 +19,7 @@ create table if not exists reactions (
   type text check (type in ('love','comment','save','share')),
   created_at timestamptz default now()
 );
+
 create unique index if not exists uniq_reaction on reactions (post_id, user_id, type);
 create index if not exists posts_created_at_desc on posts (created_at desc);
 create index if not exists reactions_post_id on reactions (post_id);
@@ -26,14 +28,20 @@ create index if not exists reactions_post_id on reactions (post_id);
 alter table posts enable row level security;
 alter table reactions enable row level security;
 
--- anyone can read posts
-create policy if not exists "read posts" on posts for select using (true);
--- only owner can modify own posts
-create policy if not exists "insert own post" on posts for insert with check (auth.uid() = user_id);
-create policy if not exists "update own post" on posts for update using (auth.uid() = user_id);
-create policy if not exists "delete own post" on posts for delete using (auth.uid() = user_id);
+-- Drop existing policies if they exist
+drop policy if exists "read posts" on posts;
+drop policy if exists "insert own post" on posts;
+drop policy if exists "update own post" on posts;
+drop policy if exists "delete own post" on posts;
+drop policy if exists "read reactions" on reactions;
+drop policy if exists "insert own reaction" on reactions;
+drop policy if exists "delete own reaction" on reactions;
 
--- reactions RLS
-create policy if not exists "read reactions" on reactions for select using (true);
-create policy if not exists "insert own reaction" on reactions for insert with check (auth.uid() = user_id);
-create policy if not exists "delete own reaction" on reactions for delete using (auth.uid() = user_id);
+-- Create policies
+create policy "read posts" on posts for select using (true);
+create policy "insert own post" on posts for insert with check (auth.uid() = user_id);
+create policy "update own post" on posts for update using (auth.uid() = user_id);
+create policy "delete own post" on posts for delete using (auth.uid() = user_id);
+create policy "read reactions" on reactions for select using (true);
+create policy "insert own reaction" on reactions for insert with check (auth.uid() = user_id);
+create policy "delete own reaction" on reactions for delete using (auth.uid() = user_id);
