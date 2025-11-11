@@ -21,11 +21,11 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
 
   // Demo tracks/loops
   const tracks: Track[] = [
-    { id: '1', name: 'Deep House Loop', artist: 'RMXR', bpm: 124, key: 'Am', genre: 'House', url: '/loops/demo_loop.mp3' },
-    { id: '2', name: 'Tech Groove', artist: 'RMXR', bpm: 128, key: 'Dm', genre: 'Techno', url: '/loops/demo_loop.mp3' },
-    { id: '3', name: 'Hip-Hop Beat', artist: 'RMXR', bpm: 90, key: 'C', genre: 'Hip-Hop', url: '/loops/demo_loop.mp3' },
-    { id: '4', name: 'Lo-Fi Chill', artist: 'RMXR', bpm: 80, key: 'G', genre: 'Lo-Fi', url: '/loops/demo_loop.mp3' },
-    { id: '5', name: 'EDM Drop', artist: 'RMXR', bpm: 128, key: 'Em', genre: 'EDM', url: '/loops/demo_loop.mp3' },
+    { id: '1', name: 'Deep House Loop', artist: 'RMXR', bpm: 124, key: 'Am', genre: 'House', url: '/loops/deep_house_124.wav' },
+    { id: '2', name: 'Tech Groove', artist: 'RMXR', bpm: 128, key: 'Dm', genre: 'Techno', url: '/loops/tech_groove_128.wav' },
+    { id: '3', name: 'Hip-Hop Beat', artist: 'RMXR', bpm: 90, key: 'C', genre: 'Hip-Hop', url: '/loops/hiphop_beat_90.wav' },
+    { id: '4', name: 'Lo-Fi Chill', artist: 'RMXR', bpm: 80, key: 'G', genre: 'Lo-Fi', url: '/loops/lofi_chill_80.wav' },
+    { id: '5', name: 'EDM Drop', artist: 'RMXR', bpm: 128, key: 'Em', genre: 'EDM', url: '/loops/edm_drop_128.wav' },
   ]
 
   const genres = ['All', 'House', 'Techno', 'Hip-Hop', 'Lo-Fi', 'EDM']
