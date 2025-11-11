@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import InteractiveLessonChallenge from '../components/InteractiveLessonChallenge'
+
+type ChallengeType = 'bpm-match' | 'key-match' | 'eq-balance' | 'filter-sweep' | 'crossfade-timing' | null
 
 type Lesson = {
   id: string
@@ -8,6 +11,7 @@ type Lesson = {
   icon: string
   level: 'beginner' | 'intermediate' | 'advanced'
   description: string
+  hasChallenge?: ChallengeType
   content: {
     overview: string
     keyPoints: string[]
@@ -28,6 +32,7 @@ export default function Learn() {
       icon: '⚡',
       level: 'beginner',
       description: 'Master beatmatching - the foundation of smooth mixing',
+      hasChallenge: 'bpm-match',
       content: {
         overview: 'BPM (Beats Per Minute) determines the speed of your track. Matching BPMs between two tracks is essential for smooth transitions.',
         keyPoints: [
@@ -88,6 +93,7 @@ export default function Learn() {
       icon: '🔀',
       level: 'beginner',
       description: 'Smooth transitions between two tracks using the crossfader',
+      hasChallenge: 'crossfade-timing',
       content: {
         overview: 'The crossfader blends Deck A and Deck B. Moving it smoothly creates professional transitions without awkward jumps.',
         keyPoints: [
@@ -108,6 +114,7 @@ export default function Learn() {
       icon: '🎛️',
       level: 'intermediate',
       description: 'Use EQ to carve space and create clean mixes',
+      hasChallenge: 'eq-balance',
       content: {
         overview: 'EQ (equalization) lets you boost or cut frequencies. Use it to prevent two tracks from clashing and create space in your mix.',
         keyPoints: [
@@ -271,6 +278,11 @@ export default function Learn() {
                     ✓
                   </div>
                 )}
+                {!isCompleted && lesson.hasChallenge && (
+                  <div className="absolute top-4 right-4 px-2 py-1 rounded-full bg-purple-500 flex items-center gap-1 text-white text-xs font-bold">
+                    🎮
+                  </div>
+                )}
                 <div className="flex items-start justify-between mb-4">
                   <div className="text-4xl p-3 rounded-xl bg-white/5 group-hover:bg-white/10 transition-all">
                     {lesson.icon}
@@ -356,6 +368,20 @@ export default function Learn() {
 
             {/* Modal Body */}
             <div className="p-6 md:p-8 space-y-6 max-h-[60vh] overflow-y-auto">
+              {/* Interactive Challenge */}
+              {selectedLesson.hasChallenge && (
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-2xl">🎮</span>
+                    <h3 className="text-lg font-bold text-white">Interactive Challenge</h3>
+                  </div>
+                  <InteractiveLessonChallenge
+                    type={selectedLesson.hasChallenge}
+                    onComplete={() => markComplete(selectedLesson.id)}
+                  />
+                </div>
+              )}
+
               {/* Overview */}
               <div>
                 <h3 className="text-lg font-bold text-white mb-2">What You'll Learn</h3>
@@ -378,9 +404,15 @@ export default function Learn() {
               {/* Try It */}
               <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-5">
                 <h3 className="text-lg font-bold text-cyan-400 mb-2 flex items-center gap-2">
-                  <span>💡</span> Try It Now
+                  <span>💡</span> Try It in DJ Studio
                 </h3>
                 <p className="text-white/80 leading-relaxed">{selectedLesson.content.tryIt}</p>
+                <Link
+                  to="/dj"
+                  className="inline-block mt-3 px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-sm transition-all"
+                >
+                  Open DJ Studio →
+                </Link>
               </div>
 
               {/* Pro Tip */}
