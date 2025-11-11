@@ -8,6 +8,7 @@ import DualWaveform from '../components/DualWaveform'
 import DeckControls from '../components/DeckControls'
 import MixerCenter from '../components/MixerCenter'
 import LibraryBrowser from '../components/LibraryBrowser'
+import TopBar from '../components/TopBar'
 
 export default function DJ() {
   const nav = useNavigate()
@@ -35,9 +36,12 @@ export default function DJ() {
   const [caption, setCaption] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
 
+  // VU meter state
+  const [masterLevel, setMasterLevel] = useState(0)
+
   const raf = useRef<number | null>(null)
 
-  // Animation loop for progress tracking
+  // Animation loop for progress tracking + VU meter
   useEffect(() => {
     const tick = () => {
       const aDur = mixer.deckA.buffer?.duration || 1
@@ -46,11 +50,16 @@ export default function DJ() {
       setBProg(mixer.deckB.currentTime / bDur)
       setAPlaying(mixer.deckA.playing)
       setBPlaying(mixer.deckB.playing)
+
+      // Update VU meter with master gain value (simple approach)
+      // In a full implementation, you'd use an AnalyserNode to get actual audio levels
+      setMasterLevel(masterVol * ((aPlaying || bPlaying) ? 0.7 : 0))
+
       raf.current = requestAnimationFrame(tick)
     }
     raf.current = requestAnimationFrame(tick)
     return () => { if (raf.current) cancelAnimationFrame(raf.current) }
-  }, [mixer])
+  }, [mixer, masterVol, aPlaying, bPlaying])
 
   // Apply mixer settings
   useEffect(() => { mixer.setCrossfade(xf) }, [xf, mixer])
@@ -173,32 +182,11 @@ export default function DJ() {
   return (
     <div className="h-screen flex flex-col bg-bg text-rmxrtext overflow-hidden">
       {/* TOP TOOLBAR */}
-      <div className="h-14 border-b border-rmxrborder bg-surface flex items-center justify-between px-8">
-        <div className="flex items-center gap-8">
-          <Link to="/stream" className="text-xl font-bold text-accent-400">
-            RMXR
-          </Link>
-          <Link to="/learn" className="text-sm text-muted hover:text-rmxrtext transition-colors">
-            Learn
-          </Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleRecord}
-            disabled={!mixer.deckA.buffer && !mixer.deckB.buffer}
-            className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-              isRecording
-                ? 'bg-danger animate-pulse'
-                : 'bg-danger hover:bg-red-600'
-            } disabled:opacity-40 disabled:cursor-not-allowed text-white`}
-          >
-            {isRecording ? '⏹ Stop' : '⏺ Record'}
-          </button>
-          <Link to="/stream" className="px-4 py-1.5 rounded-lg text-sm border border-rmxrborder hover:bg-surface2 transition-all">
-            Stream
-          </Link>
-        </div>
-      </div>
+      <TopBar
+        isRecording={isRecording}
+        onRecordToggle={handleRecord}
+        masterLevel={masterLevel}
+      />
 
       {/* WAVEFORM BAND (slim) */}
       <div className="h-32 border-b border-rmxrborder bg-surface">
@@ -220,6 +208,7 @@ export default function DJ() {
             playing={aPlaying}
             fileName={aFileName}
             bpm={aBpm}
+            progress={aProg}
             onBpmChange={setABpm}
             onLoad={handleALoad}
             onPlay={handleAPlay}
@@ -247,6 +236,7 @@ export default function DJ() {
             playing={bPlaying}
             fileName={bFileName}
             bpm={bBpm}
+            progress={bProg}
             onBpmChange={setBBpm}
             onLoad={handleBLoad}
             onPlay={handleBPlay}
