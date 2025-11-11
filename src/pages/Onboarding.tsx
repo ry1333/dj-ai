@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createProfile, isUsernameAvailable } from '../lib/supabase/profiles'
 import { toast } from 'sonner'
+import { supabase } from '@/integrations/supabase/client'
 
 const GENRES = [
   'House', 'Techno', 'Hip-Hop', 'EDM', 'Trance', 'Dubstep',
@@ -21,6 +22,8 @@ export default function Onboarding() {
   const nav = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [authChecking, setAuthChecking] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   // Form data
   const [username, setUsername] = useState('')
@@ -32,6 +35,44 @@ export default function Onboarding() {
 
   // Validation
   const [usernameError, setUsernameError] = useState('')
+
+  // Check authentication status on mount
+  useEffect(() => {
+    let mounted = true
+
+    async function checkAuth() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+
+        if (!mounted) return
+
+        if (session) {
+          console.log('User is authenticated, session:', session.user.id)
+          setIsAuthenticated(true)
+        } else {
+          console.log('No session found, redirecting to auth')
+          toast.error('Please sign in to continue')
+          nav('/auth', { replace: true })
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error)
+        if (mounted) {
+          toast.error('Authentication error')
+          nav('/auth', { replace: true })
+        }
+      } finally {
+        if (mounted) {
+          setAuthChecking(false)
+        }
+      }
+    }
+
+    checkAuth()
+
+    return () => {
+      mounted = false
+    }
+  }, [nav])
 
   async function validateUsername(value: string) {
     if (!value) {
@@ -73,6 +114,16 @@ export default function Onboarding() {
 
   async function handleComplete() {
     setLoading(true)
+
+    // Double-check authentication before proceeding
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      toast.error('Session expired. Please sign in again.')
+      nav('/auth', { replace: true })
+      setLoading(false)
+      return
+    }
+
     try {
       console.log('Creating profile with data:', {
         username: username.toLowerCase(),
@@ -84,23 +135,74 @@ export default function Onboarding() {
         onboarding_completed: true
       })
 
-      await createProfile({
-        username: username.toLowerCase(),
-        display_name: displayName || username,
-        experience_level: experienceLevel,
-        favorite_genres: favoriteGenres,
-        goals,
-        bio: bio || undefined,
-        onboarding_completed: true
-      })
+      // Retry logic with exponential backoff
+      let retries = 0
+      const maxRetries = 3
+      let lastError: any = null
 
-      toast.success('Welcome to RMXR!')
-      nav('/profile', { replace: true })
+      while (retries < maxRetries) {
+        try {
+          await createProfile({
+            username: username.toLowerCase(),
+            display_name: displayName || username,
+            experience_level: experienceLevel,
+            favorite_genres: favoriteGenres,
+            goals,
+            bio: bio || undefined,
+            onboarding_completed: true
+          })
+
+          // Success!
+          toast.success('Welcome to RMXR!')
+          nav('/profile', { replace: true })
+          setLoading(false)
+          return
+
+        } catch (error: any) {
+          lastError = error
+          console.error(`Attempt ${retries + 1} failed:`, error)
+
+          // If it's an auth error, don't retry
+          if (error.message?.includes('authenticated')) {
+            // Wait a bit and check session again
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            const { data: { session } } = await supabase.auth.getSession()
+
+            if (!session) {
+              toast.error('Session expired. Please sign in again.')
+              nav('/auth', { replace: true })
+              setLoading(false)
+              return
+            }
+          }
+
+          retries++
+
+          // Wait before retry (exponential backoff: 1s, 2s, 4s)
+          if (retries < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000))
+          }
+        }
+      }
+
+      // All retries failed
+      console.error('Error completing onboarding after retries:', lastError)
+      console.error('Error details:', lastError?.message, lastError?.details, lastError?.hint)
+
+      const errorMessage = lastError?.message?.includes('authenticated')
+        ? 'Authentication failed. Please sign in again.'
+        : `Failed to complete setup: ${lastError?.message || 'Unknown error'}`
+
+      toast.error(errorMessage)
+
+      if (lastError?.message?.includes('authenticated')) {
+        nav('/auth', { replace: true })
+      }
     } catch (error: any) {
-      console.error('Error completing onboarding:', error)
-      console.error('Error details:', error.message, error.details, error.hint)
-      toast.error(`Failed to complete setup: ${error.message || 'Unknown error'}`)
+      console.error('Unexpected error in handleComplete:', error)
+      toast.error('An unexpected error occurred. Please try again.')
     }
+
     setLoading(false)
   }
 
@@ -118,6 +220,23 @@ export default function Onboarding() {
         ? prev.filter(g => g !== goalId)
         : [...prev, goalId]
     )
+  }
+
+  // Show loading spinner while checking authentication
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mb-4"></div>
+          <p className="text-white/60">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render onboarding form if not authenticated
+  if (!isAuthenticated) {
+    return null
   }
 
   return (

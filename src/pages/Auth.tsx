@@ -37,7 +37,28 @@ export default function AuthPage() {
           if (data.user.identities && data.user.identities.length === 0) {
             setError('User already exists. Please sign in instead.')
           } else {
-            // Redirect new users to onboarding
+            // Wait for session to be fully established
+            console.log('Signup successful, waiting for session...')
+
+            // Give the session time to establish (wait up to 3 seconds)
+            let attempts = 0
+            const maxAttempts = 6 // 6 attempts * 500ms = 3 seconds
+
+            while (attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 500))
+              const { data: { session } } = await supabase.auth.getSession()
+
+              if (session) {
+                console.log('Session established, redirecting to onboarding')
+                nav('/onboarding', { replace: true })
+                return
+              }
+
+              attempts++
+            }
+
+            // If session still not established after 3 seconds, redirect anyway
+            console.log('Session not fully established, but redirecting to onboarding')
             nav('/onboarding', { replace: true })
           }
         }
@@ -47,6 +68,9 @@ export default function AuthPage() {
         if (error) {
           setError(error.message)
         } else {
+          // Wait a moment for session to be fully established
+          await new Promise(resolve => setTimeout(resolve, 500))
+
           // Check if user has completed onboarding
           const profile = await getCurrentUserProfile()
           if (!profile || !profile.onboarding_completed) {
