@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import HorizontalSlider from './ui/HorizontalSlider'
+import RotaryKnob from './ui/RotaryKnob'
+import VerticalFader from './ui/VerticalFader'
 
 type Props = {
   mixer: any
@@ -41,7 +42,7 @@ export default function MixerCenter({
   useEffect(() => { mixer.deckB.setFilterHz(bFilter) }, [bFilter, mixer])
 
   return (
-    <div className="rounded-2xl border border-white/5 bg-gradient-to-b from-[#0a0a0f] to-[#1a1a24] shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-8 space-y-8 h-full flex flex-col">
+    <div className="rounded-2xl border border-white/5 bg-gradient-to-b from-[#0a0a0f] to-[#1a1a24] shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-8 space-y-6 h-full flex flex-col">
 
       {/* BPM/SYNC Header */}
       <div className="bg-black/40 rounded-xl px-4 py-3 flex items-center justify-center gap-4 border border-white/5 shadow-[inset_0_2px_8px_rgba(0,0,0,0.4)]">
@@ -62,196 +63,168 @@ export default function MixerCenter({
         </div>
       </div>
 
-      {/* EQ Strips Side-by-Side - Horizontal Sliders */}
-      <div className="flex-1 grid grid-cols-2 gap-8">
-        {/* Deck A EQ */}
-        <div className="space-y-5">
-          <div className="text-[10px] font-semibold text-muted uppercase tracking-wider text-center pb-2 border-b border-white/10">
-            EQ A
-          </div>
-          <div className="space-y-4">
-            <HorizontalSlider
-              label="HIGH"
-              value={aEQ.high}
-              min={-24}
-              max={24}
-              step={0.5}
-              unit="dB"
+      {/* Main Mixer Layout: 3-Column Grid */}
+      <div className="flex-1 grid grid-cols-[1fr_auto_1fr] gap-8 items-center">
+
+        {/* LEFT COLUMN: Deck A Rotary Knobs */}
+        <div className="flex flex-col items-center justify-center gap-8">
+          <RotaryKnob
+            label="HIGH A"
+            value={aEQ.high}
+            min={-24}
+            max={24}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => {
+              if (isFinite(v)) setAEQ({ ...aEQ, high: v })
+            }}
+            size={70}
+          />
+          <RotaryKnob
+            label="MID A"
+            value={aEQ.mid}
+            min={-24}
+            max={24}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => {
+              if (isFinite(v)) setAEQ({ ...aEQ, mid: v })
+            }}
+            size={70}
+          />
+          <RotaryKnob
+            label="LOW A"
+            value={aEQ.low}
+            min={-24}
+            max={24}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => {
+              if (isFinite(v)) setAEQ({ ...aEQ, low: v })
+            }}
+            size={70}
+          />
+          <RotaryKnob
+            label="FILTER A"
+            value={aFilter}
+            min={200}
+            max={20000}
+            step={100}
+            unit="Hz"
+            onChange={(v) => {
+              if (isFinite(v)) setAFilter(v)
+            }}
+            size={70}
+          />
+        </div>
+
+        {/* CENTER COLUMN: Vertical Crossfader */}
+        <div className="flex flex-col items-center gap-4 px-4">
+          <div className="text-[10px] font-semibold text-muted uppercase tracking-wider">Crossfader</div>
+
+          {/* Vertical Crossfader */}
+          <div className="flex items-center">
+            <VerticalFader
+              value={crossfader}
+              min={0}
+              max={1}
+              step={0.001}
               onChange={(v) => {
-                if (isFinite(v)) setAEQ({ ...aEQ, high: v })
+                if (isFinite(v)) onCrossfaderChange(v)
               }}
-              accentColor="magenta"
-            />
-            <HorizontalSlider
-              label="MID"
-              value={aEQ.mid}
-              min={-24}
-              max={24}
-              step={0.5}
-              unit="dB"
-              onChange={(v) => {
-                if (isFinite(v)) setAEQ({ ...aEQ, mid: v })
-              }}
-              accentColor="magenta"
-            />
-            <HorizontalSlider
-              label="LOW"
-              value={aEQ.low}
-              min={-24}
-              max={24}
-              step={0.5}
-              unit="dB"
-              onChange={(v) => {
-                if (isFinite(v)) setAEQ({ ...aEQ, low: v })
-              }}
+              label=""
+              unit=""
+              height={340}
               accentColor="magenta"
             />
           </div>
 
-          {/* Filter A */}
-          <div className="pt-4 space-y-3 border-t border-white/10">
-            <HorizontalSlider
-              label="FILTER"
-              value={aFilter}
-              min={200}
-              max={20000}
-              step={100}
-              unit="Hz"
-              onChange={(v) => {
-                if (isFinite(v)) setAFilter(v)
-              }}
-              accentColor="cyan"
-            />
+          {/* A/B Labels with percentages */}
+          <div className="flex flex-col items-center gap-2 text-[11px] font-mono font-semibold">
+            <span className={`transition-all ${crossfader < 0.5 ? 'text-accent-400 scale-110' : 'text-muted'}`}>
+              A {Math.round((1-crossfader) * 100)}%
+            </span>
+            <div className="w-px h-4 bg-white/20" />
+            <span className={`transition-all ${crossfader > 0.5 ? 'text-accent-400 scale-110' : 'text-muted'}`}>
+              B {Math.round(crossfader * 100)}%
+            </span>
           </div>
         </div>
 
-        {/* Deck B EQ */}
-        <div className="space-y-5">
-          <div className="text-[10px] font-semibold text-muted uppercase tracking-wider text-center pb-2 border-b border-white/10">
-            EQ B
-          </div>
-          <div className="space-y-4">
-            <HorizontalSlider
-              label="HIGH"
-              value={bEQ.high}
-              min={-24}
-              max={24}
-              step={0.5}
-              unit="dB"
-              onChange={(v) => {
-                if (isFinite(v)) setBEQ({ ...bEQ, high: v })
-              }}
-              accentColor="magenta"
-            />
-            <HorizontalSlider
-              label="MID"
-              value={bEQ.mid}
-              min={-24}
-              max={24}
-              step={0.5}
-              unit="dB"
-              onChange={(v) => {
-                if (isFinite(v)) setBEQ({ ...bEQ, mid: v })
-              }}
-              accentColor="magenta"
-            />
-            <HorizontalSlider
-              label="LOW"
-              value={bEQ.low}
-              min={-24}
-              max={24}
-              step={0.5}
-              unit="dB"
-              onChange={(v) => {
-                if (isFinite(v)) setBEQ({ ...bEQ, low: v })
-              }}
-              accentColor="magenta"
-            />
-          </div>
-
-          {/* Filter B */}
-          <div className="pt-4 space-y-3 border-t border-white/10">
-            <HorizontalSlider
-              label="FILTER"
-              value={bFilter}
-              min={200}
-              max={20000}
-              step={100}
-              unit="Hz"
-              onChange={(v) => {
-                if (isFinite(v)) setBFilter(v)
-              }}
-              accentColor="cyan"
-            />
-          </div>
+        {/* RIGHT COLUMN: Deck B Rotary Knobs */}
+        <div className="flex flex-col items-center justify-center gap-8">
+          <RotaryKnob
+            label="HIGH B"
+            value={bEQ.high}
+            min={-24}
+            max={24}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => {
+              if (isFinite(v)) setBEQ({ ...bEQ, high: v })
+            }}
+            size={70}
+          />
+          <RotaryKnob
+            label="MID B"
+            value={bEQ.mid}
+            min={-24}
+            max={24}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => {
+              if (isFinite(v)) setBEQ({ ...bEQ, mid: v })
+            }}
+            size={70}
+          />
+          <RotaryKnob
+            label="LOW B"
+            value={bEQ.low}
+            min={-24}
+            max={24}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => {
+              if (isFinite(v)) setBEQ({ ...bEQ, low: v })
+            }}
+            size={70}
+          />
+          <RotaryKnob
+            label="FILTER B"
+            value={bFilter}
+            min={200}
+            max={20000}
+            step={100}
+            unit="Hz"
+            onChange={(v) => {
+              if (isFinite(v)) setBFilter(v)
+            }}
+            size={70}
+          />
         </div>
       </div>
 
-      {/* Crossfader - Professional Dual-Rail Design */}
-      <div className="space-y-3 pt-6 border-t border-white/10">
-        <div className="text-[10px] font-semibold text-muted uppercase tracking-wider text-center">Crossfader</div>
-        <div className="relative h-16 flex items-center px-2">
-          {/* Dual Rail Track Background */}
-          <div className="absolute inset-x-2 h-4 flex gap-1">
-            <div className="flex-1 rounded-full bg-gradient-to-b from-zinc-700 via-zinc-600 to-zinc-700 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] border border-zinc-800" />
-            <div className="flex-1 rounded-full bg-gradient-to-b from-zinc-700 via-zinc-600 to-zinc-700 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] border border-zinc-800" />
-          </div>
-
-          {/* Magenta fill showing position */}
-          <div
-            className="absolute h-4 rounded-full transition-all duration-75 bg-accent opacity-40 shadow-[0_0_10px_rgba(225,29,132,0.4)]"
-            style={{
-              left: `calc(${Math.min((1 - crossfader), crossfader) * 100}% + 8px)`,
-              right: `calc(${Math.min((1 - crossfader), crossfader) * 100}% + 8px)`
-            }}
-          />
-
-          {/* Metallic Fader Thumb */}
-          <div
-            className="absolute w-10 h-16 pointer-events-none transition-all z-10"
-            style={{ left: `calc(${(1 - crossfader) * 100}% - 20px)` }}
-          >
-            <div className="w-full h-full rounded-lg bg-gradient-to-br from-zinc-200 via-zinc-300 to-zinc-400 shadow-[0_4px_12px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(0,0,0,0.4)] border border-zinc-500/50">
-              {/* Grip lines */}
-              <div className="flex flex-col items-center justify-center h-full gap-1.5 px-2">
-                <div className="w-full h-px bg-zinc-400/60" />
-                <div className="w-full h-px bg-zinc-400/60" />
-                <div className="w-full h-px bg-zinc-400/60" />
-              </div>
-            </div>
-          </div>
-
-          {/* Input */}
-          <input
-            type="range"
+      {/* Master Volume - Keep as vertical fader for consistency */}
+      <div className="flex flex-col items-center gap-3 pt-4 border-t border-white/10">
+        <div className="text-[10px] font-semibold text-muted uppercase tracking-wider">Master Volume</div>
+        <div className="flex items-center gap-4">
+          <VerticalFader
+            value={masterVol}
             min={0}
             max={1}
-            step={0.001}
-            value={1 - crossfader}
-            onChange={(e) => onCrossfaderChange(1 - parseFloat(e.target.value))}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+            step={0.01}
+            onChange={(v) => {
+              if (isFinite(v)) onMasterVolChange(v)
+            }}
+            label=""
+            unit="%"
+            height={120}
+            accentColor="magenta"
           />
+          <div className="text-xl font-mono font-bold text-accent-400">
+            {Math.round(masterVol * 100)}%
+          </div>
         </div>
-        <div className="flex justify-between text-[10px] font-semibold font-mono">
-          <span className={`transition-all ${crossfader < 0.5 ? 'text-accent-400 scale-110' : 'text-muted'}`}>A {Math.round((1-crossfader) * 100)}%</span>
-          <span className={`transition-all ${crossfader > 0.5 ? 'text-accent-400 scale-110' : 'text-muted'}`}>B {Math.round(crossfader * 100)}%</span>
-        </div>
-      </div>
-
-      {/* Master Volume - Horizontal Slider */}
-      <div className="space-y-3 pt-2">
-        <HorizontalSlider
-          label="MASTER"
-          value={masterVol * 100}
-          min={0}
-          max={100}
-          step={1}
-          unit="%"
-          onChange={(v) => {
-            if (isFinite(v)) onMasterVolChange(v / 100)
-          }}
-          accentColor="magenta"
-        />
       </div>
 
       {/* Recording Indicator */}
