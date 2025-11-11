@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import InteractiveLessonChallenge from '../components/InteractiveLessonChallenge'
 
-type ChallengeType = 'bpm-match' | 'key-match' | 'eq-balance' | 'filter-sweep' | 'crossfade-timing' | null
+type ChallengeType = 'bpm-match' | 'key-match' | 'eq-balance' | 'filter-sweep' | 'crossfade-timing' | 'phrase-counting' | 'beatmatching-ear' | 'transition-planning' | 'harmonic-mixing' | null
 
 type Lesson = {
   id: string
@@ -53,6 +53,7 @@ export default function Learn() {
       icon: '🎹',
       level: 'beginner',
       description: 'Mix tracks that sound good together using musical keys',
+      hasChallenge: 'harmonic-mixing',
       content: {
         overview: 'Harmonic mixing means playing tracks in compatible keys. This prevents clashing notes and creates smooth, professional-sounding transitions.',
         keyPoints: [
@@ -73,6 +74,7 @@ export default function Learn() {
       icon: '🏗️',
       level: 'beginner',
       description: 'Understand how tracks are built and where to mix',
+      hasChallenge: 'phrase-counting',
       content: {
         overview: 'Most electronic tracks follow predictable structures. Knowing this helps you plan your mix and hit the drop at the perfect moment.',
         keyPoints: [
@@ -135,6 +137,7 @@ export default function Learn() {
       icon: '🌊',
       level: 'intermediate',
       description: 'Use filters to create tension and energy in your mix',
+      hasChallenge: 'filter-sweep',
       content: {
         overview: 'Filters remove frequencies progressively. Low-pass filters darken the sound, high-pass filters brighten it. Perfect for builds and transitions.',
         keyPoints: [
@@ -175,6 +178,7 @@ export default function Learn() {
       icon: '🔄',
       level: 'advanced',
       description: 'Combine all skills for seamless, creative transitions',
+      hasChallenge: 'transition-planning',
       content: {
         overview: 'Great transitions are invisible - the audience shouldn\'t notice when one track becomes another. Combine EQ, filters, volume, and timing.',
         keyPoints: [
