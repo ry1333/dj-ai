@@ -112,6 +112,8 @@ export class Deck {
   }
 
   setFilterHz(hz: number) {
+    // Validate input to prevent AudioParam errors
+    if (!isFinite(hz) || hz < 20 || hz > 20000) return
     this.filter.frequency.value = hz
   }
 

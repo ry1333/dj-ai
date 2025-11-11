@@ -52,8 +52,15 @@ export default function DeckControls({
 
   const handleXYChange = (x: number, y: number) => {
     // x = mix/wet, y = filter frequency (exponential)
+    // Validate inputs to prevent NaN/Infinity
+    if (!isFinite(x) || !isFinite(y)) return
+
     const filterFreq = 200 + (Math.pow(y, 2) * 19800)
-    deck.setFilterHz(filterFreq)
+
+    // Ensure filterFreq is finite and within valid range
+    if (isFinite(filterFreq) && filterFreq >= 20 && filterFreq <= 20000) {
+      deck.setFilterHz(filterFreq)
+    }
     // For now, just set filter. In full implementation, you'd have a wet/dry mix parameter
   }
 

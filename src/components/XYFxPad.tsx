@@ -17,8 +17,15 @@ export default function XYFxPad({ onXYChange, defaultX = 0.5, defaultY = 0.5 }: 
     if (!padRef.current) return
 
     const rect = padRef.current.getBoundingClientRect()
+
+    // Prevent division by zero and ensure valid dimensions
+    if (rect.width <= 0 || rect.height <= 0) return
+
     const newX = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
     const newY = Math.max(0, Math.min(1, 1 - (clientY - rect.top) / rect.height)) // Invert Y
+
+    // Validate values before using
+    if (!isFinite(newX) || !isFinite(newY)) return
 
     // Throttle updates to ~60fps
     const now = Date.now()
