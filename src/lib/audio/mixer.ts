@@ -102,13 +102,23 @@ export class Deck {
   }
 
   setRate(rate: number) {
+    // Validate rate to prevent AudioParam errors (typical range 0.5 to 2.0)
+    if (!isFinite(rate) || rate <= 0 || rate > 4) return
     if (this.src) this.src.playbackRate.value = rate
   }
 
   setEQ({ low=0, mid=0, high=0 }: { low?: number; mid?: number; high?: number }) {
-    this.low.gain.value  = low
-    this.mid.gain.value  = mid
-    this.high.gain.value = high
+    // Validate inputs to prevent AudioParam errors
+    // EQ gain typically ranges from -24dB to +24dB (linear scale 0.063 to 15.85)
+    if (isFinite(low) && low >= -24 && low <= 24) {
+      this.low.gain.value = low
+    }
+    if (isFinite(mid) && mid >= -24 && mid <= 24) {
+      this.mid.gain.value = mid
+    }
+    if (isFinite(high) && high >= -24 && high <= 24) {
+      this.high.gain.value = high
+    }
   }
 
   setFilterHz(hz: number) {
@@ -147,8 +157,15 @@ export class Mixer {
 
   // x in [0,1], 0=A only, 1=B only
   setCrossfade(x: number) {
-    this.deckA.gain.gain.value = equalPower(x)
-    this.deckB.gain.gain.value = equalPower(1 - x)
+    // Validate crossfade value
+    if (!isFinite(x) || x < 0 || x > 1) return
+
+    const gainA = equalPower(x)
+    const gainB = equalPower(1 - x)
+
+    // Validate calculated gains
+    if (isFinite(gainA)) this.deckA.gain.gain.value = gainA
+    if (isFinite(gainB)) this.deckB.gain.gain.value = gainB
   }
 
   /**
