@@ -173,12 +173,12 @@ export default function DJ() {
   return (
     <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
       {/* TOP TOOLBAR */}
-      <div className="h-14 border-b border-white/10 bg-neutral-950 flex items-center justify-between px-6">
-        <div className="flex items-center gap-6">
-          <Link to="/stream" className="text-xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+      <div className="h-14 border-b border-zinc-800/60 bg-zinc-950 flex items-center justify-between px-8">
+        <div className="flex items-center gap-8">
+          <Link to="/stream" className="text-xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
             RMXR
           </Link>
-          <Link to="/learn" className="text-sm opacity-60 hover:opacity-100 transition-opacity">
+          <Link to="/learn" className="text-sm text-zinc-400 hover:text-white transition-colors">
             Learn
           </Link>
         </div>
@@ -194,26 +194,25 @@ export default function DJ() {
           >
             {isRecording ? '⏹ Stop' : '⏺ Record'}
           </button>
-          <Link to="/stream" className="px-4 py-1.5 rounded-lg text-sm border border-white/20 hover:bg-white/10 transition-all">
+          <Link to="/stream" className="px-4 py-1.5 rounded-lg text-sm border border-zinc-700/60 hover:bg-zinc-800/60 transition-all">
             Stream
           </Link>
         </div>
       </div>
 
-      {/* MIXER BAND (3 rows) */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Row A: Dual Waveforms */}
-        <div className="h-32 border-b border-white/10 bg-neutral-950">
-          <DualWaveform
-            deckA={mixer.deckA}
-            deckB={mixer.deckB}
-            progressA={aProg}
-            progressB={bProg}
-          />
-        </div>
+      {/* WAVEFORM BAND (slim) */}
+      <div className="h-32 border-b border-zinc-800/60 bg-zinc-950/60">
+        <DualWaveform
+          deckA={mixer.deckA}
+          deckB={mixer.deckB}
+          progressA={aProg}
+          progressB={bProg}
+        />
+      </div>
 
-        {/* Row B: Deck A / Center Mixer / Deck B */}
-        <div className="flex-1 grid grid-cols-[1fr_480px_1fr] gap-4 p-4 overflow-y-auto">
+      {/* MIXER BAND */}
+      <div className="flex-1 max-w-[1600px] mx-auto w-full px-8 py-8">
+        <div className="h-full grid grid-cols-[3fr_2fr_3fr] gap-10">
           {/* Left Deck (A) */}
           <DeckControls
             label="DECK A"
@@ -259,8 +258,8 @@ export default function DJ() {
         </div>
       </div>
 
-      {/* LIBRARY BAND (bottom) */}
-      <div className="h-64 border-t border-white/10 bg-neutral-950">
+      {/* LIBRARY BAND */}
+      <div className="h-64 border-t border-zinc-800/60 bg-zinc-950/60">
         <LibraryBrowser
           onLoadA={handleALoad}
           onLoadB={handleBLoad}

@@ -56,10 +56,10 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-zinc-950/60">
       {/* Library Header */}
-      <div className="px-6 py-3 border-b border-white/10 flex items-center gap-4">
-        <div className="text-sm font-bold opacity-80">LIBRARY</div>
+      <div className="px-6 py-3 border-b border-zinc-800/60 flex items-center gap-4">
+        <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Library</div>
 
         {/* Search */}
         <div className="flex-1 max-w-md">
@@ -68,24 +68,24 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search tracks..."
-            className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/20"
+            className="w-full bg-black/50 border border-zinc-800/60 rounded-lg px-4 py-2 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700"
           />
         </div>
       </div>
 
       {/* Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: Genre Filter */}
-        <div className="w-48 border-r border-white/10 bg-black/30 p-4 space-y-1 overflow-y-auto">
-          <div className="text-xs opacity-60 mb-3">GENRES</div>
+        {/* Left: Genre Filter - Narrower */}
+        <div className="w-24 border-r border-zinc-800/60 bg-zinc-950/80 p-3 space-y-1 overflow-y-auto">
+          <div className="text-[9px] text-zinc-600 uppercase tracking-wider mb-2">Genre</div>
           {genres.map(genre => (
             <button
               key={genre}
               onClick={() => setSelectedGenre(genre)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+              className={`w-full text-left px-2 py-1.5 rounded-md text-[11px] transition-all ${
                 selectedGenre === genre
-                  ? 'bg-purple-500/20 text-purple-400 font-semibold'
-                  : 'hover:bg-white/5 opacity-70 hover:opacity-100'
+                  ? 'bg-purple-900/30 text-purple-400 font-semibold'
+                  : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50'
               }`}
             >
               {genre}
@@ -96,40 +96,43 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
         {/* Center: Track List */}
         <div className="flex-1 overflow-y-auto">
           <table className="w-full">
-            <thead className="sticky top-0 bg-neutral-950 border-b border-white/10">
-              <tr className="text-xs opacity-60">
-                <th className="text-left px-4 py-3 font-medium">TRACK</th>
-                <th className="text-left px-4 py-3 font-medium">ARTIST</th>
-                <th className="text-center px-4 py-3 font-medium">BPM</th>
-                <th className="text-center px-4 py-3 font-medium">KEY</th>
-                <th className="text-center px-4 py-3 font-medium">ACTIONS</th>
+            <thead className="sticky top-0 bg-zinc-950/95 border-b border-zinc-800/60 backdrop-blur-sm">
+              <tr className="text-[10px] text-zinc-600 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 font-semibold">Track</th>
+                <th className="text-left px-4 py-3 font-semibold">Artist</th>
+                <th className="text-center px-4 py-3 font-semibold">BPM</th>
+                <th className="text-center px-4 py-3 font-semibold">Key</th>
+                <th className="text-center px-6 py-3 font-semibold w-32">Load</th>
               </tr>
             </thead>
             <tbody>
               {filteredTracks.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-12 opacity-60 text-sm">
+                  <td colSpan={5} className="text-center py-16 text-zinc-600 text-sm">
                     No tracks found
                   </td>
                 </tr>
               ) : (
                 filteredTracks.map(track => (
-                  <tr key={track.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="px-4 py-3 text-sm">{track.name}</td>
-                    <td className="px-4 py-3 text-sm opacity-70">{track.artist}</td>
-                    <td className="px-4 py-3 text-sm text-center font-mono">{track.bpm}</td>
-                    <td className="px-4 py-3 text-sm text-center font-mono">{track.key}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-center gap-2">
+                  <tr key={track.id} className="group border-b border-zinc-900/50 hover:bg-zinc-900/30 transition-colors">
+                    <td className="px-6 py-3 text-sm text-zinc-300">{track.name}</td>
+                    <td className="px-4 py-3 text-sm text-zinc-500">{track.artist}</td>
+                    <td className="px-4 py-3 text-sm text-center font-mono text-zinc-400">{track.bpm}</td>
+                    <td className="px-4 py-3 text-sm text-center font-mono text-zinc-400">{track.key}</td>
+                    <td className="px-6 py-3">
+                      {/* Hover-only action chips */}
+                      <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleLoadTrack(track, 'A')}
-                          className="px-3 py-1 rounded-md bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 text-xs font-semibold transition-all"
+                          title="Load to Deck A"
+                          className="px-3 py-1 rounded-md bg-orange-900/30 hover:bg-orange-900/50 text-orange-400 text-[11px] font-semibold transition-all border border-orange-800/30"
                         >
                           → A
                         </button>
                         <button
                           onClick={() => handleLoadTrack(track, 'B')}
-                          className="px-3 py-1 rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold transition-all"
+                          title="Load to Deck B"
+                          className="px-3 py-1 rounded-md bg-red-900/30 hover:bg-red-900/50 text-red-400 text-[11px] font-semibold transition-all border border-red-800/30"
                         >
                           → B
                         </button>
@@ -143,10 +146,10 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
         </div>
       </div>
 
-      {/* Info Banner */}
-      <div className="px-6 py-2 border-t border-white/10 bg-black/30 text-xs opacity-60 flex items-center justify-between">
-        <span>{filteredTracks.length} tracks available</span>
-        <span>Click → A or → B to load track into deck</span>
+      {/* Info Footer - Simplified */}
+      <div className="px-6 py-2 border-t border-zinc-800/60 bg-zinc-950/80 text-[10px] text-zinc-600 flex items-center justify-between">
+        <span>{filteredTracks.length} tracks</span>
+        <span className="text-zinc-700">Hover row to load</span>
       </div>
     </div>
   )
