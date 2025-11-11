@@ -46,41 +46,92 @@ export default function Stream() {
 
   return (
     <div ref={feedRef} className="tiktok-feed h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black text-white">
-      {items.map((p) => {
-        const loves = loveState[p.id]?.loves ?? p.loves ?? 0
-        const hasLoved = loveState[p.id]?.has_loved ?? p.has_loved ?? false
+      {items.length === 0 && !loading ? (
+        <div className="h-screen flex items-center justify-center px-6">
+          <div className="text-center space-y-6 max-w-md">
+            <div className="text-6xl mb-4">🎵</div>
+            <h2 className="text-2xl font-bold text-white">No Posts Yet</h2>
+            <p className="text-white/60 leading-relaxed">
+              Be the first to create! Head to the DJ Studio, make a 30-second mix, and publish it to the feed.
+            </p>
+            <button
+              onClick={() => nav('/dj')}
+              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold transition-all hover:scale-105 active:scale-95"
+            >
+              Open DJ Studio →
+            </button>
+          </div>
+        </div>
+      ) : (
+        items.map((p) => {
+          const loves = loveState[p.id]?.loves ?? p.loves ?? 0
+          const hasLoved = loveState[p.id]?.has_loved ?? p.has_loved ?? false
 
-        return (
-          <section key={p.id} data-post className="h-screen snap-start relative flex items-end justify-center"
-            style={{background:'radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.03), transparent), radial-gradient(900px 400px at 50% 100%, rgba(255,255,255,0.02), transparent)'}}>
-            <div className="absolute left-4 bottom-32 md:bottom-10 space-y-2 pointer-events-none max-w-[60%]">
-              <div className="font-bold text-lg text-white">
-                {p.user}
-              </div>
-              <div className="opacity-80 text-sm leading-relaxed">{p.caption}</div>
-              {p.bpm && (
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-medium">
-                  ⚡ {p.bpm} BPM
+          return (
+            <section key={p.id} data-post className="h-screen snap-start relative flex items-end justify-center"
+              style={{background:'radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.03), transparent), radial-gradient(900px 400px at 50% 100%, rgba(255,255,255,0.02), transparent)'}}>
+
+              {/* User Info & Caption */}
+              <div className="absolute left-4 bottom-32 md:bottom-10 space-y-3 pointer-events-none max-w-[60%]">
+                <div className="flex items-center gap-3">
+                  {p.avatar_url ? (
+                    <img
+                      src={p.avatar_url}
+                      alt={p.user}
+                      className="w-10 h-10 rounded-full border-2 border-white/20"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                      {p.user.charAt(1).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="font-bold text-lg text-white">
+                    {p.user}
+                  </div>
                 </div>
-              )}
-            </div>
-            <div className="w-full max-w-md mx-auto mb-28 md:mb-10 px-4">
-              <div className="rounded-2xl border border-white/10 bg-neutral-900/80 backdrop-blur-xl p-5 shadow-2xl">
-                <audio controls className="w-full [&::-webkit-media-controls-panel]:bg-neutral-800 [&::-webkit-media-controls-current-time-display]:text-white [&::-webkit-media-controls-time-remaining-display]:text-white" src={p.src} preload="metadata" />
+                <div className="opacity-80 text-sm leading-relaxed">{p.caption}</div>
+
+                {/* Tags Row */}
+                <div className="flex flex-wrap gap-2">
+                  {p.bpm && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-medium">
+                      ⚡ {p.bpm} BPM
+                    </div>
+                  )}
+                  {p.key && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-medium">
+                      🎹 {p.key}
+                    </div>
+                  )}
+                  {p.style && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-medium">
+                      🎨 {p.style}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <ActionRail
-              onRemix={() => nav(`/dj?remix=${p.id}`)}
-              onLike={() => handleLike(p.id, loves, hasLoved)}
-              loves={loves}
-              hasLoved={hasLoved}
-            />
-          </section>
-        )
-      })}
+
+              {/* Audio Player */}
+              <div className="w-full max-w-md mx-auto mb-28 md:mb-10 px-4">
+                <div className="rounded-2xl border border-white/10 bg-neutral-900/80 backdrop-blur-xl p-5 shadow-2xl">
+                  <audio controls className="w-full [&::-webkit-media-controls-panel]:bg-neutral-800 [&::-webkit-media-controls-current-time-display]:text-white [&::-webkit-media-controls-time-remaining-display]:text-white" src={p.src} preload="metadata" />
+                </div>
+              </div>
+
+              {/* Action Rail */}
+              <ActionRail
+                onRemix={() => nav(`/dj?remix=${p.id}`)}
+                onLike={() => handleLike(p.id, loves, hasLoved)}
+                loves={loves}
+                hasLoved={hasLoved}
+              />
+            </section>
+          )
+        })
+      )}
       <div ref={sentinelRef} className="h-10" />
       {loading && <div className="pb-24 text-center opacity-70">Loading…</div>}
-      {!hasMore && <div className="pb-24 text-center opacity-50">You're all caught up</div>}
+      {!hasMore && items.length > 0 && <div className="pb-24 text-center opacity-50">You're all caught up</div>}
     </div>
   )
 }
