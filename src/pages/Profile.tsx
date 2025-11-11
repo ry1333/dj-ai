@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUserProfile, getUserStats } from '../lib/supabase/profiles'
 import type { Profile } from '../lib/supabase/profiles'
+import { supabase } from '@/integrations/supabase/client'
 import { toast } from 'sonner'
 
 export default function Profile() {
@@ -35,6 +36,19 @@ export default function Profile() {
     setLoading(false)
   }
 
+  async function handleLogout() {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+
+      toast.success('Logged out successfully')
+      nav('/auth', { replace: true })
+    } catch (error) {
+      console.error('Error logging out:', error)
+      toast.error('Failed to log out')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white flex items-center justify-center">
@@ -52,6 +66,16 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6 md:p-8 lg:p-10 space-y-8">
+      {/* Logout Button - Top Right */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 hover:bg-white/5 text-white/80 hover:text-white text-sm font-medium transition-all"
+        >
+          Sign Out
+        </button>
+      </div>
+
       {/* Header */}
       <header className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div className="relative">
