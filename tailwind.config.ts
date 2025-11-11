@@ -14,6 +14,24 @@ export default {
     },
     extend: {
       colors: {
+        // RMXR Theme Colors
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        surface2: "var(--surface-2)",
+        rmxrborder: "var(--border)",
+        rmxrtext: "var(--text)",
+        muted: "var(--muted)",
+        accent: {
+          DEFAULT: "var(--accent)",
+          500: "var(--accent-500)",
+          400: "var(--accent-400)",
+          300: "var(--accent-300)",
+        },
+        ok: "var(--ok)",
+        warn: "var(--warn)",
+        danger: "var(--danger)",
+
+        // Shadcn compatibility
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -31,14 +49,6 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -47,6 +57,9 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+      },
+      fontFamily: {
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(135deg, hsl(var(--gradient-cyan)), hsl(var(--gradient-magenta)))',

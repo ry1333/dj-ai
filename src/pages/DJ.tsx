@@ -171,14 +171,14 @@ export default function DJ() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
+    <div className="h-screen flex flex-col bg-bg text-rmxrtext overflow-hidden">
       {/* TOP TOOLBAR */}
-      <div className="h-14 border-b border-zinc-800/60 bg-zinc-950 flex items-center justify-between px-8">
+      <div className="h-14 border-b border-rmxrborder bg-surface flex items-center justify-between px-8">
         <div className="flex items-center gap-8">
-          <Link to="/stream" className="text-xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+          <Link to="/stream" className="text-xl font-bold text-accent-400">
             RMXR
           </Link>
-          <Link to="/learn" className="text-sm text-zinc-400 hover:text-white transition-colors">
+          <Link to="/learn" className="text-sm text-muted hover:text-rmxrtext transition-colors">
             Learn
           </Link>
         </div>
@@ -188,20 +188,20 @@ export default function DJ() {
             disabled={!mixer.deckA.buffer && !mixer.deckB.buffer}
             className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
               isRecording
-                ? 'bg-red-600 animate-pulse'
-                : 'bg-red-500 hover:bg-red-600'
-            } disabled:opacity-40 disabled:cursor-not-allowed`}
+                ? 'bg-danger animate-pulse'
+                : 'bg-danger hover:bg-red-600'
+            } disabled:opacity-40 disabled:cursor-not-allowed text-white`}
           >
             {isRecording ? '⏹ Stop' : '⏺ Record'}
           </button>
-          <Link to="/stream" className="px-4 py-1.5 rounded-lg text-sm border border-zinc-700/60 hover:bg-zinc-800/60 transition-all">
+          <Link to="/stream" className="px-4 py-1.5 rounded-lg text-sm border border-rmxrborder hover:bg-surface2 transition-all">
             Stream
           </Link>
         </div>
       </div>
 
       {/* WAVEFORM BAND (slim) */}
-      <div className="h-32 border-b border-zinc-800/60 bg-zinc-950/60">
+      <div className="h-32 border-b border-rmxrborder bg-surface">
         <DualWaveform
           deckA={mixer.deckA}
           deckB={mixer.deckB}
@@ -215,9 +215,8 @@ export default function DJ() {
         <div className="h-full grid grid-cols-[3fr_2fr_3fr] gap-10">
           {/* Left Deck (A) */}
           <DeckControls
-            label="DECK A"
+            label="A"
             deck={mixer.deckA}
-            color="orange"
             playing={aPlaying}
             fileName={aFileName}
             bpm={aBpm}
@@ -243,9 +242,8 @@ export default function DJ() {
 
           {/* Right Deck (B) */}
           <DeckControls
-            label="DECK B"
+            label="B"
             deck={mixer.deckB}
-            color="red"
             playing={bPlaying}
             fileName={bFileName}
             bpm={bBpm}
@@ -259,7 +257,7 @@ export default function DJ() {
       </div>
 
       {/* LIBRARY BAND */}
-      <div className="h-64 border-t border-zinc-800/60 bg-zinc-950/60">
+      <div className="h-64 border-t border-rmxrborder bg-surface">
         <LibraryBrowser
           onLoadA={handleALoad}
           onLoadB={handleBLoad}

@@ -8,45 +8,40 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 3%;
-    --foreground: 0 0% 98%;
+    /* RMXR Dark Theme - Magenta × Black */
+    --bg: #0B0B11;
+    --surface: #12121A;
+    --surface-2: #161624;
+    --border: #26263A;
+    --text: #ECECF1;
+    --muted: #9A9AAF;
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
+    --accent: #E11D84;      /* magenta 600 */
+    --accent-500: #F0168A;
+    --accent-400: #FF4DA7;
+    --accent-300: #FF86C1;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 98%;
+    --ok: #21D19F;          /* success */
+    --warn: #F59E0B;
+    --danger: #EF4444;
 
-    --primary: 190 100% 50%;
-    --primary-foreground: 0 0% 0%;
-
-    --secondary: 320 100% 50%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
-
-    --accent: 280 100% 60%;
-    --accent-foreground: 0 0% 98%;
-
+    /* Shadcn compatibility (HSL) */
+    --background: 243 25% 5%;
+    --foreground: 240 7% 93%;
+    --card: 243 25% 8%;
+    --card-foreground: 240 7% 93%;
+    --popover: 243 25% 8%;
+    --popover-foreground: 240 7% 93%;
+    --primary: 330 80% 51%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 243 22% 13%;
+    --secondary-foreground: 240 7% 93%;
+    --muted-foreground: 243 7% 65%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 190 100% 50%;
-
+    --input: 243 20% 22%;
+    --ring: 330 80% 51%;
     --radius: 1rem;
-
-    /* Custom gradient colors */
-    --gradient-cyan: 190 100% 50%;
-    --gradient-blue: 210 100% 50%;
-    --gradient-magenta: 320 100% 50%;
-    --gradient-purple: 280 100% 60%;
-
-    /* Glow effects */
-    --glow-cyan: 190 100% 50%;
-    --glow-magenta: 320 100% 50%;
   }
 }
 
@@ -76,11 +71,55 @@ html, body, #root { height: 100%; background: #000; }
 
 
 /* --- DJ visuals --- */
-@keyframes spin-slower { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+@keyframes spin-slower {
+  from { transform: rotate(0deg) }
+  to { transform: rotate(360deg) }
+}
 .spin-slower { animation: spin-slower 6s linear infinite; }
-body { background: #0b0b0b; }
 
-/* --- DJ visuals --- */
-@keyframes spin-slower { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
-.spin-slower { animation: spin-slower 6s linear infinite; }
-body { background: #0b0b0b; }
+/* Active deck glow */
+.deck--active {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 24px 2px rgba(225, 29, 132, 0.25) inset;
+}
+
+/* Sleek sliders */
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 4px;
+  background: #1E1E2A;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+/* Library hover actions */
+.lib-row .actions {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.lib-row:hover .actions {
+  opacity: 1;
+}
+
+body { background: var(--bg); }
