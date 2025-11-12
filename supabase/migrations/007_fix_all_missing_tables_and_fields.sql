@@ -15,8 +15,13 @@ create table if not exists public.comments (
   updated_at timestamptz default now()
 );
 
--- Enable RLS
-alter table if exists public.comments enable row level security;
+-- Enable RLS (do nothing if already enabled)
+do $$
+begin
+  alter table public.comments enable row level security;
+exception when undefined_table then
+  null;
+end $$;
 
 -- Drop existing policies if they exist (to avoid duplicates)
 drop policy if exists "comments_select_all" on public.comments;
@@ -61,8 +66,13 @@ create table if not exists public.reports (
   updated_at timestamptz default now()
 );
 
--- Enable RLS
-alter table if exists public.reports enable row level security;
+-- Enable RLS (do nothing if already enabled)
+do $$
+begin
+  alter table public.reports enable row level security;
+exception when undefined_table then
+  null;
+end $$;
 
 -- Drop existing policies
 drop policy if exists "reports_insert_authenticated" on public.reports;
@@ -96,8 +106,13 @@ create table if not exists public.blocked_users (
   constraint unique_block unique (blocker_id, blocked_id)
 );
 
--- Enable RLS
-alter table if exists public.blocked_users enable row level security;
+-- Enable RLS (do nothing if already enabled)
+do $$
+begin
+  alter table public.blocked_users enable row level security;
+exception when undefined_table then
+  null;
+end $$;
 
 -- Drop existing policies
 drop policy if exists "blocked_users_select_own" on public.blocked_users;
@@ -131,8 +146,13 @@ create table if not exists public.admin_users (
   created_by uuid references public.profiles(id)
 );
 
--- Enable RLS
-alter table if exists public.admin_users enable row level security;
+-- Enable RLS (do nothing if already enabled)
+do $$
+begin
+  alter table public.admin_users enable row level security;
+exception when undefined_table then
+  null;
+end $$;
 
 -- Drop existing policies
 drop policy if exists "admin_users_select_all" on public.admin_users;
