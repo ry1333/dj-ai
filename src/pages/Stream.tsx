@@ -112,7 +112,7 @@ export default function Stream() {
           const hasLoved = loveState[p.id]?.has_loved ?? p.has_loved ?? false
 
           return (
-            <section key={p.id} data-post className="h-screen snap-start relative flex items-end justify-center overflow-hidden"
+            <section key={p.id} data-post className="h-screen snap-start relative flex items-center justify-center overflow-hidden"
               style={{
                 background: 'radial-gradient(1200px 600px at 50% 0%, rgba(6, 182, 212, 0.08), transparent), radial-gradient(900px 400px at 50% 100%, rgba(168, 85, 247, 0.06), transparent), #000'
               }}>
@@ -124,8 +124,8 @@ export default function Stream() {
               </div>
 
               {/* User Info & Caption */}
-              <div className="absolute left-4 bottom-32 md:bottom-10 space-y-3 max-w-[60%] z-10">
-                <div className="rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 p-4 shadow-xl pointer-events-auto">
+              <div className="absolute left-4 bottom-24 md:bottom-8 space-y-3 max-w-[55%] z-10">
+                <div className="rounded-2xl bg-black/50 backdrop-blur-lg border border-white/10 p-3 shadow-2xl pointer-events-auto">
                   <div className="flex items-center gap-3 mb-2">
                     {p.avatar_url ? (
                       <img
@@ -168,7 +168,7 @@ export default function Stream() {
               </div>
 
               {/* Vinyl Player */}
-              <div className="w-full max-w-md mx-auto mb-28 md:mb-10 px-6">
+              <div className="w-full max-w-xs mx-auto px-6">
                 <VinylPlayer
                   audioUrl={p.src}
                   bpm={p.bpm}

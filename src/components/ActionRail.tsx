@@ -19,11 +19,11 @@ export default function ActionRail({ onRemix, onLike, onShare, onComment, onRepo
   }
 
   return (
-    <div className="pointer-events-auto fixed right-4 bottom-32 md:bottom-8 flex flex-col gap-4 z-20">
+    <div className="pointer-events-auto fixed right-5 bottom-28 md:bottom-12 flex flex-col gap-5 z-20">
       {/* Remix Button - Primary CTA */}
       <button
         onClick={onRemix}
-        className="group relative flex flex-col items-center gap-2 rounded-full bg-gradient-to-br from-pink-500 via-purple-600 to-purple-700 p-4 shadow-xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-110 active:scale-95"
+        className="group relative flex flex-col items-center gap-1.5 rounded-full bg-gradient-to-br from-pink-500 via-purple-600 to-purple-700 p-3.5 shadow-xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-110 active:scale-95"
         title="Remix this track"
       >
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300" />
@@ -34,7 +34,7 @@ export default function ActionRail({ onRemix, onLike, onShare, onComment, onRepo
       {/* Like Button */}
       <button
         onClick={onLike}
-        className={`group relative flex flex-col items-center gap-1.5 rounded-full p-3.5 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
+        className={`group relative flex flex-col items-center gap-1 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
           hasLoved
             ? 'bg-gradient-to-br from-red-500 to-pink-600 shadow-red-500/40'
             : 'bg-white/90 backdrop-blur-md hover:bg-white shadow-black/20'
@@ -45,13 +45,13 @@ export default function ActionRail({ onRemix, onLike, onShare, onComment, onRepo
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-400 to-pink-500 opacity-50 blur-lg animate-pulse" />
         )}
         <Heart
-          className={`w-6 h-6 relative z-10 transition-transform duration-300 ${
+          className={`w-5 h-5 relative z-10 transition-transform duration-300 ${
             hasLoved ? 'text-white scale-110' : 'text-neutral-800 group-hover:text-red-500'
           }`}
           fill={hasLoved ? 'currentColor' : 'none'}
           strokeWidth={2.5}
         />
-        <span className={`text-[10px] font-semibold relative z-10 ${hasLoved ? 'text-white' : 'text-neutral-800'}`}>
+        <span className={`text-[9px] font-semibold relative z-10 ${hasLoved ? 'text-white' : 'text-neutral-800'}`}>
           {loves > 0 ? formatCount(loves) : 'Like'}
         </span>
       </button>
@@ -59,14 +59,14 @@ export default function ActionRail({ onRemix, onLike, onShare, onComment, onRepo
       {/* Comment Button */}
       <button
         onClick={onComment}
-        className="group relative flex flex-col items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-md p-3.5 shadow-lg shadow-black/20 hover:bg-white transition-all duration-300 hover:scale-105 active:scale-95"
+        className="group relative flex flex-col items-center gap-1 rounded-full bg-white/90 backdrop-blur-md p-3 shadow-lg shadow-black/20 hover:bg-white transition-all duration-300 hover:scale-105 active:scale-95"
         title="View comments"
       >
         <MessageCircle
-          className="w-6 h-6 text-neutral-800 group-hover:text-blue-500 transition-colors relative z-10"
+          className="w-5 h-5 text-neutral-800 group-hover:text-blue-500 transition-colors relative z-10"
           strokeWidth={2.5}
         />
-        <span className="text-[10px] font-semibold text-neutral-800 relative z-10">
+        <span className="text-[9px] font-semibold text-neutral-800 relative z-10">
           {comments > 0 ? formatCount(comments) : 'Comment'}
         </span>
       </button>
@@ -74,14 +74,14 @@ export default function ActionRail({ onRemix, onLike, onShare, onComment, onRepo
       {/* Share Button */}
       <button
         onClick={onShare}
-        className="group relative flex flex-col items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-md p-3.5 shadow-lg shadow-black/20 hover:bg-white transition-all duration-300 hover:scale-105 active:scale-95"
+        className="group relative flex flex-col items-center gap-1 rounded-full bg-white/90 backdrop-blur-md p-3 shadow-lg shadow-black/20 hover:bg-white transition-all duration-300 hover:scale-105 active:scale-95"
         title="Share this track"
       >
         <Share2
-          className="w-6 h-6 text-neutral-800 group-hover:text-green-500 transition-colors relative z-10"
+          className="w-5 h-5 text-neutral-800 group-hover:text-green-500 transition-colors relative z-10"
           strokeWidth={2.5}
         />
-        <span className="text-[10px] font-semibold text-neutral-800 relative z-10">Share</span>
+        <span className="text-[9px] font-semibold text-neutral-800 relative z-10">Share</span>
       </button>
 
       {/* Report Button */}
