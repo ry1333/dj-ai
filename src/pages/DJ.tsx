@@ -149,6 +149,13 @@ export default function DJ() {
   async function handlePublish() {
     if (!recordedBlob) return
 
+    // Validate file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024 // 50MB in bytes
+    if (recordedBlob.size > maxSize) {
+      toast.error('Recording is too large. Maximum size is 50MB.')
+      return
+    }
+
     setIsPublishing(true)
     try {
       toast.info('Uploading mix...')
