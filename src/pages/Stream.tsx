@@ -44,6 +44,35 @@ export default function Stream() {
     }
   }
 
+  const handleShare = async (postId: string) => {
+    const url = `${window.location.origin}${window.location.pathname}#/stream?post=${postId}`
+
+    try {
+      // Try native share API first (mobile devices)
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Check out this mix on RMXR',
+          url: url
+        })
+        toast.success('Shared successfully!')
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(url)
+        toast.success('Link copied to clipboard!')
+      }
+    } catch (error) {
+      // If user cancels share dialog, don't show error
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Error sharing:', error)
+        toast.error('Failed to share')
+      }
+    }
+  }
+
+  const handleComment = () => {
+    toast.info('Comments coming soon!')
+  }
+
   return (
     <div ref={feedRef} className="tiktok-feed h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black text-white">
       {items.length === 0 && !loading ? (
@@ -122,8 +151,11 @@ export default function Stream() {
               <ActionRail
                 onRemix={() => nav(`/dj?remix=${p.id}`)}
                 onLike={() => handleLike(p.id, loves, hasLoved)}
+                onShare={() => handleShare(p.id)}
+                onComment={handleComment}
                 loves={loves}
                 hasLoved={hasLoved}
+                comments={p.comments ?? 0}
               />
             </section>
           )

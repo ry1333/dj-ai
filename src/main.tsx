@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import ProtectedRoute from './components/ProtectedRoute'
 import AppShell from './AppShell'
 import Stream from './pages/Stream'
 import DJ from './pages/DJ'
@@ -19,6 +20,15 @@ function Router({ children }: { children: React.ReactNode }) {
 // Default to stream in prod
 if (!import.meta.env.DEV && !location.hash) { location.replace('#/stream') }
 
+// Register service worker for PWA
+if ('serviceWorker' in navigator && !import.meta.env.DEV) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      console.log('Service worker registration failed')
+    })
+  })
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
@@ -27,13 +37,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route element={<AppShell />}>
             <Route index element={<Stream />} />
             <Route path="/stream" element={<Stream />} />
-            <Route path="/dj" element={<DJ />} />
-            <Route path="/create" element={<DJ />} />
-            <Route path="/compose" element={<Create />} />
+            <Route path="/dj" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
+            <Route path="/create" element={<ProtectedRoute><Create /></ProtectedRoute>} />
+            <Route path="/compose" element={<ProtectedRoute><Create /></ProtectedRoute>} />
             <Route path="/learn" element={<Learn />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/auth" element={<AuthPage />} />
-            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/stream" replace />} />
           </Route>
         </Routes>

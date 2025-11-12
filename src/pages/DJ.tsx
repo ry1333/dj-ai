@@ -35,11 +35,26 @@ export default function DJ() {
   const [showPublishModal, setShowPublishModal] = useState(false)
   const [caption, setCaption] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
+  const [recordingTime, setRecordingTime] = useState(0)
+  const recordingTimerRef = useRef<number | null>(null)
+
+  const MAX_RECORDING_TIME = 30 // 30 seconds
 
   // VU meter state
   const [masterLevel, setMasterLevel] = useState(0)
 
+  // Tutorial tooltip
+  const [showTutorial, setShowTutorial] = useState(false)
+
   const raf = useRef<number | null>(null)
+
+  // Show tutorial on first visit
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem('rmxr_dj_tutorial_seen')
+    if (!hasSeenTutorial) {
+      setTimeout(() => setShowTutorial(true), 1000)
+    }
+  }, [])
 
   // Animation loop for progress tracking + VU meter
   useEffect(() => {
@@ -122,28 +137,63 @@ export default function DJ() {
   // Recording
   async function handleRecord() {
     if (isRecording) {
+      // Stop recording
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current)
+        recordingTimerRef.current = null
+      }
+
       try {
         const blob = await mixer.stopRecording()
         setRecordedBlob(blob)
         setIsRecording(false)
+        setRecordingTime(0)
         setShowPublishModal(true)
         toast.success('Recording stopped')
       } catch (error) {
         console.error('Error stopping recording:', error)
         toast.error('Failed to stop recording')
         setIsRecording(false)
+        setRecordingTime(0)
       }
     } else {
+      // Start recording
       try {
         mixer.startRecording()
         setIsRecording(true)
-        toast.success('Recording started')
+        setRecordingTime(0)
+        toast.success(`Recording started (${MAX_RECORDING_TIME}s max)`)
+
+        // Start timer
+        recordingTimerRef.current = window.setInterval(() => {
+          setRecordingTime(prev => {
+            const newTime = prev + 1
+
+            // Auto-stop at max time
+            if (newTime >= MAX_RECORDING_TIME) {
+              handleRecord() // Stop recording
+              toast.info('Maximum recording time reached')
+              return MAX_RECORDING_TIME
+            }
+
+            return newTime
+          })
+        }, 1000)
       } catch (error) {
         console.error('Error starting recording:', error)
         toast.error('Failed to start recording')
       }
     }
   }
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current)
+      }
+    }
+  }, [])
 
   // Publishing
   async function handlePublish() {
@@ -193,6 +243,8 @@ export default function DJ() {
         isRecording={isRecording}
         onRecordToggle={handleRecord}
         masterLevel={masterLevel}
+        recordingTime={recordingTime}
+        maxRecordingTime={MAX_RECORDING_TIME}
       />
 
       {/* WAVEFORM BAND (slim) */}
@@ -260,6 +312,35 @@ export default function DJ() {
           onLoadB={handleBLoad}
         />
       </div>
+
+      {/* Tutorial Tooltip */}
+      {showTutorial && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-gradient-to-br from-neutral-900 to-black border border-white/10 rounded-2xl p-8 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="text-center">
+              <div className="text-5xl mb-4">🎧</div>
+              <h2 className="text-2xl font-bold text-white mb-2">Welcome to the DJ Studio!</h2>
+            </div>
+
+            <div className="space-y-3 text-white/80 text-sm">
+              <p><strong className="text-white">1. Load Tracks:</strong> Browse the library below and load loops to Deck A and B</p>
+              <p><strong className="text-white">2. Mix:</strong> Use the crossfader to blend between decks, adjust EQ and filters</p>
+              <p><strong className="text-white">3. Record:</strong> Click the REC button to start recording (max 30 seconds)</p>
+              <p><strong className="text-white">4. Publish:</strong> Share your mix with the community!</p>
+            </div>
+
+            <button
+              onClick={() => {
+                localStorage.setItem('rmxr_dj_tutorial_seen', 'true')
+                setShowTutorial(false)
+              }}
+              className="w-full rounded-xl bg-white hover:bg-white/90 px-6 py-3 text-black font-bold transition-all"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Publishing Modal */}
       {showPublishModal && (

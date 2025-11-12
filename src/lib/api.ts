@@ -12,6 +12,7 @@ export type FeedItem = {
   avatar_url?: string
   loves?: number
   has_loved?: boolean
+  comments?: number
 }
 
 let mockCounter = 0
@@ -53,22 +54,25 @@ export async function fetchFeedPage(page = 0, pageSize = 5): Promise<{ items: Fe
 
   if (error) throw error
 
-  // Get love counts and user's loved status for all posts
+  // Get reactions (loves and comments) for all posts
   const postIds = (data ?? []).map((p: any) => p.id)
-  const { data: loveCounts } = await supabase
+  const { data: reactions } = await supabase
     .from('reactions')
-    .select('post_id, user_id')
-    .eq('type', 'love')
+    .select('post_id, user_id, type')
     .in('post_id', postIds)
 
-  // Calculate loves per post and check if current user loved
-  const loveData = (loveCounts ?? []).reduce((acc: any, reaction: any) => {
+  // Calculate loves and comments per post
+  const reactionData = (reactions ?? []).reduce((acc: any, reaction: any) => {
     if (!acc[reaction.post_id]) {
-      acc[reaction.post_id] = { count: 0, hasLoved: false }
+      acc[reaction.post_id] = { loves: 0, hasLoved: false, comments: 0 }
     }
-    acc[reaction.post_id].count++
-    if (currentUser && reaction.user_id === currentUser.id) {
-      acc[reaction.post_id].hasLoved = true
+    if (reaction.type === 'love') {
+      acc[reaction.post_id].loves++
+      if (currentUser && reaction.user_id === currentUser.id) {
+        acc[reaction.post_id].hasLoved = true
+      }
+    } else if (reaction.type === 'comment') {
+      acc[reaction.post_id].comments++
     }
     return acc
   }, {})
@@ -82,8 +86,9 @@ export async function fetchFeedPage(page = 0, pageSize = 5): Promise<{ items: Fe
     key: r.key,
     style: r.style,
     avatar_url: r.profiles?.avatar_url,
-    loves: loveData[r.id]?.count ?? 0,
-    has_loved: loveData[r.id]?.hasLoved ?? false
+    loves: reactionData[r.id]?.loves ?? 0,
+    has_loved: reactionData[r.id]?.hasLoved ?? false,
+    comments: reactionData[r.id]?.comments ?? 0
   }))
 
   return { items, hasMore: (data?.length ?? 0) === pageSize }
