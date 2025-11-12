@@ -135,34 +135,15 @@ export default function VinylPlayer({
             ))}
           </div>
 
-          {/* Center Label */}
+          {/* Center Label - Clean minimal design */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div
-              className={`relative w-1/2 h-1/2 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 shadow-lg flex flex-col items-center justify-center ${
+              className={`relative w-1/3 h-1/3 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 shadow-lg ${
                 isPlaying ? 'animate-pulse-slow' : ''
               }`}
             >
               {/* Holographic Effect */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent" />
-
-              {/* Track Info */}
-              <div className="relative z-10 text-center text-white">
-                {style && (
-                  <div className="text-xs font-bold uppercase tracking-wider opacity-90 mb-1">
-                    {style}
-                  </div>
-                )}
-                {bpm && (
-                  <div className="text-lg font-black">
-                    {bpm} BPM
-                  </div>
-                )}
-                {musicalKey && (
-                  <div className="text-sm font-semibold opacity-90">
-                    Key: {musicalKey}
-                  </div>
-                )}
-              </div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 to-transparent" />
             </div>
           </div>
         </div>

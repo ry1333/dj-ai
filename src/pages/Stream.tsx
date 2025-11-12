@@ -124,43 +124,43 @@ export default function Stream() {
               </div>
 
               {/* User Info & Caption */}
-              <div className="absolute left-4 bottom-24 md:bottom-8 space-y-3 max-w-[55%] z-10">
-                <div className="rounded-2xl bg-black/50 backdrop-blur-lg border border-white/10 p-3 shadow-2xl pointer-events-auto">
-                  <div className="flex items-center gap-3 mb-2">
+              <div className="absolute left-3 bottom-20 md:bottom-6 max-w-[60%] z-10">
+                <div className="rounded-xl bg-black/40 backdrop-blur-md border border-white/10 p-2 shadow-lg pointer-events-auto">
+                  <div className="flex items-center gap-2 mb-1.5">
                     {p.avatar_url ? (
                       <img
                         src={p.avatar_url}
                         alt={p.user}
-                        className="w-12 h-12 rounded-full border-2 border-white/30 shadow-lg"
+                        className="w-8 h-8 rounded-full border border-white/20"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
                         {p.user.charAt(1).toUpperCase()}
                       </div>
                     )}
-                    <div className="font-bold text-lg text-white drop-shadow-lg">
+                    <div className="font-semibold text-sm text-white">
                       @{p.user}
                     </div>
                   </div>
                   {p.caption && (
-                    <div className="text-white/90 text-sm leading-relaxed mb-3">{p.caption}</div>
+                    <div className="text-white/80 text-xs leading-snug mb-1.5 ml-10">{p.caption}</div>
                   )}
 
                   {/* Tags Row */}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 ml-10">
                     {p.bpm && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 text-xs font-semibold shadow-sm">
-                        ⚡ {p.bpm} BPM
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-400/20 text-cyan-300 text-[10px] font-semibold">
+                        ⚡{p.bpm}
                       </div>
                     )}
                     {p.key && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-semibold shadow-sm">
-                        🎹 {p.key}
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-400/20 text-purple-300 text-[10px] font-semibold">
+                        🎹{p.key}
                       </div>
                     )}
                     {p.style && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-500/20 border border-pink-400/30 text-pink-300 text-xs font-semibold shadow-sm">
-                        🎨 {p.style}
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-500/15 border border-pink-400/20 text-pink-300 text-[10px] font-semibold">
+                        {p.style}
                       </div>
                     )}
                   </div>
@@ -168,7 +168,7 @@ export default function Stream() {
               </div>
 
               {/* Vinyl Player */}
-              <div className="w-full max-w-xs mx-auto px-6">
+              <div className="w-full max-w-lg mx-auto px-4">
                 <VinylPlayer
                   audioUrl={p.src}
                   bpm={p.bpm}
