@@ -8,8 +8,9 @@ import DualWaveform from '../components/DualWaveform'
 import DeckControls from '../components/DeckControls'
 import MixerCenter from '../components/MixerCenter'
 import LibraryBrowser from '../components/LibraryBrowser'
-import { Headphones, Music } from 'lucide-react'
+import { Headphones, Music, Sparkles, ChevronDown, ChevronUp, Home, Mic, Flame, Moon, Zap, Wind } from 'lucide-react'
 import TopBar from '../components/TopBar'
+import { selectLoopsForMix, getTargetBPM, getCrossfaderAutomation, getEQAutomation, type MixPreferences } from '../lib/audio/autoMixGenerator'
 
 export default function DJ() {
   const nav = useNavigate()
@@ -46,6 +47,13 @@ export default function DJ() {
 
   // Tutorial tooltip
   const [showTutorial, setShowTutorial] = useState(false)
+
+  // AI Generation state
+  const [showAIPanel, setShowAIPanel] = useState(false)
+  const [genre, setGenre] = useState<'house' | 'techno' | 'hip-hop' | 'lofi' | 'edm'>('house')
+  const [energy, setEnergy] = useState<'chill' | 'medium' | 'club'>('medium')
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generationStatus, setGenerationStatus] = useState('')
 
   const raf = useRef<number | null>(null)
 
@@ -237,6 +245,150 @@ export default function DJ() {
     setCaption('')
   }
 
+  // AI Generation
+  async function handleAIGenerate() {
+    setIsGenerating(true)
+    setGenerationStatus('Selecting perfect loops...')
+
+    try {
+      const prefs: MixPreferences = { genre, energy, length: 30 }
+      const { deckA, deckB } = selectLoopsForMix(prefs)
+
+      setGenerationStatus(`Loading ${deckA.name} and ${deckB.name}...`)
+
+      // Load into decks
+      await mixer.deckA.loadFromUrl(deckA.path)
+      await mixer.deckB.loadFromUrl(deckB.path)
+
+      setAFileName(deckA.name)
+      setBFileName(deckB.name)
+      setABpm(deckA.bpm)
+      setBBpm(deckB.bpm)
+
+      setGenerationStatus('Mixing tracks...')
+
+      // Set target BPM and sync
+      const targetBPM = getTargetBPM(energy)
+      const rateA = targetBPM / deckA.bpm
+      const rateB = targetBPM / deckB.bpm
+      mixer.deckA.setRate(rateA)
+      mixer.deckB.setRate(rateB)
+
+      // Start both decks
+      mixer.deckA.play()
+      mixer.deckB.play()
+      setAPlaying(true)
+      setBPlaying(true)
+
+      // Start recording
+      mixer.startRecording()
+      setIsRecording(true)
+      setRecordingTime(0)
+
+      // Start recording timer
+      recordingTimerRef.current = window.setInterval(() => {
+        setRecordingTime(prev => {
+          const newTime = prev + 1
+          if (newTime >= MAX_RECORDING_TIME) {
+            handleRecord() // Auto-stop
+          }
+          return newTime
+        })
+      }, 1000)
+
+      // Apply automated mixing over time
+      const length = 30
+      const automationSteps = 60
+      const stepDuration = (length * 1000) / automationSteps
+
+      const crossfaderPoints = getCrossfaderAutomation(length)
+      const eqAPoints = getEQAutomation('A', length)
+      const eqBPoints = getEQAutomation('B', length)
+
+      for (let i = 0; i <= automationSteps; i++) {
+        const currentTime = (i / automationSteps) * length
+
+        // Interpolate crossfader
+        const cfValue = interpolateAutomation(crossfaderPoints, currentTime)
+        mixer.setCrossfade(cfValue)
+        setXf(cfValue)
+
+        // Interpolate EQ for deck A
+        const eqA = interpolateEQAutomation(eqAPoints, currentTime)
+        mixer.deckA.setEQ(eqA)
+
+        // Interpolate EQ for deck B
+        const eqB = interpolateEQAutomation(eqBPoints, currentTime)
+        mixer.deckB.setEQ(eqB)
+
+        // Update status
+        if (i % 10 === 0) {
+          const progress = Math.round((i / automationSteps) * 100)
+          setGenerationStatus(`Mixing... ${progress}%`)
+        }
+
+        await new Promise(resolve => setTimeout(resolve, stepDuration))
+      }
+
+      setGenerationStatus('Finalizing mix...')
+
+      // Stop recording
+      const blob = await mixer.stopRecording()
+      setRecordedBlob(blob)
+      setIsRecording(false)
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current)
+
+      mixer.deckA.pause()
+      mixer.deckB.pause()
+      setAPlaying(false)
+      setBPlaying(false)
+
+      setGenerationStatus('Mix ready!')
+      toast.success('AI mix generated! Click publish to share.')
+      setShowPublishModal(true)
+      setShowAIPanel(false)
+    } catch (error) {
+      console.error('Generation error:', error)
+      toast.error('Failed to generate mix. Please try again.')
+      setGenerationStatus('')
+      setIsRecording(false)
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current)
+    }
+
+    setIsGenerating(false)
+  }
+
+  function interpolateAutomation(points: Array<{ time: number; value: number }>, currentTime: number): number {
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = points[i]
+      const p2 = points[i + 1]
+      if (currentTime >= p1.time && currentTime <= p2.time) {
+        const progress = (currentTime - p1.time) / (p2.time - p1.time)
+        return p1.value + (p2.value - p1.value) * progress
+      }
+    }
+    return points[points.length - 1].value
+  }
+
+  function interpolateEQAutomation(
+    points: Array<{ time: number; low: number; mid: number; high: number }>,
+    currentTime: number
+  ): { low: number; mid: number; high: number } {
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = points[i]
+      const p2 = points[i + 1]
+      if (currentTime >= p1.time && currentTime <= p2.time) {
+        const progress = (currentTime - p1.time) / (p2.time - p1.time)
+        return {
+          low: p1.low + (p2.low - p1.low) * progress,
+          mid: p1.mid + (p2.mid - p1.mid) * progress,
+          high: p1.high + (p2.high - p1.high) * progress
+        }
+      }
+    }
+    return points[points.length - 1]
+  }
+
   return (
     <div className="h-screen flex flex-col bg-bg text-rmxrtext overflow-hidden">
       {/* TOP TOOLBAR */}
@@ -304,6 +456,111 @@ export default function DJ() {
             onCue={handleBCue}
           />
         </div>
+      </div>
+
+      {/* AI GENERATION PANEL */}
+      <div className="border-t border-rmxrborder bg-surface/50">
+        <button
+          onClick={() => setShowAIPanel(!showAIPanel)}
+          className="w-full px-4 py-3 flex items-center justify-between hover:bg-surface/70 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-accentFrom" />
+            <span className="font-semibold text-text">AI Mix Generator</span>
+            <span className="text-xs text-muted">{isGenerating ? generationStatus : 'Create automated 30-second mixes'}</span>
+          </div>
+          {showAIPanel ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        </button>
+
+        {showAIPanel && (
+          <div className="px-4 py-6 space-y-6 border-t border-rmxrborder bg-card/30">
+            <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+              {/* Genre Selection */}
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-text">Genre</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'house' as const, name: 'House', icon: Home },
+                    { id: 'techno' as const, name: 'Techno', icon: Zap },
+                    { id: 'edm' as const, name: 'EDM', icon: Flame },
+                    { id: 'hip-hop' as const, name: 'Hip-Hop', icon: Mic },
+                    { id: 'lofi' as const, name: 'Lo-Fi', icon: Moon }
+                  ].map((g) => {
+                    const GenreIcon = g.icon
+                    return (
+                      <button
+                        key={g.id}
+                        onClick={() => setGenre(g.id)}
+                        disabled={isGenerating}
+                        className={`p-3 rounded-lg border-2 transition-all flex flex-col items-center gap-1 ${
+                          genre === g.id
+                            ? 'border-accentFrom bg-accentFrom/10 text-text'
+                            : 'border-line hover:border-line/50 text-muted'
+                        } disabled:opacity-50`}
+                      >
+                        <GenreIcon className="w-5 h-5" />
+                        <span className="text-xs font-medium">{g.name}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Energy Selection */}
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-text">Energy</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'chill' as const, name: 'Chill', icon: Wind },
+                    { id: 'medium' as const, name: 'Groove', icon: Music },
+                    { id: 'club' as const, name: 'Club', icon: Zap }
+                  ].map((e) => {
+                    const EnergyIcon = e.icon
+                    return (
+                      <button
+                        key={e.id}
+                        onClick={() => setEnergy(e.id)}
+                        disabled={isGenerating}
+                        className={`p-3 rounded-lg border-2 transition-all flex flex-col items-center gap-1 ${
+                          energy === e.id
+                            ? 'border-accentFrom bg-accentFrom/10 text-text'
+                            : 'border-line hover:border-line/50 text-muted'
+                        } disabled:opacity-50`}
+                      >
+                        <EnergyIcon className="w-5 h-5" />
+                        <span className="text-xs font-medium">{e.name}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Generate Button */}
+            <div className="max-w-md mx-auto">
+              <button
+                onClick={handleAIGenerate}
+                disabled={isGenerating}
+                className="w-full rounded-xl bg-gradient-to-r from-accentFrom to-accentTo hover:shadow-neon-cyan text-ink font-bold px-6 py-4 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isGenerating ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-ink border-t-transparent rounded-full animate-spin" />
+                    {generationStatus}
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    Generate 30s Mix
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-muted text-center mt-2">
+                AI will select loops, auto-mix, and record a 30-second demo
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* LIBRARY BAND - Responsive Height */}

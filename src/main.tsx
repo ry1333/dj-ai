@@ -39,8 +39,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route element={<AppShell />}>
             <Route index element={<Stream />} />
             <Route path="/stream" element={<Stream />} />
-            <Route path="/dj" element={<ProtectedRoute><DJStudio /></ProtectedRoute>} />
-            <Route path="/dj-old" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
+            <Route path="/dj" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
+            <Route path="/dj-new" element={<ProtectedRoute><DJStudio /></ProtectedRoute>} />
             <Route path="/create" element={<ProtectedRoute><Create /></ProtectedRoute>} />
             <Route path="/compose" element={<ProtectedRoute><Create /></ProtectedRoute>} />
             <Route path="/learn" element={<Learn />} />
