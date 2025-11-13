@@ -7,7 +7,7 @@ import { toggleLove } from '../lib/supabase/posts'
 import ActionRail from '../components/ActionRail'
 import CommentsModal from '../components/CommentsModal'
 import ReportModal from '../components/ReportModal'
-import VinylPlayer from '../components/VinylPlayer'
+import FeedCard from '../components/FeedCard'
 import { toast } from 'sonner'
 
 export default function Stream() {
@@ -89,20 +89,20 @@ export default function Stream() {
   }
 
   return (
-    <div ref={feedRef} className="tiktok-feed h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black text-white">
+    <div ref={feedRef} className="tiktok-feed h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-ink text-text select-none">
       {items.length === 0 && !loading ? (
         <div className="h-screen flex items-center justify-center px-6">
           <div className="text-center space-y-6 max-w-md">
             <div className="text-6xl mb-4">🎵</div>
-            <h2 className="text-2xl font-bold text-white">No Posts Yet</h2>
-            <p className="text-white/60 leading-relaxed">
-              Be the first to create! Head to the DJ Studio, make a 30-second mix, and publish it to the feed.
+            <h2 className="text-2xl font-bold text-text">No Posts Yet</h2>
+            <p className="text-muted leading-relaxed">
+              Be the first to create! Head to the Create page, make a 30-second mix, and publish it to the feed.
             </p>
             <button
-              onClick={() => nav('/dj')}
-              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold transition-all hover:scale-105 active:scale-95"
+              onClick={() => nav('/create')}
+              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-accentFrom to-accentTo text-ink font-bold transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]"
             >
-              Open DJ Studio →
+              Open Create Studio →
             </button>
           </div>
         </div>
@@ -112,72 +112,20 @@ export default function Stream() {
           const hasLoved = loveState[p.id]?.has_loved ?? p.has_loved ?? false
 
           return (
-            <section key={p.id} data-post className="h-screen snap-start relative flex items-center justify-center overflow-hidden"
-              style={{
-                background: 'radial-gradient(1200px 600px at 50% 0%, rgba(6, 182, 212, 0.08), transparent), radial-gradient(900px 400px at 50% 100%, rgba(168, 85, 247, 0.06), transparent), #000'
-              }}>
+            <section key={p.id} data-post className="h-screen snap-start relative">
+              <FeedCard
+                id={p.id}
+                src={p.src}
+                user={p.user}
+                avatar={p.avatar_url}
+                caption={p.caption || ''}
+                bpm={p.bpm}
+                genre={p.style}
+                loves={loves}
+                comments={p.comments ?? 0}
+                hasLoved={hasLoved}
+              />
 
-              {/* Animated Background Mesh */}
-              <div className="absolute inset-0 opacity-30 pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse-slow" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
-              </div>
-
-              {/* User Info & Caption */}
-              <div className="absolute left-3 bottom-20 md:bottom-6 max-w-[60%] z-10">
-                <div className="rounded-xl bg-black/40 backdrop-blur-md border border-white/10 p-2 shadow-lg pointer-events-auto">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    {p.avatar_url ? (
-                      <img
-                        src={p.avatar_url}
-                        alt={p.user}
-                        className="w-8 h-8 rounded-full border border-white/20"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                        {p.user.charAt(1).toUpperCase()}
-                      </div>
-                    )}
-                    <div className="font-semibold text-sm text-white">
-                      @{p.user}
-                    </div>
-                  </div>
-                  {p.caption && (
-                    <div className="text-white/80 text-xs leading-snug mb-1.5 ml-10">{p.caption}</div>
-                  )}
-
-                  {/* Tags Row */}
-                  <div className="flex flex-wrap gap-1.5 ml-10">
-                    {p.bpm && (
-                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-400/20 text-cyan-300 text-[10px] font-semibold">
-                        ⚡{p.bpm}
-                      </div>
-                    )}
-                    {p.key && (
-                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-400/20 text-purple-300 text-[10px] font-semibold">
-                        🎹{p.key}
-                      </div>
-                    )}
-                    {p.style && (
-                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-500/15 border border-pink-400/20 text-pink-300 text-[10px] font-semibold">
-                        {p.style}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Vinyl Player */}
-              <div className="w-full max-w-lg mx-auto px-4">
-                <VinylPlayer
-                  audioUrl={p.src}
-                  bpm={p.bpm}
-                  musicalKey={p.key}
-                  style={p.style}
-                />
-              </div>
-
-              {/* Action Rail */}
               <ActionRail
                 onRemix={() => handleRemix(p.id)}
                 onLike={() => handleLike(p.id, loves, hasLoved)}
