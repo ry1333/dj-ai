@@ -1,0 +1,96 @@
+[
+  {
+    "fileName": "deep_house_124.wav",
+    "path": "/loops/deep_house_124.wav",
+    "bpm": 124,
+    "genre": "House",
+    "title": "Deep House Loop",
+    "artist": "Demo",
+    "key": "Am",
+    "duration": "0:15"
+  },
+  {
+    "fileName": "tech_groove_128.wav",
+    "path": "/loops/tech_groove_128.wav",
+    "bpm": 128,
+    "genre": "Techno",
+    "title": "Tech Groove",
+    "artist": "Demo",
+    "key": "Em",
+    "duration": "0:15"
+  },
+  {
+    "fileName": "lofi_chill_80.wav",
+    "path": "/loops/lofi_chill_80.wav",
+    "bpm": 80,
+    "genre": "Lo-Fi",
+    "title": "Chill Beat",
+    "artist": "Demo",
+    "key": "Cm",
+    "duration": "0:15"
+  },
+  {
+    "fileName": "hiphop_beat_90.wav",
+    "path": "/loops/hiphop_beat_90.wav",
+    "bpm": 90,
+    "genre": "Hip-Hop",
+    "title": "Boom Bap",
+    "artist": "Demo",
+    "key": "Gm",
+    "duration": "0:15"
+  },
+  {
+    "fileName": "edm_drop_128.wav",
+    "path": "/loops/edm_drop_128.wav",
+    "bpm": 128,
+    "genre": "EDM",
+    "title": "Festival Drop",
+    "artist": "Demo",
+    "key": "C",
+    "duration": "0:15"
+  },
+  {
+    "fileName": "bensound_jazzy.mp3",
+    "path": "/loops/bensound_jazzy.mp3",
+    "bpm": 120,
+    "genre": "Jazz",
+    "title": "Jazzy Frenchy",
+    "artist": "Bensound",
+    "key": "Dm",
+    "duration": "1:44",
+    "license": "Bensound License - Free with attribution"
+  },
+  {
+    "fileName": "bensound_funkysuspense.mp3",
+    "path": "/loops/bensound_funkysuspense.mp3",
+    "bpm": 95,
+    "genre": "Funk",
+    "title": "Funky Suspense",
+    "artist": "Bensound",
+    "key": "Em",
+    "duration": "3:15",
+    "license": "Bensound License - Free with attribution"
+  },
+  {
+    "fileName": "bensound_groovy.mp3",
+    "path": "/loops/bensound_groovy.mp3",
+    "bpm": 90,
+    "genre": "Hip-Hop",
+    "title": "Groovy Hip Hop",
+    "artist": "Bensound",
+    "key": "Am",
+    "duration": "1:48",
+    "license": "Bensound License - Free with attribution"
+  },
+  {
+    "fileName": "bensound_energy.mp3",
+    "path": "/loops/bensound_energy.mp3",
+    "bpm": 130,
+    "genre": "EDM",
+    "title": "Energy",
+    "artist": "Bensound",
+    "key": "Gm",
+    "duration": "2:15",
+    "license": "Bensound License - Free with attribution"
+  }
+]
