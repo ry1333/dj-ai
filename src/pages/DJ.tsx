@@ -429,9 +429,7 @@ export default function DJ() {
       </div>
 
       {/* WAVEFORM BAND (optimized height) */}
-      <div className="h-20 border-b border-rmxrborder bg-surface">
-
-      </div>
+      
 
       {/* MIXER BAND - Optimized Layout for viewport fit */}
       <div className="flex-1 max-w-[1600px] mx-auto w-full px-4 md:px-6 py-3 md:py-4 overflow-y-auto">
