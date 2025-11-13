@@ -10,18 +10,30 @@ const tabs = [
 
 export default function BottomTabBar() {
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-line bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/90">
       <ul className="grid grid-cols-4">
         {tabs.map(({ to, label, Icon }) => (
           <li key={to}>
             <NavLink
               to={to}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center py-2 text-xs ${isActive ? 'text-black font-semibold' : 'text-neutral-500'}`
+                `flex flex-col items-center justify-center py-3 text-xs transition-all ${
+                  isActive
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-accentFrom to-accentTo font-bold'
+                    : 'text-muted hover:text-text'
+                }`
               }
             >
-              <Icon size={20} />
-              <span className="mt-0.5">{label}</span>
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    size={22}
+                    className={isActive ? 'mb-1' : 'mb-1'}
+                    strokeWidth={isActive ? 2.5 : 2}
+                  />
+                  <span>{label}</span>
+                </>
+              )}
             </NavLink>
           </li>
         ))}

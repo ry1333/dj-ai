@@ -6,6 +6,7 @@ import { uploadAudio } from '../lib/supabase/storage'
 import { createPost } from '../lib/supabase/posts'
 import { toast } from 'sonner'
 import { Sparkles, Music, Zap, Wind, Loader2 } from 'lucide-react'
+import { GradientButton } from '../components/ui/gradient-button'
 
 export default function Create() {
   const nav = useNavigate()
@@ -215,23 +216,23 @@ export default function Create() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-ink via-surface to-ink text-text p-6">
       <div className="max-w-4xl mx-auto space-y-8 py-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-accent via-purple-500 to-cyan-500 flex items-center justify-center animate-pulse shadow-[0_0_40px_rgba(225,29,132,0.5)]">
-              <Sparkles className="w-10 h-10 text-white" />
+            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-accentFrom to-accentTo flex items-center justify-center shadow-[0_0_40px_rgba(0,229,255,0.3)]">
+              <Sparkles className="w-10 h-10 text-ink" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-accent via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-accentFrom to-accentTo bg-clip-text text-transparent">
             {remixPostId ? '🔄 Create a Remix' : 'AI Mix Generator'}
           </h1>
-          <p className="text-lg text-white/70">
+          <p className="text-lg text-muted">
             {remixPostId ? 'Put your own spin on this mix!' : 'Create a perfect 30-second mix in seconds'}
           </p>
           {remixPostId && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-line text-text text-sm font-medium">
               <Sparkles className="w-4 h-4" />
               Remix Mode Active
             </div>
@@ -239,8 +240,8 @@ export default function Create() {
         </div>
 
         {/* Genre Selection */}
-        <div className="rounded-2xl border border-white/10 bg-neutral-900/50 p-6 md:p-8 space-y-4">
-          <h2 className="text-xl font-bold text-white mb-4">Select Genre</h2>
+        <div className="rounded-2xl border border-line bg-card/50 p-6 md:p-8 space-y-4">
+          <h2 className="text-xl font-bold text-text mb-4">Select Genre</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {genres.map(g => (
               <button
@@ -249,8 +250,8 @@ export default function Create() {
                 className={`
                   p-4 rounded-xl border-2 transition-all
                   ${genre === g.id
-                    ? 'border-accent bg-accent/10 text-white shadow-[0_0_20px_rgba(225,29,132,0.3)]'
-                    : 'border-white/10 hover:border-white/30 text-white/70 hover:text-white'
+                    ? 'border-accentFrom bg-gradient-to-r from-accentFrom/10 to-accentTo/10 text-text shadow-[0_0_20px_rgba(0,229,255,0.2)]'
+                    : 'border-line hover:border-line/50 text-muted hover:text-text'
                   }
                 `}
               >
@@ -263,8 +264,8 @@ export default function Create() {
         </div>
 
         {/* Energy Selection */}
-        <div className="rounded-2xl border border-white/10 bg-neutral-900/50 p-6 md:p-8 space-y-4">
-          <h2 className="text-xl font-bold text-white mb-4">Select Energy</h2>
+        <div className="rounded-2xl border border-line bg-card/50 p-6 md:p-8 space-y-4">
+          <h2 className="text-xl font-bold text-text mb-4">Select Energy</h2>
           <div className="grid md:grid-cols-3 gap-4">
             {energyLevels.map(e => {
               const Icon = e.icon
@@ -275,8 +276,8 @@ export default function Create() {
                   className={`
                     p-6 rounded-xl border-2 transition-all text-left
                     ${energy === e.id
-                      ? 'border-accent bg-accent/10 text-white shadow-[0_0_20px_rgba(225,29,132,0.3)]'
-                      : 'border-white/10 hover:border-white/30 text-white/70 hover:text-white'
+                      ? 'border-accentFrom bg-gradient-to-r from-accentFrom/10 to-accentTo/10 text-text shadow-[0_0_20px_rgba(0,229,255,0.2)]'
+                      : 'border-line hover:border-line/50 text-muted hover:text-text'
                     }
                   `}
                 >
@@ -292,19 +293,11 @@ export default function Create() {
 
         {/* Generate Button */}
         <div className="flex flex-col items-center gap-4">
-          <button
+          <GradientButton
             onClick={generateMix}
             disabled={isGenerating}
-            className={`
-              group relative w-full md:w-auto
-              px-12 py-5 rounded-2xl font-bold text-lg
-              transition-all duration-300
-              ${isGenerating
-                ? 'bg-neutral-700 cursor-not-allowed'
-                : 'bg-gradient-to-r from-accent via-purple-500 to-cyan-500 hover:shadow-[0_0_40px_rgba(225,29,132,0.6)] hover:scale-105 active:scale-95'
-              }
-              text-white shadow-[0_8px_32px_rgba(0,0,0,0.4)]
-            `}
+            size="lg"
+            className="w-full md:w-auto px-12 py-5"
           >
             {isGenerating ? (
               <span className="flex items-center gap-3">
@@ -318,49 +311,50 @@ export default function Create() {
                 <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
               </span>
             )}
-          </button>
+          </GradientButton>
 
           {/* Generation Status */}
           {generationStatus && (
             <div className="text-center">
-              <div className="text-white/80 font-medium animate-pulse">{generationStatus}</div>
+              <div className="text-muted font-medium animate-pulse">{generationStatus}</div>
             </div>
           )}
         </div>
 
         {/* Audio Preview */}
         {audioUrl && !isGenerating && (
-          <div className="rounded-2xl border border-accent/30 bg-accent/5 p-6 md:p-8 space-y-6 animate-in fade-in slide-in-from-bottom-4">
+          <div className="rounded-2xl border border-line bg-card/50 p-6 md:p-8 space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-2">✨ Your Mix is Ready!</div>
-              <p className="text-white/70">Preview your AI-generated mix</p>
+              <div className="text-2xl font-bold text-text mb-2">✨ Your Mix is Ready!</div>
+              <p className="text-muted">Preview your AI-generated mix</p>
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+            <div className="rounded-xl border border-line bg-surface p-4">
               <audio
                 ref={audioRef}
                 src={audioUrl}
                 controls
-                className="w-full [&::-webkit-media-controls-panel]:bg-neutral-800"
+                className="w-full [&::-webkit-media-controls-panel]:bg-surface"
               />
             </div>
 
             <div className="flex gap-3">
-              <button
+              <GradientButton
                 onClick={() => {
                   setGeneratedBlob(null)
                   setAudioUrl(null)
                 }}
-                className="flex-1 rounded-xl border border-white/20 px-6 py-3 text-white font-semibold hover:bg-white/10 transition-all"
+                variant="ghost"
+                className="flex-1"
               >
                 Generate New
-              </button>
-              <button
+              </GradientButton>
+              <GradientButton
                 onClick={() => setShowPublishModal(true)}
-                className="flex-1 rounded-xl bg-accent hover:bg-accent/90 px-6 py-3 text-white font-bold transition-all shadow-[0_4px_16px_rgba(225,29,132,0.4)]"
+                className="flex-1"
               >
                 Publish Mix
-              </button>
+              </GradientButton>
             </div>
           </div>
         )}

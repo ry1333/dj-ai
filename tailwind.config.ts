@@ -14,13 +14,21 @@ export default {
     },
     extend: {
       colors: {
-        // RMXR Theme Colors
+        // Sora-style Theme Colors
+        ink: '#0B0B11',
+        surface: '#12121A',
+        card: '#181824',
+        line: 'rgba(255,255,255,0.08)',
+        text: '#F5F7FA',
+        muted: 'rgba(255,255,255,0.6)',
+        accentFrom: '#00E5FF', // cyan
+        accentTo: '#FF2D95',   // magenta
+
+        // RMXR Theme Colors (legacy)
         bg: "var(--bg)",
-        surface: "var(--surface)",
         surface2: "var(--surface-2)",
         rmxrborder: "var(--border)",
         rmxrtext: "var(--text)",
-        muted: "var(--muted)",
         accent: {
           DEFAULT: "var(--accent)",
           500: "var(--accent-500)",
