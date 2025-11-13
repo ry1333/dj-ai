@@ -22,7 +22,7 @@ export class AudioEngine {
   ctx: AudioContext
   masterGain: GainNode
   analyser: AnalyserNode
-  mediaDest: MediaStreamDestination
+  mediaDest: MediaStreamAudioDestinationNode
   recorder: MediaRecorder | null = null
   recordedChunks: BlobPart[] = []
 
