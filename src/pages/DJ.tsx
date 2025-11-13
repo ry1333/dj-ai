@@ -428,13 +428,13 @@ export default function DJ() {
         </div>
       </div>
 
-      {/* WAVEFORM BAND (slim) */}
-      <div className="h-32 border-b border-rmxrborder bg-surface">
-        
+      {/* WAVEFORM BAND (optimized height) */}
+      <div className="h-20 border-b border-rmxrborder bg-surface">
+
       </div>
 
-      {/* MIXER BAND - Responsive Layout */}
-      <div className="flex-1 max-w-[1600px] mx-auto w-full px-4 md:px-8 py-4 md:py-8">
+      {/* MIXER BAND - Optimized Layout for viewport fit */}
+      <div className="flex-1 max-w-[1600px] mx-auto w-full px-4 md:px-6 py-3 md:py-4 overflow-y-auto">
         <div className="h-full grid grid-cols-1 lg:grid-cols-[3fr_2fr_3fr] gap-4 md:gap-6 lg:gap-10">
           {/* Left Deck (A) */}
           <DeckControls label="A" deck={mixer.deckA} playing={aPlaying} fileName={aFileName} bpm={aBpm} progress={aProg} onBpmChange={setABpm} onLoad={handleALoad} onPlay={handleAPlay} onPause={handleAPause} onCue={handleACue} />

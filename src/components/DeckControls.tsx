@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { Play, Pause, SkipBack, FolderOpen } from 'lucide-react'
+import { Play, Pause, SkipBack, FolderOpen, Upload, Library } from 'lucide-react'
+import { toast } from 'sonner'
 import DeckHeader from './DeckHeader'
 import XYFxPad from './XYFxPad'
 import LoopCluster from './LoopCluster'
 import VerticalFader from './ui/VerticalFader'
+import TrackLibrary from './TrackLibrary'
 
 type Props = {
   label: string
@@ -35,6 +37,7 @@ export default function DeckControls({
   const [pitch, setPitch] = useState(0)
   const [loopLength, setLoopLength] = useState(4)
   const [isLoopActive, setIsLoopActive] = useState(false)
+  const [activeTab, setActiveTab] = useState<'upload' | 'library'>('upload')
 
   const handlePitchChange = (value: number) => {
     setPitch(value)
@@ -44,6 +47,18 @@ export default function DeckControls({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) onLoad(file)
+  }
+
+  const handleLibraryTrackSelect = async (audioUrl: string, caption: string, bpm: number) => {
+    try {
+      toast.info(`Loading ${caption}...`)
+      await deck.loadFromUrl(audioUrl)
+      onBpmChange(bpm)
+      toast.success('Track loaded!')
+    } catch (error) {
+      console.error('Failed to load track:', error)
+      toast.error('Failed to load track')
+    }
   }
 
   const handleSeek = (position: number) => {
@@ -93,17 +108,17 @@ export default function DeckControls({
         onSeek={handleSeek}
       />
 
-      {/* Main content area */}
-      <div className="flex-1 p-8 space-y-6 flex flex-col overflow-y-auto">
+      {/* Main content area - Optimized spacing */}
+      <div className="flex-1 p-4 space-y-3 flex flex-col overflow-y-auto">
         {/* Deck label */}
         <div className="text-xs font-semibold text-muted tracking-widest uppercase">
           Deck {label}
         </div>
 
-        {/* Enhanced Vinyl Turntable - Responsive Size */}
-        <div className="flex-1 flex items-center justify-center">
+        {/* Enhanced Vinyl Turntable - Compact Size */}
+        <div className="flex items-center justify-center">
           <div className={`
-            relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full
+            relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full
             ${playing ? 'animate-spin-slow' : ''}
             transition-all duration-500
           `}>
@@ -210,47 +225,80 @@ export default function DeckControls({
           </button>
         </div>
 
-        {/* Enhanced Load Button */}
-        <label className="block">
-          <div className={`
-            w-full border-2
-            ${fileName
-              ? 'border-accent/50 bg-accent/10 text-accent-400'
-              : 'border-white/10 bg-black/20 text-rmxrtext hover:border-accent hover:bg-black/40 hover:text-accent-400'
-            }
-            font-semibold py-3 rounded-xl transition-all cursor-pointer text-sm
-            shadow-[0_2px_8px_rgba(0,0,0,0.3)]
-            flex items-center justify-center gap-2
-            hover:scale-102 active:scale-98
-          `}>
-            <FolderOpen className="w-5 h-5" />
-            <span>{fileName ? 'Change Track' : 'Load Track'}</span>
-            {fileName && (
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            )}
+        {/* Tab System for Upload/Library */}
+        <div className="space-y-3">
+          {/* Tab Buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab('upload')}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'upload'
+                  ? 'bg-accent text-white shadow-[0_0_12px_rgba(225,29,132,0.4)]'
+                  : 'bg-black/40 border border-white/10 text-muted hover:text-rmxrtext hover:border-accent/50'
+              }`}
+            >
+              <Upload className="w-4 h-4" />
+              Upload
+            </button>
+            <button
+              onClick={() => setActiveTab('library')}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'library'
+                  ? 'bg-accent text-white shadow-[0_0_12px_rgba(225,29,132,0.4)]'
+                  : 'bg-black/40 border border-white/10 text-muted hover:text-rmxrtext hover:border-accent/50'
+              }`}
+            >
+              <Library className="w-4 h-4" />
+              Library
+            </button>
           </div>
-          <input
-            type="file"
-            accept="audio/*,video/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </label>
 
-        {/* BPM + Pitch */}
-        <div className="space-y-4">
-          {/* BPM - Keep big only in deck, mono font */}
+          {/* Tab Content */}
+          {activeTab === 'upload' ? (
+            <label className="block">
+              <div className={`
+                w-full border-2
+                ${fileName
+                  ? 'border-accent/50 bg-accent/10 text-accent-400'
+                  : 'border-white/10 bg-black/20 text-rmxrtext hover:border-accent hover:bg-black/40 hover:text-accent-400'
+                }
+                font-semibold py-3 rounded-xl transition-all cursor-pointer text-sm
+                shadow-[0_2px_8px_rgba(0,0,0,0.3)]
+                flex items-center justify-center gap-2
+                hover:scale-102 active:scale-98
+              `}>
+                <FolderOpen className="w-5 h-5" />
+                <span>{fileName ? 'Change Track' : 'Load Track'}</span>
+                {fileName && (
+                  <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                )}
+              </div>
+              <input
+                type="file"
+                accept="audio/*,video/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+          ) : (
+            <TrackLibrary onSelect={handleLibraryTrackSelect} />
+          )}
+        </div>
+
+        {/* BPM + Pitch - Compact */}
+        <div className="space-y-2">
+          {/* BPM - Smaller for space */}
           <div>
-            <div className="text-[10px] uppercase text-muted font-semibold tracking-wider mb-2">BPM</div>
+            <div className="text-[10px] uppercase text-muted font-semibold tracking-wider mb-1">BPM</div>
             <input
               type="number"
               value={bpm}
               onChange={(e) => onBpmChange(parseFloat(e.target.value) || 0)}
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-3xl font-bold font-mono text-center text-rmxrtext focus:outline-none focus:border-accent transition-colors shadow-[inset_0_2px_8px_rgba(0,0,0,0.4)]"
+              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-2xl font-bold font-mono text-center text-rmxrtext focus:outline-none focus:border-accent transition-colors shadow-[inset_0_2px_8px_rgba(0,0,0,0.4)]"
             />
           </div>
 
-          {/* Pitch - Vertical Fader */}
+          {/* Pitch - Compact Vertical Fader */}
           <div className="flex justify-center">
             <VerticalFader
               value={pitch}
@@ -260,7 +308,7 @@ export default function DeckControls({
               onChange={handlePitchChange}
               label="PITCH"
               unit="%"
-              height={180}
+              height={120}
               accentColor="magenta"
             />
           </div>
