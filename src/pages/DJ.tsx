@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Mixer } from '../lib/audio/mixer';
+import { useAudioEngine } from '../hooks/useAudioEngine';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { createPost, getPost } from '../lib/supabase/posts';
 import { uploadAudio } from '../lib/supabase/storage';
@@ -15,6 +16,7 @@ export default function DJ() {
   const nav = useNavigate();
   const [searchParams] = useSearchParams();
   const mixer = useMemo(() => new Mixer(), []);
+  const engine = useAudioEngine(); // New audio engine
 
   // Deck states
   const [aProg, setAProg] = useState(0);
