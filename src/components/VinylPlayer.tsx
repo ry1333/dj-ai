@@ -192,7 +192,7 @@ export default function VinylPlayer({
 
       {/* Audio Visualizer Bars */}
       {isPlaying && (
-        <div className="mt-4 flex justify-center gap-1 h-12 items-end">
+        <div className="mt-8 flex justify-center gap-1 h-8 items-end">
           {[...Array(24)].map((_, i) => (
             <div
               key={i}
