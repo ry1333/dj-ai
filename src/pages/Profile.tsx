@@ -65,12 +65,12 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6 md:p-8 lg:p-10 space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-ink via-surface to-ink text-text p-6 md:p-8 lg:p-10 space-y-8">
       {/* Logout Button - Top Right */}
       <div className="flex justify-end">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 hover:bg-white/5 text-white/80 hover:text-white text-sm font-medium transition-all"
+          className="px-4 py-2 rounded-lg border border-line hover:border-line/50 hover:bg-card text-muted hover:text-text text-sm font-medium transition-all"
         >
           Sign Out
         </button>
@@ -83,31 +83,31 @@ export default function Profile() {
             <img
               src={profile.avatar_url}
               alt={profile.display_name || profile.username}
-              className="h-24 w-24 rounded-full object-cover border border-white/10"
+              className="h-24 w-24 rounded-full object-cover border border-line"
             />
           ) : (
-            <div className="h-24 w-24 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center text-4xl">
+            <div className="h-24 w-24 rounded-full bg-surface border border-line flex items-center justify-center text-4xl">
               {profile.display_name?.[0]?.toUpperCase() || profile.username?.[0]?.toUpperCase() || '?'}
             </div>
           )}
-          <div className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-green-500 border-4 border-neutral-900" />
+          <div className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-green-500 border-4 border-card" />
         </div>
         <div className="flex-1">
-          <h1 className="text-3xl md:text-4xl font-bold text-white">
+          <h1 className="text-3xl md:text-4xl font-bold text-text">
             @{profile.username}
           </h1>
           {profile.display_name && profile.display_name !== profile.username && (
-            <p className="text-xl opacity-80 mt-1">{profile.display_name}</p>
+            <p className="text-xl text-muted mt-1">{profile.display_name}</p>
           )}
           {profile.bio && (
-            <p className="text-sm md:text-base opacity-60 mt-2 max-w-2xl">{profile.bio}</p>
+            <p className="text-sm md:text-base text-muted mt-2 max-w-2xl">{profile.bio}</p>
           )}
           {profile.favorite_genres && profile.favorite_genres.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
               {profile.favorite_genres.slice(0, 5).map((genre) => (
                 <span
                   key={genre}
-                  className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium"
+                  className="px-3 py-1 rounded-full bg-surface border border-line text-text text-xs font-medium"
                 >
                   {genre}
                 </span>
@@ -116,7 +116,7 @@ export default function Profile() {
           )}
           {profile.experience_level && (
             <div className="mt-3">
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-semibold capitalize">
+              <span className="px-3 py-1 rounded-full bg-surface border border-line text-text text-xs font-semibold capitalize">
                 {profile.experience_level === 'beginner' && '🌱 '}
                 {profile.experience_level === 'intermediate' && '🎧 '}
                 {profile.experience_level === 'pro' && '⭐ '}
@@ -129,41 +129,41 @@ export default function Profile() {
 
       {/* Stats */}
       <section className="grid grid-cols-4 gap-3 md:gap-4">
-        <div className="rounded-2xl border border-white/10 bg-neutral-900/50 p-4 md:p-6 text-center transition-all hover:border-white/20">
-          <div className="text-3xl md:text-4xl font-bold text-white">{stats.posts}</div>
-          <div className="text-xs md:text-sm opacity-60 mt-1 font-medium">Mixes</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 md:p-6 text-center transition-all hover:bg-card hover:scale-105">
+          <div className="text-3xl md:text-4xl font-bold text-text">{stats.posts}</div>
+          <div className="text-xs md:text-sm text-muted mt-1 font-medium">Mixes</div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-neutral-900/50 p-4 md:p-6 text-center transition-all hover:border-white/20">
-          <div className="text-3xl md:text-4xl font-bold text-white">{stats.loves}</div>
-          <div className="text-xs md:text-sm opacity-60 mt-1 font-medium">Loves</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 md:p-6 text-center transition-all hover:bg-card hover:scale-105">
+          <div className="text-3xl md:text-4xl font-bold text-text">{stats.loves}</div>
+          <div className="text-xs md:text-sm text-muted mt-1 font-medium">Loves</div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-neutral-900/50 p-4 md:p-6 text-center transition-all hover:border-white/20">
-          <div className="text-3xl md:text-4xl font-bold text-white">{stats.followers}</div>
-          <div className="text-xs md:text-sm opacity-60 mt-1 font-medium">Followers</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 md:p-6 text-center transition-all hover:bg-card hover:scale-105">
+          <div className="text-3xl md:text-4xl font-bold text-text">{stats.followers}</div>
+          <div className="text-xs md:text-sm text-muted mt-1 font-medium">Followers</div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-neutral-900/50 p-4 md:p-6 text-center transition-all hover:border-white/20">
-          <div className="text-3xl md:text-4xl font-bold text-white">{stats.following}</div>
-          <div className="text-xs md:text-sm opacity-60 mt-1 font-medium">Following</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 md:p-6 text-center transition-all hover:bg-card hover:scale-105">
+          <div className="text-3xl md:text-4xl font-bold text-text">{stats.following}</div>
+          <div className="text-xs md:text-sm text-muted mt-1 font-medium">Following</div>
         </div>
       </section>
 
       {/* Recent Mixes */}
       <section>
-        <h2 className="text-xl md:text-2xl font-bold mb-4 text-white">
+        <h2 className="text-xl md:text-2xl font-bold mb-4 text-text">
           Recent Mixes
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="group rounded-2xl border border-white/10 bg-neutral-900/50 p-6 hover:border-white/20 transition-all"
+              className="group rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-6 hover:bg-card hover:scale-[1.02] transition-all"
             >
-              <div className="aspect-square rounded-xl bg-neutral-800 border border-white/10 flex items-center justify-center mb-4 group-hover:bg-neutral-800/80 transition-all">
-                <span className="text-4xl opacity-40">🎵</span>
+              <div className="aspect-square rounded-xl bg-surface border border-line flex items-center justify-center mb-4 group-hover:bg-surface/80 transition-all">
+                <span className="text-4xl text-muted">🎵</span>
               </div>
               <div className="text-center">
-                <div className="font-semibold opacity-60 text-sm">Coming soon</div>
-                <div className="text-xs opacity-40 mt-1">Upload your first mix</div>
+                <div className="font-semibold text-muted text-sm">Coming soon</div>
+                <div className="text-xs text-muted/60 mt-1">Upload your first mix</div>
               </div>
             </div>
           ))}
@@ -172,7 +172,7 @@ export default function Profile() {
 
       {/* Activity Section */}
       <section>
-        <h2 className="text-xl md:text-2xl font-bold mb-4 text-white">
+        <h2 className="text-xl md:text-2xl font-bold mb-4 text-text">
           Recent Activity
         </h2>
         <div className="space-y-3">
@@ -183,14 +183,14 @@ export default function Profile() {
           ].map((activity, i) => (
             <div
               key={i}
-              className="rounded-xl border border-white/10 bg-neutral-900/50 p-4 flex items-center gap-4 hover:border-white/20 transition-all"
+              className="rounded-xl border border-line bg-card/50 backdrop-blur-xl p-4 flex items-center gap-4 hover:bg-card transition-all"
             >
-              <div className="text-2xl opacity-60">{activity.icon}</div>
+              <div className="text-2xl text-muted">{activity.icon}</div>
               <div className="flex-1">
-                <div className="font-medium">
-                  {activity.action} <span className="text-white">{activity.track}</span>
+                <div className="font-medium text-text">
+                  {activity.action} <span className="text-text">{activity.track}</span>
                 </div>
-                <div className="text-sm opacity-60">by {activity.user} • {activity.time}</div>
+                <div className="text-sm text-muted">by {activity.user} • {activity.time}</div>
               </div>
             </div>
           ))}

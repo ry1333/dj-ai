@@ -226,20 +226,20 @@ export default function Learn() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6 md:p-8 lg:p-10 space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-ink via-surface to-ink text-text p-6 md:p-8 lg:p-10 space-y-8">
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-accentFrom to-accentTo bg-clip-text text-transparent">
             Learn to Mix
           </h1>
-          <p className="text-base md:text-lg opacity-60 mt-3">
+          <p className="text-base md:text-lg text-muted mt-3">
             Micro-lessons to master DJing. Quick, actionable, and built for creators.
           </p>
         </div>
         <Link
           to="/dj"
-          className="rounded-xl bg-white hover:bg-white/90 text-black font-bold px-6 py-3 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+          className="rounded-xl bg-gradient-to-r from-accentFrom to-accentTo text-ink font-bold px-6 py-3 transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] whitespace-nowrap"
         >
           Try DJ Studio →
         </Link>
@@ -247,27 +247,27 @@ export default function Learn() {
 
       {/* Progress Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-2xl font-bold">{completedLessons.size}/{lessons.length}</div>
-          <div className="text-sm opacity-60 mt-1">Lessons Completed</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 hover:bg-card transition-all">
+          <div className="text-2xl font-bold text-text">{completedLessons.size}/{lessons.length}</div>
+          <div className="text-sm text-muted mt-1">Lessons Completed</div>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-2xl font-bold">{lessons.filter(l => l.level === 'beginner').length}</div>
-          <div className="text-sm opacity-60 mt-1">Beginner</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 hover:bg-card transition-all">
+          <div className="text-2xl font-bold text-text">{lessons.filter(l => l.level === 'beginner').length}</div>
+          <div className="text-sm text-muted mt-1">Beginner</div>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-2xl font-bold">{lessons.filter(l => l.level === 'intermediate').length}</div>
-          <div className="text-sm opacity-60 mt-1">Intermediate</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 hover:bg-card transition-all">
+          <div className="text-2xl font-bold text-text">{lessons.filter(l => l.level === 'intermediate').length}</div>
+          <div className="text-sm text-muted mt-1">Intermediate</div>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-2xl font-bold">{lessons.filter(l => l.level === 'advanced').length}</div>
-          <div className="text-sm opacity-60 mt-1">Advanced</div>
+        <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-4 hover:bg-card transition-all">
+          <div className="text-2xl font-bold text-text">{lessons.filter(l => l.level === 'advanced').length}</div>
+          <div className="text-sm text-muted mt-1">Advanced</div>
         </div>
       </div>
 
       {/* Lessons Grid */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">All Lessons</h2>
+        <h2 className="text-2xl font-bold text-text mb-4">All Lessons</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {lessons.map((lesson) => {
             const isCompleted = completedLessons.has(lesson.id)
@@ -275,7 +275,7 @@ export default function Learn() {
               <div
                 key={lesson.id}
                 onClick={() => setSelectedLesson(lesson)}
-                className="group rounded-2xl border border-white/10 bg-neutral-900/50 p-6 transition-all hover:border-white/20 hover:bg-neutral-900/70 cursor-pointer relative overflow-hidden"
+                className="group rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-6 transition-all hover:border-line/50 hover:bg-card hover:scale-[1.02] cursor-pointer relative overflow-hidden"
               >
                 {isCompleted && (
                   <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
@@ -288,19 +288,19 @@ export default function Learn() {
                   </div>
                 )}
                 <div className="flex items-start justify-between mb-4">
-                  <div className="text-4xl p-3 rounded-xl bg-white/5 group-hover:bg-white/10 transition-all">
+                  <div className="text-4xl p-3 rounded-xl bg-surface group-hover:bg-surface/70 transition-all">
                     {lesson.icon}
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white/70">
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-surface border border-line text-muted">
                     {lesson.duration}
                   </span>
                 </div>
                 <div className={`inline-block px-2 py-1 rounded text-xs font-semibold mb-2 border ${levelColors[lesson.level]}`}>
                   {lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1)}
                 </div>
-                <h3 className="font-bold text-lg mb-2 group-hover:text-white transition-colors">{lesson.title}</h3>
-                <p className="opacity-70 text-sm leading-relaxed">{lesson.description}</p>
-                <div className="mt-4 flex items-center text-sm font-semibold text-cyan-400 group-hover:text-cyan-300">
+                <h3 className="font-bold text-lg mb-2 text-text transition-colors">{lesson.title}</h3>
+                <p className="text-muted text-sm leading-relaxed">{lesson.description}</p>
+                <div className="mt-4 flex items-center text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-accentFrom to-accentTo">
                   Start Lesson →
                 </div>
               </div>
@@ -311,28 +311,28 @@ export default function Learn() {
 
       {/* Learning Paths */}
       <section className="mt-12">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-text">
           Quick Wins
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6 hover:border-cyan-500/50 transition-all">
+          <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-6 hover:bg-card hover:scale-[1.02] transition-all">
             <div className="text-4xl mb-3">🚀</div>
-            <h3 className="font-bold text-xl text-white mb-2">First Mix</h3>
-            <p className="opacity-70 text-sm mb-4">
+            <h3 className="font-bold text-xl text-text mb-2">First Mix</h3>
+            <p className="text-muted text-sm mb-4">
               Do lessons 1-4 (Beginner). Takes 8 minutes. You'll create your first 30s mix!
             </p>
           </div>
-          <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-6 hover:border-purple-500/50 transition-all">
+          <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-6 hover:bg-card hover:scale-[1.02] transition-all">
             <div className="text-4xl mb-3">🎨</div>
-            <h3 className="font-bold text-xl text-white mb-2">Get Creative</h3>
-            <p className="opacity-70 text-sm mb-4">
+            <h3 className="font-bold text-xl text-text mb-2">Get Creative</h3>
+            <p className="text-muted text-sm mb-4">
               Add lessons 5-6 (Intermediate). Master EQ and filters for pro-level control.
             </p>
           </div>
-          <div className="rounded-2xl border border-fuchsia-500/30 bg-fuchsia-500/5 p-6 hover:border-fuchsia-500/50 transition-all">
+          <div className="rounded-2xl border border-line bg-card/50 backdrop-blur-xl p-6 hover:bg-card hover:scale-[1.02] transition-all">
             <div className="text-4xl mb-3">⚡</div>
-            <h3 className="font-bold text-xl text-white mb-2">Level Up</h3>
-            <p className="opacity-70 text-sm mb-4">
+            <h3 className="font-bold text-xl text-text mb-2">Level Up</h3>
+            <p className="text-muted text-sm mb-4">
               Complete all 9 lessons. You'll know everything to create viral mixes on RMXR!
             </p>
           </div>
@@ -341,8 +341,8 @@ export default function Learn() {
 
       {/* Lesson Modal */}
       {selectedLesson && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-gradient-to-br from-neutral-900 to-black border border-white/10 rounded-2xl max-w-3xl w-full my-8 shadow-2xl">
+        <div className="fixed inset-0 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-gradient-to-br from-card to-surface border border-line rounded-2xl max-w-3xl w-full my-8 shadow-2xl">
             {/* Modal Header */}
             <div className="p-6 md:p-8 border-b border-white/10">
               <div className="flex items-start justify-between gap-4">
