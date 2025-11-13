@@ -14,15 +14,28 @@ export default {
     },
     extend: {
       colors: {
-        // Sora-style Theme Colors
-        ink: '#0B0B11',
-        surface: '#12121A',
-        card: '#181824',
-        line: 'rgba(255,255,255,0.08)',
+        // Magenta × Black DJ Theme
+        ink: '#000000',        // pure black
+        surface: '#0A0A0A',    // dark graphite
+        card: '#141414',       // card surface
+        line: 'rgba(255,255,255,0.06)',
         text: '#F5F7FA',
-        muted: 'rgba(255,255,255,0.6)',
-        accentFrom: '#00E5FF', // cyan
-        accentTo: '#FF2D95',   // magenta
+        muted: 'rgba(255,255,255,0.4)',
+        accentFrom: '#00E5FF', // cyan (keep for gradients)
+        accentTo: '#E11D84',   // magenta primary
+        magenta: {
+          DEFAULT: '#E11D84',
+          50: '#FFF0F7',
+          100: '#FFE0EF',
+          200: '#FFC1DF',
+          300: '#FFA2CF',
+          400: '#F563A7',
+          500: '#E11D84',
+          600: '#C0156F',
+          700: '#9F0F5A',
+          800: '#7E0945',
+          900: '#5D0330',
+        },
 
         // RMXR Theme Colors (legacy)
         bg: "var(--bg)",

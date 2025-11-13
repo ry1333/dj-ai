@@ -22,13 +22,17 @@ export default function DeckHeader({ title, currentTime, duration, buffer, progr
     const { width, height } = canvas
     ctx.clearRect(0, 0, width, height)
 
-    // Draw mini waveform (simplified, only peaks)
+    // Draw mini waveform
     const data = buffer.getChannelData(0)
     const step = Math.ceil(data.length / width)
     const amp = height / 2
 
-    ctx.fillStyle = 'rgba(154, 154, 175, 0.3)' // var(--muted) with low opacity
-    ctx.strokeStyle = 'rgba(154, 154, 175, 0.6)'
+    // Draw played region (magenta fill)
+    ctx.fillStyle = 'rgba(225, 29, 132, 0.1)'
+    ctx.fillRect(0, 0, width * progress, height)
+
+    // Draw waveform peaks
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)'
     ctx.lineWidth = 1
 
     ctx.beginPath()
@@ -43,8 +47,8 @@ export default function DeckHeader({ title, currentTime, duration, buffer, progr
     }
     ctx.stroke()
 
-    // Draw magenta playhead
-    ctx.strokeStyle = '#E11D84' // var(--accent)
+    // Draw magenta playhead (thin line)
+    ctx.strokeStyle = '#E11D84'
     ctx.lineWidth = 2
     ctx.beginPath()
     ctx.moveTo(width * progress, 0)
@@ -69,9 +73,9 @@ export default function DeckHeader({ title, currentTime, duration, buffer, progr
   }
 
   return (
-    <div className="h-10 bg-surface border-b border-rmxrborder flex items-center px-4 gap-3">
+    <div className="h-12 bg-card border-b border-line flex items-center px-4 gap-3">
       {/* Title */}
-      <div className="text-xs text-rmxrtext font-semibold truncate max-w-[120px]" title={title}>
+      <div className="text-sm text-text font-semibold truncate max-w-[180px]" title={title}>
         {title || 'No Track'}
       </div>
 
@@ -80,14 +84,14 @@ export default function DeckHeader({ title, currentTime, duration, buffer, progr
         <canvas
           ref={canvasRef}
           width={800}
-          height={32}
-          className="w-full h-8 cursor-pointer"
+          height={36}
+          className="w-full h-9 cursor-pointer hover:opacity-90 transition-opacity rounded"
           onClick={handleClick}
         />
       </div>
 
       {/* Timecode */}
-      <div className="text-[10px] font-mono text-muted whitespace-nowrap">
+      <div className="text-xs font-mono text-muted whitespace-nowrap">
         {formatTime(currentTime)} / {formatTime(duration)}
       </div>
     </div>

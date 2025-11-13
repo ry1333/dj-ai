@@ -59,48 +59,47 @@ export default function LoopCluster({
   }, [loopLength, enableKeyboard])
 
   return (
-    <div className="space-y-2">
-      <div className="text-[10px] font-semibold text-muted uppercase tracking-wider text-center">
-        Loop
+    <div className="space-y-1">
+      <div className="text-xs font-medium text-muted uppercase tracking-wide">
+        LOOP
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         {/* Halve button */}
         <button
           onClick={halveLength}
           disabled={loopLength <= 1}
-          className="w-10 h-10 rounded-lg border-2 border-rmxrborder bg-surface hover:border-accent hover:bg-surface2 disabled:opacity-30 disabled:cursor-not-allowed text-rmxrtext hover:text-accent-400 font-bold transition-all"
+          className="p-2 rounded-lg bg-card border border-line text-muted hover:text-text hover:border-magenta/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           title="Halve loop length (Q)"
         >
-          −
+          <span className="text-lg font-bold">−</span>
         </button>
 
         {/* Loop length / toggle button */}
         <button
           onClick={onToggle}
-          className={`flex-1 h-10 rounded-lg border-2 font-mono font-bold text-lg transition-all ${
+          className={`flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
             isLoopActive
-              ? 'border-accent bg-accent/20 text-accent-400'
-              : 'border-rmxrborder bg-surface hover:border-accent hover:bg-surface2 text-rmxrtext hover:text-accent-400'
+              ? 'bg-magenta text-white border-2 border-magenta shadow-glow-magenta'
+              : 'bg-card border-2 border-line text-text hover:border-magenta/50'
           }`}
           title="Toggle loop (L)"
         >
-          {loopLength}
+          <div className="flex items-center justify-center gap-1">
+            <span className="text-xs">▭</span>
+            <span>{loopLength}</span>
+          </div>
         </button>
 
         {/* Double button */}
         <button
           onClick={doubleLength}
           disabled={loopLength >= 16}
-          className="w-10 h-10 rounded-lg border-2 border-rmxrborder bg-surface hover:border-accent hover:bg-surface2 disabled:opacity-30 disabled:cursor-not-allowed text-rmxrtext hover:text-accent-400 font-bold transition-all"
+          className="p-2 rounded-lg bg-card border border-line text-muted hover:text-text hover:border-magenta/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           title="Double loop length (W)"
         >
-          +
+          <span className="text-lg font-bold">+</span>
         </button>
-      </div>
-
-      <div className="text-[9px] text-center text-muted">
-        {isLoopActive ? '🔁 Loop active' : 'Q/W: length · L: toggle'}
       </div>
     </div>
   )

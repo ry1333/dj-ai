@@ -139,6 +139,8 @@ export class Deck {
 export class Mixer {
   ctx: AudioContext
   master: GainNode
+  analyser: AnalyserNode
+  private vuDataArray: Uint8Array
   deckA: Deck
   deckB: Deck
   private mediaRecorder: MediaRecorder | null = null
@@ -149,7 +151,16 @@ export class Mixer {
     // @ts-ignore - Safari prefix
     this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
     this.master = this.ctx.createGain()
-    this.master.connect(this.ctx.destination)
+
+    // Create analyser for VU meter
+    this.analyser = this.ctx.createAnalyser()
+    this.analyser.fftSize = 256
+    this.vuDataArray = new Uint8Array(this.analyser.frequencyBinCount)
+
+    // Chain: master -> analyser -> destination
+    this.master.connect(this.analyser)
+    this.analyser.connect(this.ctx.destination)
+
     this.deckA = new Deck(this.ctx, this.master)
     this.deckB = new Deck(this.ctx, this.master)
     this.setCrossfade(0) // start with A full
@@ -235,5 +246,18 @@ export class Mixer {
    */
   get isRecording(): boolean {
     return this.mediaRecorder?.state === 'recording'
+  }
+
+  /**
+   * Get current VU meter level (0-1)
+   */
+  getVULevel(): number {
+    this.analyser.getByteTimeDomainData(this.vuDataArray)
+    let max = 0
+    for (let i = 0; i < this.vuDataArray.length; i++) {
+      const normalized = Math.abs(this.vuDataArray[i] - 128) / 128
+      if (normalized > max) max = normalized
+    }
+    return max
   }
 }
