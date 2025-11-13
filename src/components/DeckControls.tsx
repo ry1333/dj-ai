@@ -165,41 +165,48 @@ export default function DeckControls({
           </div>
         </div>
 
-        {/* Enhanced Transport Controls */}
+        {/* Enhanced Transport Controls - Unified Style */}
         <div className="flex items-center justify-center gap-3">
+          {/* Play Button */}
           <button
             onClick={onPlay}
             disabled={!deck.buffer}
             title="Play"
             className={`
-              relative w-16 h-16 rounded-xl
+              relative w-14 h-14 rounded-xl border-2
               ${playing
-                ? 'bg-accent shadow-[0_0_25px_rgba(225,29,132,0.8),0_4px_16px_rgba(225,29,132,0.4)] animate-pulse'
-                : 'bg-accent hover:bg-accent-500 shadow-[0_4px_16px_rgba(225,29,132,0.4)]'
+                ? 'bg-accent/20 border-accent shadow-[0_0_20px_rgba(225,29,132,0.6)]'
+                : 'border-white/10 hover:border-accent hover:bg-accent/10'
               }
               disabled:opacity-30 disabled:cursor-not-allowed
-              text-white font-bold flex items-center justify-center
+              text-rmxrtext hover:text-accent-400
+              flex items-center justify-center
               transition-all hover:scale-110 active:scale-95
+              shadow-[0_2px_8px_rgba(0,0,0,0.3)]
             `}
           >
-            <Play className="w-7 h-7 fill-white drop-shadow-lg" />
+            <Play className={`w-6 h-6 ${playing ? 'fill-accent' : ''}`} />
             {playing && (
-              <div className="absolute inset-0 rounded-xl border-2 border-white/50 animate-ping" />
+              <div className="absolute inset-0 rounded-xl border-2 border-accent/50 animate-pulse" />
             )}
           </button>
+
+          {/* Pause Button */}
           <button
             onClick={onPause}
             title="Pause"
-            className="w-12 h-12 rounded-lg border-2 border-white/10 hover:border-accent hover:bg-black/40 text-rmxrtext hover:text-accent-400 font-bold flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+            className="w-14 h-14 rounded-xl border-2 border-white/10 hover:border-accent hover:bg-accent/10 text-rmxrtext hover:text-accent-400 flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
           >
-            <Pause className="w-5 h-5" />
+            <Pause className="w-6 h-6" />
           </button>
+
+          {/* Cue Button */}
           <button
             onClick={onCue}
             title="Cue (Return to start)"
-            className="w-12 h-12 rounded-lg border-2 border-white/10 hover:border-accent hover:bg-black/40 text-rmxrtext hover:text-accent-400 font-bold flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+            className="w-14 h-14 rounded-xl border-2 border-white/10 hover:border-accent hover:bg-accent/10 text-rmxrtext hover:text-accent-400 flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
           >
-            <SkipBack className="w-5 h-5" />
+            <SkipBack className="w-6 h-6" />
           </button>
         </div>
 
