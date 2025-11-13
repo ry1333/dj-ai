@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Target, Sparkles, Flame, X, CheckCircle, Eye, Clock, Music, Sliders, Waves, BarChart3, Piano } from 'lucide-react'
 
 type ChallengeType = 'bpm-match' | 'key-match' | 'eq-balance' | 'filter-sweep' | 'crossfade-timing' | 'phrase-counting' | 'beatmatching-ear' | 'transition-planning' | 'harmonic-mixing'
 
@@ -41,26 +42,29 @@ function BPMMatchingChallenge({ onComplete }: { onComplete: () => void }) {
     const diff = Math.abs(targetBPM - userBPM)
 
     if (diff === 0) {
-      setFeedback('🎉 Perfect match! You nailed it!')
+      setFeedback('Perfect match! You nailed it!')
       setCompleted(true)
       setTimeout(onComplete, 2000)
     } else if (diff <= 1) {
-      setFeedback('✨ Close enough! In real DJing, ±1 BPM is perfectly fine.')
+      setFeedback('Close enough! In real DJing, ±1 BPM is perfectly fine.')
       setCompleted(true)
       setTimeout(onComplete, 2000)
     } else if (diff <= 3) {
-      setFeedback(`🔥 Getting warm! You're ${diff} BPM off. ${userBPM < targetBPM ? 'Speed up' : 'Slow down'} a bit.`)
+      setFeedback(`Getting warm! You're ${diff} BPM off. ${userBPM < targetBPM ? 'Speed up' : 'Slow down'} a bit.`)
     } else if (diff <= 5) {
-      setFeedback(`👀 Not quite there. You're ${diff} BPM away. ${userBPM < targetBPM ? 'Increase' : 'Decrease'} the pitch.`)
+      setFeedback(`Not quite there. You're ${diff} BPM away. ${userBPM < targetBPM ? 'Increase' : 'Decrease'} the pitch.`)
     } else {
-      setFeedback(`❌ Way off! Target is ${targetBPM} BPM. You're at ${userBPM} BPM.`)
+      setFeedback(`Way off! Target is ${targetBPM} BPM. You're at ${userBPM} BPM.`)
     }
   }
 
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-        <h3 className="text-xl font-bold text-cyan-400 mb-3">🎯 Challenge: Match the BPM</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Target className="w-6 h-6 text-cyan-400" />
+          <h3 className="text-xl font-bold text-cyan-400">Challenge: Match the BPM</h3>
+        </div>
         <p className="text-white/70 mb-4">
           The target track is playing at <strong className="text-white">{targetBPM} BPM</strong>.
           Use the pitch slider to match your track to the target tempo.
@@ -141,7 +145,7 @@ function BPMMatchingChallenge({ onComplete }: { onComplete: () => void }) {
               : 'bg-white hover:bg-white/90 text-black hover:scale-105 active:scale-95'
           }`}
         >
-          {completed ? '✓ Challenge Complete!' : `Check Match (${attempts} attempts)`}
+          {completed ? 'Challenge Complete!' : `Check Match (${attempts} attempts)`}
         </button>
       </div>
     </div>
@@ -193,21 +197,24 @@ function CrossfadeTimingChallenge({ onComplete }: { onComplete: () => void }) {
 
     if (position >= targetZone.start && position <= targetZone.end) {
       setScore(prev => prev + 1)
-      setFeedback('🎉 Perfect timing! That transition was smooth!')
+      setFeedback('Perfect timing! That transition was smooth!')
       if (score >= 2) {
         setTimeout(onComplete, 2000)
       }
     } else if (position < targetZone.start) {
-      setFeedback('⏰ Too early! Let the track build more before mixing.')
+      setFeedback('Too early! Let the track build more before mixing.')
     } else {
-      setFeedback('⏰ Too late! You missed the sweet spot.')
+      setFeedback('Too late! You missed the sweet spot.')
     }
   }
 
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-6">
-        <h3 className="text-xl font-bold text-purple-400 mb-3">🎚️ Challenge: Crossfade Timing</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Sliders className="w-6 h-6 text-purple-400" />
+          <h3 className="text-xl font-bold text-purple-400">Challenge: Crossfade Timing</h3>
+        </div>
         <p className="text-white/70 mb-4">
           Hit <strong>STOP</strong> when the marker reaches the green zone! This simulates mixing on the drop.
           Get 3 perfect hits to complete the challenge.
@@ -261,7 +268,7 @@ function CrossfadeTimingChallenge({ onComplete }: { onComplete: () => void }) {
               disabled={score >= 3}
               className="flex-1 py-3 rounded-xl bg-white hover:bg-white/90 text-black font-bold transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
             >
-              {score >= 3 ? '✓ Challenge Complete!' : 'Start'}
+              {score >= 3 ? 'Challenge Complete!' : 'Start'}
             </button>
           ) : (
             <button
@@ -298,25 +305,28 @@ function EQBalanceChallenge({ onComplete }: { onComplete: () => void }) {
     const highDiff = Math.abs(high - targetScenario.target.high)
 
     if (lowDiff <= targetScenario.tolerance && midDiff <= targetScenario.tolerance && highDiff <= targetScenario.tolerance) {
-      setFeedback('🎵 Perfect! You cleared the mud by cutting the bass. The mix sounds clean now!')
+      setFeedback('Perfect! You cleared the mud by cutting the bass. The mix sounds clean now!')
       setCompleted(true)
       setTimeout(onComplete, 2000)
     } else if (lowDiff <= 6) {
-      setFeedback('🎚️ Getting closer! Try cutting the bass a bit more.')
+      setFeedback('Getting closer! Try cutting the bass a bit more.')
     } else {
-      setFeedback('💡 Hint: When tracks clash, CUT before you boost. Try reducing the LOW frequencies.')
+      setFeedback('Hint: When tracks clash, CUT before you boost. Try reducing the LOW frequencies.')
     }
   }
 
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-        <h3 className="text-xl font-bold text-cyan-400 mb-3">🎛️ Challenge: EQ Balance</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Sliders className="w-6 h-6 text-cyan-400" />
+          <h3 className="text-xl font-bold text-cyan-400">Challenge: EQ Balance</h3>
+        </div>
         <p className="text-white/70 mb-4">
           <strong>Scenario:</strong> {targetScenario.description}
         </p>
         <p className="text-yellow-400 text-sm mb-6">
-          💡 {targetScenario.solution}
+          {targetScenario.solution}
         </p>
 
         {/* EQ Sliders */}
@@ -403,7 +413,7 @@ function EQBalanceChallenge({ onComplete }: { onComplete: () => void }) {
               : 'bg-white hover:bg-white/90 text-black hover:scale-105 active:scale-95'
           }`}
         >
-          {completed ? '✓ Challenge Complete!' : 'Check My EQ'}
+          {completed ? 'Challenge Complete!' : 'Check My EQ'}
         </button>
       </div>
     </div>
@@ -465,15 +475,15 @@ function PhraseCountingChallenge({ onComplete }: { onComplete: () => void }) {
     const diff = Math.abs(userCount - expectedCount)
 
     if (diff === 0) {
-      setFeedback(`🎉 Perfect! You counted exactly ${barsPerPhrase} bars (32 beats). That's one phrase!`)
+      setFeedback(`Perfect! You counted exactly ${barsPerPhrase} bars (32 beats). That's one phrase!`)
       setScore(prev => prev + 1)
       if (score + 1 >= 3) {
         setTimeout(onComplete, 2000)
       }
     } else if (diff === 1) {
-      setFeedback(`✨ Close! You counted ${userCount} bars, the phrase is ${expectedCount} bars. Try counting in 4s: 1-2-3-4 (bar 1), 1-2-3-4 (bar 2)...`)
+      setFeedback(`Close! You counted ${userCount} bars, the phrase is ${expectedCount} bars. Try counting in 4s: 1-2-3-4 (bar 1), 1-2-3-4 (bar 2)...`)
     } else {
-      setFeedback(`📊 You counted ${userCount} bars, but the phrase is ${expectedCount} bars. Remember: 4 beats = 1 bar, 8 bars = 1 phrase (32 beats total).`)
+      setFeedback(`You counted ${userCount} bars, but the phrase is ${expectedCount} bars. Remember: 4 beats = 1 bar, 8 bars = 1 phrase (32 beats total).`)
     }
   }
 
@@ -489,13 +499,16 @@ function PhraseCountingChallenge({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-orange-500/30 bg-orange-500/5 p-6">
-        <h3 className="text-xl font-bold text-orange-400 mb-3">🎵 Challenge: Count the Phrase (HARD)</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Music className="w-6 h-6 text-orange-400" />
+          <h3 className="text-xl font-bold text-orange-400">Challenge: Count the Phrase (HARD)</h3>
+        </div>
         <p className="text-white/70 mb-4">
           Click COUNT every time you hear a new bar start. A phrase is <strong>8 bars</strong> (32 beats).
           This teaches you to feel track structure - essential for knowing when to mix!
         </p>
         <p className="text-sm text-yellow-400 mb-6">
-          💡 Tip: Count 1-2-3-4 for each bar. When you reach 8 bars, that's one phrase!
+          Tip: Count 1-2-3-4 for each bar. When you reach 8 bars, that's one phrase!
         </p>
 
         {/* Score */}
@@ -571,7 +584,7 @@ function PhraseCountingChallenge({ onComplete }: { onComplete: () => void }) {
               disabled={score >= 3}
               className="flex-1 py-3 rounded-xl bg-white hover:bg-white/90 text-black font-bold transition-all hover:scale-105 active:scale-95"
             >
-              {score >= 3 ? '✓ Challenge Complete!' : 'Start Phrase'}
+              {score >= 3 ? 'Challenge Complete!' : 'Start Phrase'}
             </button>
           )}
           {isPlaying && (
@@ -649,13 +662,13 @@ function FilterSweepChallenge({ onComplete }: { onComplete: () => void }) {
     const diff = Math.abs(finalHz - currentScenario.target)
 
     if (diff <= currentScenario.tolerance) {
-      setFeedback(`🎵 Perfect sweep! You nailed the ${currentScenario.name} technique!`)
+      setFeedback(`Perfect sweep! You nailed the ${currentScenario.name} technique!`)
       setScore(prev => prev + 1)
       if (score + 1 >= 3) {
         setTimeout(onComplete, 2000)
       }
     } else {
-      setFeedback(`🎚️ Close, but try sweeping to around ${currentScenario.target}Hz for this effect.`)
+      setFeedback(`Close, but try sweeping to around ${currentScenario.target}Hz for this effect.`)
     }
 
     // Reset for next scenario
@@ -667,7 +680,10 @@ function FilterSweepChallenge({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-6">
-        <h3 className="text-xl font-bold text-blue-400 mb-3">🌊 Challenge: Filter Sweep Timing</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Waves className="w-6 h-6 text-blue-400" />
+          <h3 className="text-xl font-bold text-blue-400">Challenge: Filter Sweep Timing</h3>
+        </div>
         <p className="text-white/70 mb-6">
           Set your filter position, then hit SWEEP to perform a 2-second filter sweep.
           Master the art of creating tension and releasing energy!
@@ -711,9 +727,9 @@ function FilterSweepChallenge({ onComplete }: { onComplete: () => void }) {
             style={{ opacity: 1 - (filterHz / 20000) }}
           />
           <div className="absolute inset-0 flex items-center justify-center text-white/70 font-semibold">
-            {filterHz < 1000 ? '🌊 Dark & Muffled' :
-             filterHz < 10000 ? '🎵 Mid Range' :
-             '✨ Bright & Open'}
+            {filterHz < 1000 ? 'Dark & Muffled' :
+             filterHz < 10000 ? 'Mid Range' :
+             'Bright & Open'}
           </div>
         </div>
 
@@ -740,7 +756,7 @@ function FilterSweepChallenge({ onComplete }: { onComplete: () => void }) {
               : 'bg-white hover:bg-white/90 text-black hover:scale-105 active:scale-95'
           }`}
         >
-          {score >= 3 ? '✓ Challenge Complete!' : isAnimating ? 'Sweeping...' : 'PERFORM SWEEP'}
+          {score >= 3 ? 'Challenge Complete!' : isAnimating ? 'Sweeping...' : 'PERFORM SWEEP'}
         </button>
       </div>
     </div>
@@ -768,16 +784,16 @@ function HarmonicMixingChallenge({ onComplete }: { onComplete: () => void }) {
 
     if (currentScenario.compatible.includes(nextKey)) {
       if (nextKey === currentScenario.currentTrack.key) {
-        setFeedback(`✅ Same key! Always works, but try to add variety too. Score +1`)
+        setFeedback(`Same key! Always works, but try to add variety too. Score +1`)
       } else {
-        setFeedback(`🎹 Perfect! ${nextKey} is harmonically compatible with ${currentScenario.currentTrack.key}. The mix will sound smooth!`)
+        setFeedback(`Perfect! ${nextKey} is harmonically compatible with ${currentScenario.currentTrack.key}. The mix will sound smooth!`)
       }
       setScore(prev => prev + 1)
       if (score + 1 >= 3) {
         setTimeout(onComplete, 2000)
       }
     } else {
-      setFeedback(`❌ ${nextKey} will clash with ${currentScenario.currentTrack.key}. Try: ${currentScenario.compatible.slice(0, 3).join(', ')}`)
+      setFeedback(`${nextKey} will clash with ${currentScenario.currentTrack.key}. Try: ${currentScenario.compatible.slice(0, 3).join(', ')}`)
     }
 
     setTimeout(() => {
@@ -789,7 +805,10 @@ function HarmonicMixingChallenge({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-6">
-        <h3 className="text-xl font-bold text-purple-400 mb-3">🎹 Challenge: Harmonic Mixing (HARD)</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Piano className="w-6 h-6 text-purple-400" />
+          <h3 className="text-xl font-bold text-purple-400">Challenge: Harmonic Mixing (HARD)</h3>
+        </div>
         <p className="text-white/70 mb-6">
           Choose the next track that will mix harmonically with the current track.
           Understanding keys prevents clashing notes and creates pro-level transitions!
@@ -803,7 +822,7 @@ function HarmonicMixingChallenge({ onComplete }: { onComplete: () => void }) {
 
         {/* Current Track */}
         <div className="mb-6 p-5 rounded-xl border border-purple-500/30 bg-purple-500/10">
-          <div className="text-sm text-purple-400 mb-2">🎵 Currently Playing</div>
+          <div className="text-sm text-purple-400 mb-2">Currently Playing</div>
           <div className="text-xl font-bold text-white mb-1">{currentScenario.currentTrack.name}</div>
           <div className="flex gap-4 text-sm text-white/70">
             <span>Key: <strong className="text-white">{currentScenario.currentTrack.key}</strong></span>
@@ -852,7 +871,7 @@ function HarmonicMixingChallenge({ onComplete }: { onComplete: () => void }) {
 
         {score >= 3 && (
           <div className="p-4 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 text-center font-bold">
-            ✓ Challenge Complete! You understand harmonic mixing!
+            Challenge Complete! You understand harmonic mixing!
           </div>
         )}
       </div>
@@ -891,34 +910,34 @@ function TransitionPlanningChallenge({ onComplete }: { onComplete: () => void })
 
     if (plan.startPoint === correctAnswers.startPoint) {
       correct++
-      totalFeedback.push('✅ Start point correct - outro is perfect for mixing out')
+      totalFeedback.push('Start point correct - outro is perfect for mixing out')
     } else {
-      totalFeedback.push('❌ Wrong start point. Hint: Mix from the outro when going to a breakdown')
+      totalFeedback.push('Wrong start point. Hint: Mix from the outro when going to a breakdown')
     }
 
     if (plan.eqMove === correctAnswers.eqMove) {
       correct++
-      totalFeedback.push('✅ EQ strategy correct - cutting bass on outgoing track prevents mud')
+      totalFeedback.push('EQ strategy correct - cutting bass on outgoing track prevents mud')
     } else {
-      totalFeedback.push('❌ Wrong EQ move. Hint: Cut the bass on the outgoing track')
+      totalFeedback.push('Wrong EQ move. Hint: Cut the bass on the outgoing track')
     }
 
     if (plan.filterUse === correctAnswers.filterUse) {
       correct++
-      totalFeedback.push('✅ Filter use correct - sweeping down creates smooth energy reduction')
+      totalFeedback.push('Filter use correct - sweeping down creates smooth energy reduction')
     } else {
-      totalFeedback.push('❌ Wrong filter technique. Hint: Sweep down to reduce energy gradually')
+      totalFeedback.push('Wrong filter technique. Hint: Sweep down to reduce energy gradually')
     }
 
     if (plan.crossfadeSpeed === correctAnswers.crossfadeSpeed) {
       correct++
-      totalFeedback.push('✅ Crossfade speed correct - slow fade suits the energy change')
+      totalFeedback.push('Crossfade speed correct - slow fade suits the energy change')
     } else {
-      totalFeedback.push('❌ Wrong fade speed. Hint: Go slow for this big energy shift')
+      totalFeedback.push('Wrong fade speed. Hint: Go slow for this big energy shift')
     }
 
     if (correct === 4) {
-      setFeedback('🎉 PERFECT PLAN! You understand complex transitions!')
+      setFeedback('PERFECT PLAN! You understand complex transitions!')
       setScore(prev => prev + 1)
       setTimeout(onComplete, 3000)
     } else {
@@ -929,7 +948,10 @@ function TransitionPlanningChallenge({ onComplete }: { onComplete: () => void })
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6">
-        <h3 className="text-xl font-bold text-red-400 mb-3">🎯 Challenge: Plan Your Transition (VERY HARD)</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <Target className="w-6 h-6 text-red-400" />
+          <h3 className="text-xl font-bold text-red-400">Challenge: Plan Your Transition (VERY HARD)</h3>
+        </div>
         <p className="text-white/70 mb-6">
           Plan a complete transition strategy. This combines everything you've learned!
         </p>
@@ -1032,7 +1054,7 @@ function TransitionPlanningChallenge({ onComplete }: { onComplete: () => void })
               : 'bg-white hover:bg-white/90 text-black hover:scale-105 active:scale-95 disabled:opacity-50'
           }`}
         >
-          {score >= 1 ? '✓ Challenge Complete!' : 'Check My Plan'}
+          {score >= 1 ? 'Challenge Complete!' : 'Check My Plan'}
         </button>
       </div>
     </div>

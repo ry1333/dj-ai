@@ -5,7 +5,7 @@ import { selectLoopsForMix, getTargetBPM, getCrossfaderAutomation, getEQAutomati
 import { uploadAudio } from '../lib/supabase/storage'
 import { createPost } from '../lib/supabase/posts'
 import { toast } from 'sonner'
-import { Sparkles, Music, Zap, Wind, Loader2 } from 'lucide-react'
+import { Sparkles, Music, Zap, Wind, Loader2, Home, Mic, Flame, Moon, Radio, Headphones, Sliders } from 'lucide-react'
 import { GradientButton } from '../components/ui/gradient-button'
 
 export default function Create() {
@@ -51,20 +51,20 @@ export default function Create() {
   // Generate mix automatically using our audio engine
   async function generateMix() {
     setIsGenerating(true)
-    setGenerationStatus('🎼 Selecting perfect loops...')
+    setGenerationStatus('Selecting perfect loops...')
 
     try {
       // Select loops based on preferences
       const prefs: MixPreferences = { genre, energy, length }
       const { deckA, deckB } = selectLoopsForMix(prefs)
 
-      setGenerationStatus(`🎧 Loading ${deckA.name} and ${deckB.name}...`)
+      setGenerationStatus(`Loading ${deckA.name} and ${deckB.name}...`)
 
       // Load loops into decks
       await mixer.deckA.loadFromUrl(deckA.path)
       await mixer.deckB.loadFromUrl(deckB.path)
 
-      setGenerationStatus('🎚️ Mixing tracks...')
+      setGenerationStatus('Mixing tracks...')
 
       // Set target BPM and sync
       const targetBPM = getTargetBPM(energy)
@@ -106,14 +106,14 @@ export default function Create() {
         // Update status
         if (i % 10 === 0) {
           const progress = Math.round((i / automationSteps) * 100)
-          setGenerationStatus(`🎵 Mixing... ${progress}%`)
+          setGenerationStatus(`Mixing... ${progress}%`)
         }
 
         // Wait for next step
         await new Promise(resolve => setTimeout(resolve, stepDuration))
       }
 
-      setGenerationStatus('💾 Finalizing mix...')
+      setGenerationStatus('Finalizing mix...')
 
       // Stop recording and get blob
       const blob = await mixer.stopRecording()
@@ -125,7 +125,7 @@ export default function Create() {
       setAudioUrl(url)
       setGeneratedBlob(blob)
 
-      setGenerationStatus('✅ Mix ready!')
+      setGenerationStatus('Mix ready!')
       toast.success('Mix generated successfully!')
     } catch (error) {
       console.error('Generation error:', error)
@@ -202,11 +202,11 @@ export default function Create() {
   }
 
   const genres = [
-    { id: 'house' as const, name: 'House', icon: '🏠', desc: 'Deep grooves' },
-    { id: 'techno' as const, name: 'Techno', icon: '⚡', desc: 'Driving beats' },
-    { id: 'edm' as const, name: 'EDM', icon: '💥', desc: 'Festival vibes' },
-    { id: 'hip-hop' as const, name: 'Hip-Hop', icon: '🎤', desc: 'Urban beats' },
-    { id: 'lofi' as const, name: 'Lo-Fi', icon: '🌙', desc: 'Chill vibes' }
+    { id: 'house' as const, name: 'House', icon: Home, desc: 'Deep grooves' },
+    { id: 'techno' as const, name: 'Techno', icon: Zap, desc: 'Driving beats' },
+    { id: 'edm' as const, name: 'EDM', icon: Flame, desc: 'Festival vibes' },
+    { id: 'hip-hop' as const, name: 'Hip-Hop', icon: Mic, desc: 'Urban beats' },
+    { id: 'lofi' as const, name: 'Lo-Fi', icon: Moon, desc: 'Chill vibes' }
   ]
 
   const energyLevels = [
@@ -226,7 +226,7 @@ export default function Create() {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-accentFrom to-accentTo bg-clip-text text-transparent">
-            {remixPostId ? '🔄 Create a Remix' : 'AI Mix Generator'}
+            {remixPostId ? 'Create a Remix' : 'AI Mix Generator'}
           </h1>
           <p className="text-lg text-muted">
             {remixPostId ? 'Put your own spin on this mix!' : 'Create a perfect 30-second mix in seconds'}
@@ -243,23 +243,26 @@ export default function Create() {
         <div className="rounded-2xl border border-line bg-card/50 p-6 md:p-8 space-y-4">
           <h2 className="text-xl font-bold text-text mb-4">Select Genre</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            {genres.map(g => (
-              <button
-                key={g.id}
-                onClick={() => setGenre(g.id)}
-                className={`
-                  p-4 rounded-xl border-2 transition-all
-                  ${genre === g.id
-                    ? 'border-accentFrom bg-gradient-to-r from-accentFrom/10 to-accentTo/10 text-text shadow-[0_0_20px_rgba(0,229,255,0.2)]'
-                    : 'border-line hover:border-line/50 text-muted hover:text-text'
-                  }
-                `}
-              >
-                <div className="text-3xl mb-2">{g.icon}</div>
-                <div className="font-semibold text-sm">{g.name}</div>
-                <div className="text-xs opacity-60 mt-1">{g.desc}</div>
-              </button>
-            ))}
+            {genres.map(g => {
+              const GenreIcon = g.icon
+              return (
+                <button
+                  key={g.id}
+                  onClick={() => setGenre(g.id)}
+                  className={`
+                    p-4 rounded-xl border-2 transition-all
+                    ${genre === g.id
+                      ? 'border-accentFrom bg-gradient-to-r from-accentFrom/10 to-accentTo/10 text-text shadow-[0_0_20px_rgba(0,229,255,0.2)]'
+                      : 'border-line hover:border-line/50 text-muted hover:text-text'
+                    }
+                  `}
+                >
+                  <GenreIcon className="w-8 h-8 mb-2 mx-auto" strokeWidth={1.5} />
+                  <div className="font-semibold text-sm">{g.name}</div>
+                  <div className="text-xs opacity-60 mt-1">{g.desc}</div>
+                </button>
+              )
+            })}
           </div>
         </div>
 
@@ -325,7 +328,10 @@ export default function Create() {
         {audioUrl && !isGenerating && (
           <div className="rounded-2xl border border-line bg-card/50 p-6 md:p-8 space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-text mb-2">✨ Your Mix is Ready!</div>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Sparkles className="w-6 h-6 text-accentFrom" />
+                <div className="text-2xl font-bold text-text">Your Mix is Ready!</div>
+              </div>
               <p className="text-muted">Preview your AI-generated mix</p>
             </div>
 
@@ -376,7 +382,11 @@ export default function Create() {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-gradient-to-br from-neutral-900 to-black border border-white/10 rounded-2xl p-8 max-w-lg w-full space-y-6 shadow-2xl">
             <div className="text-center">
-              <div className="text-5xl mb-4">🎵</div>
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-accentFrom to-accentTo flex items-center justify-center">
+                  <Music className="w-8 h-8 text-ink" />
+                </div>
+              </div>
               <h2 className="text-2xl font-bold text-white mb-2">Publish Your Mix</h2>
               <p className="text-white/60 text-sm">Share your AI-generated creation</p>
             </div>
