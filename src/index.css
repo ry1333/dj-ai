@@ -8,26 +8,26 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Electric Night - DJ Theme */
-    --bg: #0A0A0F;          /* deep black */
-    --surface: #1A1A24;     /* elevated dark */
-    --surface-2: #252530;   /* card surface */
-    --border: rgba(255,255,255,0.06);
-    --text: #F5F7FA;
-    --muted: rgba(255,255,255,0.4);
+    /* Electric Night - DJ Theme - ALL HSL VALUES */
+    --bg: 243 25% 5%;           /* deep black (#0A0A0F) */
+    --surface: 243 25% 8%;      /* elevated dark (#1A1A24) */
+    --surface-2: 243 22% 13%;   /* card surface (#252530) */
+    --border: 0 0% 100% / 0.06; /* subtle white border with alpha */
+    --text: 240 7% 93%;         /* primary text (#F5F7FA) - light gray */
+    --muted: 0 0% 100% / 0.4;   /* secondary text - white with 40% opacity */
 
     /* Accent colors */
-    --accent: #E11D84;      /* magenta primary */
-    --accent-500: #E11D84;
-    --accent-400: #F563A7;
-    --accent-300: #FFA2CF;
-    --cyan: #00E5FF;        /* electric cyan */
+    --accent: 330 80% 51%;      /* magenta primary (#E11D84) */
+    --accent-500: 330 80% 51%;  /* magenta primary (#E11D84) */
+    --accent-400: 330 88% 65%;  /* lighter magenta (#F563A7) */
+    --accent-300: 330 100% 80%; /* lightest magenta (#FFA2CF) */
+    --cyan: 188 100% 50%;       /* electric cyan (#00E5FF) */
 
     /* Status colors */
-    --ok: #10B981;          /* success green */
-    --warn: #F59E0B;        /* warning amber */
-    --danger: #EF4444;      /* error red */
-    --info: #3B82F6;        /* info blue */
+    --ok: 152 69% 39%;          /* success green (#10B981) */
+    --warn: 38 92% 50%;         /* warning amber (#F59E0B) */
+    --danger: 0 84% 60%;        /* error red (#EF4444) */
+    --info: 217 91% 60%;        /* info blue (#3B82F6) */
 
     /* Gradients */
     --gradient-cyan: 188 100% 50%;     /* cyan for HSL */
