@@ -72,7 +72,7 @@ export default {
         danger: "var(--danger)",
 
         // Shadcn compatibility
-        border: "hsl(var(--border))",
+        border: "var(--border)",  // --border is rgba, not HSL
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
