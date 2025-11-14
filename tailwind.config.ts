@@ -14,47 +14,47 @@ export default {
     },
     extend: {
       colors: {
-        // Electric Night - DJ Theme (using HSL CSS variables)
-        ink: 'hsl(var(--bg))',           // deep black background
-        surface: 'hsl(var(--surface))',  // elevated dark purple-black
-        elevated: 'hsl(var(--surface-2))', // card surface
-        line: 'hsl(var(--border))',      // subtle borders
-        text: 'hsl(var(--text))',        // primary text - NOW LIGHT!
-        muted: 'hsl(var(--muted))',      // secondary text - NOW VISIBLE!
+        // Electric Night - DJ Theme
+        ink: '#0A0A0F',        // deep black background
+        surface: '#1A1A24',    // elevated dark purple-black
+        elevated: '#252530',   // card surface
+        line: 'rgba(255,255,255,0.06)',  // subtle borders
+        text: '#F5F7FA',       // primary text
+        muted: 'rgba(255,255,255,0.4)',  // secondary text
 
-        // Accent colors (using HSL CSS variables for main colors)
+        // Accent colors
         cyan: {
-          DEFAULT: 'hsl(var(--cyan))',  // electric cyan
+          DEFAULT: '#00E5FF',
           50: '#E0F9FF',
           100: '#B3F0FF',
           200: '#80E7FF',
           300: '#4DDDFF',
           400: '#26D4FF',
-          500: 'hsl(var(--cyan))',
+          500: '#00E5FF',
           600: '#00C2E0',
           700: '#009FB8',
           800: '#007C90',
           900: '#005968',
         },
         magenta: {
-          DEFAULT: 'hsl(var(--accent))',  // magenta primary
+          DEFAULT: '#E11D84',
           50: '#FFF0F7',
           100: '#FFE0EF',
           200: '#FFC1DF',
-          300: 'hsl(var(--accent-300))',
-          400: 'hsl(var(--accent-400))',
-          500: 'hsl(var(--accent-500))',
+          300: '#FFA2CF',
+          400: '#F563A7',
+          500: '#E11D84',
           600: '#C0156F',
           700: '#9F0F5A',
           800: '#7E0945',
           900: '#5D0330',
         },
 
-        // Status colors (using HSL CSS variables)
-        success: 'hsl(var(--ok))',
-        warning: 'hsl(var(--warn))',
-        error: 'hsl(var(--danger))',
-        info: 'hsl(var(--info))',
+        // Status colors
+        success: '#10B981',
+        warning: '#F59E0B',
+        error: '#EF4444',
+        info: '#3B82F6',
 
         // RMXR Theme Colors (legacy)
         bg: "var(--bg)",
