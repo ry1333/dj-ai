@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import RotaryKnob from './ui/RotaryKnob'
 import VerticalFader from './ui/VerticalFader'
+import VUMeter from './ui/VUMeter'
 
 type Props = {
   mixer: any
@@ -68,9 +69,20 @@ export default function MixerCenter({
       {/* Main Mixer Layout: 3-Column Grid */}
       <div className="flex-1 grid grid-cols-[1fr_auto_1fr] gap-8 items-center">
 
-        {/* LEFT COLUMN: Deck A Rotary Knobs */}
-        <div className="flex flex-col items-center justify-center gap-8">
-          <RotaryKnob
+        {/* LEFT COLUMN: Deck A with VU Meter */}
+        <div className="flex flex-col items-center justify-center gap-6">
+          {/* VU Meter for Deck A */}
+          <VUMeter
+            audioContext={mixer.ctx}
+            sourceNode={mixer.deckA.gainNode}
+            label="DECK A"
+            orientation="vertical"
+            height={100}
+          />
+
+          {/* EQ Knobs */}
+          <div className="flex flex-col items-center gap-8">
+            <RotaryKnob
             label="HIGH A"
             value={aEQ.high}
             min={-24}
@@ -122,6 +134,7 @@ export default function MixerCenter({
             size={70}
             accentColor="cyan"
           />
+          </div>
         </div>
 
         {/* CENTER COLUMN: Vertical Crossfader */}
@@ -158,9 +171,20 @@ export default function MixerCenter({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Deck B Rotary Knobs */}
-        <div className="flex flex-col items-center justify-center gap-8">
-          <RotaryKnob
+        {/* RIGHT COLUMN: Deck B with VU Meter */}
+        <div className="flex flex-col items-center justify-center gap-6">
+          {/* VU Meter for Deck B */}
+          <VUMeter
+            audioContext={mixer.ctx}
+            sourceNode={mixer.deckB.gainNode}
+            label="DECK B"
+            orientation="vertical"
+            height={100}
+          />
+
+          {/* EQ Knobs */}
+          <div className="flex flex-col items-center gap-8">
+            <RotaryKnob
             label="HIGH B"
             value={bEQ.high}
             min={-24}
@@ -212,6 +236,7 @@ export default function MixerCenter({
             size={70}
             accentColor="magenta"
           />
+          </div>
         </div>
       </div>
 

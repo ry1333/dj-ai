@@ -108,6 +108,10 @@ export default function DeckControls({
         buffer={deck.buffer}
         progress={progress}
         onSeek={handleSeek}
+        bpm={bpm}
+        key="Am"
+        genre="House"
+        energy={75}
       />
 
       {/* Main content area - Optimized spacing */}
