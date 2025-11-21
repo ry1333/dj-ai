@@ -10,7 +10,6 @@ type Props = {
   unit?: string
   height?: number
   accentColor?: 'cyan' | 'magenta' | 'neutral'
-  showMarkers?: boolean
 }
 
 export default function VerticalFader({
@@ -22,8 +21,7 @@ export default function VerticalFader({
   label,
   unit = '',
   height = 200,
-  accentColor = 'neutral',
-  showMarkers = false
+  accentColor = 'neutral'
 }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
 
@@ -123,22 +121,6 @@ export default function VerticalFader({
             </div>
           </div>
         </div>
-
-        {/* Position Markers (25%, 50%, 75%) */}
-        {showMarkers && (
-          <>
-            {[25, 50, 75].map((mark) => (
-              <div
-                key={mark}
-                className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1"
-                style={{ bottom: `${mark}%` }}
-              >
-                <div className="w-3 h-px bg-white/30" />
-                <span className="text-[8px] text-white/40 font-mono">{mark}</span>
-              </div>
-            ))}
-          </>
-        )}
 
         {/* Center marker (0 position if in range) */}
         {min < 0 && max > 0 && (

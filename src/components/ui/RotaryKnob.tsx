@@ -9,7 +9,6 @@ type Props = {
   label?: string
   unit?: string
   size?: number
-  accentColor?: 'blue' | 'green' | 'red' | 'cyan' | 'magenta' | 'none'
 }
 
 export default function RotaryKnob({
@@ -20,8 +19,7 @@ export default function RotaryKnob({
   onChange,
   label,
   unit = '',
-  size = 64,
-  accentColor = 'none'
+  size = 64
 }: Props) {
   const knobRef = useRef<HTMLDivElement>(null)
   const startY = useRef<number>(0)
@@ -30,17 +28,6 @@ export default function RotaryKnob({
   // Calculate rotation angle (-135deg to +135deg = 270deg range)
   const percentage = (value - min) / (max - min)
   const angle = -135 + (percentage * 270)
-
-  // Color mapping for accent rings
-  const colorMap = {
-    blue: '#2196F3',
-    green: '#4CAF50',
-    red: '#FF5252',
-    cyan: '#00BCD4',
-    magenta: '#E91E63',
-    none: 'transparent'
-  }
-  const ringColor = colorMap[accentColor]
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!knobRef.current) return
@@ -109,41 +96,6 @@ export default function RotaryKnob({
         className="relative cursor-ns-resize select-none"
         style={{ width: size, height: size, touchAction: 'none' }}
       >
-        {/* Colored Progress Ring (fixed, doesn't rotate) */}
-        {accentColor !== 'none' && (
-          <svg
-            width={size}
-            height={size}
-            viewBox="0 0 100 100"
-            className="absolute inset-0"
-            style={{ transform: 'rotate(-135deg)' }}
-          >
-            <circle
-              cx="50"
-              cy="50"
-              r="47"
-              fill="none"
-              stroke="rgba(255,255,255,0.1)"
-              strokeWidth="4"
-              strokeDasharray={`${270 * (Math.PI * 94 / 360)} ${Math.PI * 94}`}
-            />
-            <circle
-              cx="50"
-              cy="50"
-              r="47"
-              fill="none"
-              stroke={ringColor}
-              strokeWidth="4"
-              strokeDasharray={`${percentage * 270 * (Math.PI * 94 / 360)} ${Math.PI * 94}`}
-              strokeLinecap="round"
-              style={{
-                filter: `drop-shadow(0 0 4px ${ringColor})`,
-                transition: 'stroke-dasharray 0.1s ease-out'
-              }}
-            />
-          </svg>
-        )}
-
         {/* SVG Knob */}
         <svg
           width={size}
@@ -170,7 +122,7 @@ export default function RotaryKnob({
           <circle
             cx="50"
             cy="50"
-            r="42"
+            r="45"
             fill={`url(#knobGradient-${label})`}
             stroke="rgba(0,0,0,0.6)"
             strokeWidth="2"
@@ -180,17 +132,17 @@ export default function RotaryKnob({
           <circle
             cx="50"
             cy="50"
-            r="42"
+            r="45"
             fill={`url(#highlightGradient-${label})`}
           />
 
-          {/* Position indicator line - colored or white */}
+          {/* Position indicator line - white */}
           <line
             x1="50"
             y1="15"
             x2="50"
-            y2="32"
-            stroke={accentColor !== 'none' ? ringColor : 'white'}
+            y2="35"
+            stroke="white"
             strokeWidth="3"
             strokeLinecap="round"
           />
