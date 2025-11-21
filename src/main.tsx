@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import ProtectedRoute from './components/ProtectedRoute'
+import { MixerProvider } from './contexts/MixerContext'
 import AppShell from './AppShell'
 import Stream from './pages/Stream'
 import DJ from './pages/DJ'
@@ -34,24 +35,26 @@ if ('serviceWorker' in navigator && !import.meta.env.DEV) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <Router>
-        <Routes>
-          <Route element={<AppShell />}>
-            <Route index element={<Stream />} />
-            <Route path="/stream" element={<Stream />} />
-            <Route path="/dj" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
-            <Route path="/dj-new" element={<ProtectedRoute><DJStudio /></ProtectedRoute>} />
-            <Route path="/create" element={<ProtectedRoute><Create /></ProtectedRoute>} />
-            <Route path="/compose" element={<ProtectedRoute><Create /></ProtectedRoute>} />
-            <Route path="/learn" element={<Learn />} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-            <Route path="*" element={<Navigate to="/stream" replace />} />
-          </Route>
-        </Routes>
-      </Router>
+      <MixerProvider>
+        <Router>
+          <Routes>
+            <Route element={<AppShell />}>
+              <Route index element={<Stream />} />
+              <Route path="/stream" element={<Stream />} />
+              <Route path="/dj" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
+              <Route path="/dj-new" element={<ProtectedRoute><DJStudio /></ProtectedRoute>} />
+              <Route path="/create" element={<ProtectedRoute><Create /></ProtectedRoute>} />
+              <Route path="/compose" element={<ProtectedRoute><Create /></ProtectedRoute>} />
+              <Route path="/learn" element={<Learn />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+              <Route path="*" element={<Navigate to="/stream" replace />} />
+            </Route>
+          </Routes>
+        </Router>
+      </MixerProvider>
     </ErrorBoundary>
   </React.StrictMode>
 )

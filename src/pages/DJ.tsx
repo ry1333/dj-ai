@@ -9,13 +9,19 @@ import DualWaveform from '../components/DualWaveform';
 import DeckControls from '../components/DeckControls';
 import MixerCenter from '../components/MixerCenter';
 import LibraryBrowser from '../components/LibraryBrowser';
-import { Headphones, Music, Sparkles, ChevronDown, ChevronUp, Home, Mic, Flame, Moon, Zap, Wind, Circle, Maximize } from 'lucide-react';
+import AIMixAssistant from '../components/AIMixAssistant';
+import AICoPilotV2 from '../components/AICoPilotV2';
+import type { MixingSuggestion } from '../lib/ai/mixingSuggestions';
+import { Headphones, Music, Sparkles, ChevronDown, ChevronUp, Home, Mic, Flame, Moon, Zap, Wind, Circle, Maximize, Radio, BookOpen, Bot } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { useMixer } from '../contexts/MixerContext';
 // TopBar removed for clean immersive DJ interface
 import { selectLoopsForMix, getTargetBPM, getCrossfaderAutomation, getEQAutomation, type MixPreferences } from '../lib/audio/autoMixGenerator';
 export default function DJ() {
   const nav = useNavigate();
   const [searchParams] = useSearchParams();
   const mixer = useMemo(() => new Mixer(), []);
+  const mixerContext = useMixer(); // For Co-Pilot auto-advancement
   const engine = useAudioEngine(); // New audio engine
 
   // Deck states
@@ -25,6 +31,8 @@ export default function DJ() {
   const [bPlaying, setBPlaying] = useState(false);
   const [aFileName, setAFileName] = useState('');
   const [bFileName, setBFileName] = useState('');
+  const [aFile, setAFile] = useState<File | string | null>(null);
+  const [bFile, setBFile] = useState<File | string | null>(null);
 
   // Mixer states
   const [xf, setXf] = useState(0.5); // 0..1 crossfader (centered)
@@ -56,6 +64,13 @@ export default function DJ() {
   const [generationStatus, setGenerationStatus] = useState('');
   const raf = useRef<number | null>(null);
 
+  // Tab state
+  const [activeTab, setActiveTab] = useState('studio');
+
+  // AI Co-Pilot state (lifted from AIMixAssistant for page-level rendering)
+  const [aiSuggestions, setAiSuggestions] = useState<MixingSuggestion | null>(null);
+  const [coPilotActive, setCoPilotActive] = useState(false);
+
   // Show tutorial on first visit
   useEffect(() => {
     const hasSeenTutorial = localStorage.getItem('rmxr_dj_tutorial_seen');
@@ -64,7 +79,7 @@ export default function DJ() {
     }
   }, []);
 
-  // Animation loop for progress tracking + VU meter
+  // Animation loop for progress tracking + VU meter + MixerContext time updates
   useEffect(() => {
     const tick = () => {
       const aDur = mixer.deckA.buffer?.duration || 1;
@@ -74,6 +89,10 @@ export default function DJ() {
       setAPlaying(mixer.deckA.playing);
       setBPlaying(mixer.deckB.playing);
 
+      // Update MixerContext with current deck times for Co-Pilot
+      mixerContext.updateDeckTime('A', mixer.deckA.currentTime);
+      mixerContext.updateDeckTime('B', mixer.deckB.currentTime);
+
       // Update VU meter with real audio analysis
       setMasterLevel(mixer.getVULevel());
       raf.current = requestAnimationFrame(tick);
@@ -82,7 +101,7 @@ export default function DJ() {
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, [mixer, masterVol, aPlaying, bPlaying]);
+  }, [mixer, masterVol, aPlaying, bPlaying, mixerContext]);
 
   // Apply mixer settings
   useEffect(() => {
@@ -118,21 +137,47 @@ export default function DJ() {
   const handleALoad = async (file: File) => {
     await mixer.deckA.loadFromFile(file);
     setAFileName(file.name);
+    setAFile(file); // Save file for AI analysis
     toast.success('Loaded to Deck A');
   };
-  const handleAPlay = () => mixer.deckA.play();
-  const handleAPause = () => mixer.deckA.pause();
+  const handleAPlay = () => {
+    mixer.deckA.play();
+    mixerContext.updatePlayState('A', true);
+  };
+  const handleAPause = () => {
+    mixer.deckA.pause();
+    mixerContext.updatePlayState('A', false);
+  };
   const handleACue = () => mixer.deckA.seek(0);
 
   // Deck B controls
   const handleBLoad = async (file: File) => {
     await mixer.deckB.loadFromFile(file);
     setBFileName(file.name);
+    setBFile(file); // Save file for AI analysis
     toast.success('Loaded to Deck B');
   };
-  const handleBPlay = () => mixer.deckB.play();
-  const handleBPause = () => mixer.deckB.pause();
+  const handleBPlay = () => {
+    mixer.deckB.play();
+    mixerContext.updatePlayState('B', true);
+  };
+  const handleBPause = () => {
+    mixer.deckB.pause();
+    mixerContext.updatePlayState('B', false);
+  };
   const handleBCue = () => mixer.deckB.seek(0);
+
+  // Crossfader control with MixerContext events
+  const handleCrossfaderChange = (value: number) => {
+    setXf(value);
+    mixerContext.setControl('crossfader', value);
+  };
+
+  // Master volume control with MixerContext events
+  const handleMasterVolChange = (value: number) => {
+    setMasterVol(value);
+    mixerContext.setControl('masterVolume', value);
+  };
 
   // BPM sync
   function syncBtoA() {
@@ -430,25 +475,90 @@ export default function DJ() {
         </div>
       </div>
 
-      {/* WAVEFORM BAND (optimized height) */}
-      
-
-      {/* MIXER BAND - Optimized Layout for viewport fit */}
-      <div className="flex-1 max-w-[1600px] mx-auto w-full px-4 md:px-6 py-3 md:py-4 overflow-y-auto">
-        <div className="h-full grid grid-cols-1 lg:grid-cols-[3fr_2fr_3fr] gap-4 md:gap-6 lg:gap-10">
-          {/* Left Deck (A) */}
-          <DeckControls label="A" deck={mixer.deckA} playing={aPlaying} fileName={aFileName} bpm={aBpm} progress={aProg} onBpmChange={setABpm} onLoad={handleALoad} onPlay={handleAPlay} onPause={handleAPause} onCue={handleACue} />
-
-          {/* Center Mixer */}
-          <MixerCenter mixer={mixer} crossfader={xf} onCrossfaderChange={setXf} masterVol={masterVol} onMasterVolChange={setMasterVol} aBpm={aBpm} bBpm={bBpm} onSync={syncBtoA} isRecording={isRecording} />
-
-          {/* Right Deck (B) */}
-          <DeckControls label="B" deck={mixer.deckB} playing={bPlaying} fileName={bFileName} bpm={bBpm} progress={bProg} onBpmChange={setBBpm} onLoad={handleBLoad} onPlay={handleBPlay} onPause={handleBPause} onCue={handleBCue} />
+      {/* TABS - Clean separation of concerns */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+        {/* Tab Navigation */}
+        <div className="border-b border-rmxrborder bg-surface/50 px-6">
+          <TabsList className="bg-transparent h-12 p-0 gap-1">
+            <TabsTrigger
+              value="studio"
+              className="px-6 py-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              <Radio className="w-4 h-4 mr-2" />
+              Studio
+            </TabsTrigger>
+            <TabsTrigger
+              value="aimix"
+              className="px-6 py-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Mix
+            </TabsTrigger>
+            <TabsTrigger
+              value="library"
+              className="px-6 py-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Library
+            </TabsTrigger>
+          </TabsList>
         </div>
-      </div>
 
-      {/* AI GENERATION PANEL */}
-      <div className="border-t border-rmxrborder bg-surface/50">
+        {/* Studio Tab - Primary DJ Interface */}
+        <TabsContent value="studio" className="flex-1 flex flex-col m-0 overflow-hidden">
+          {/* DJ STUDIO */}
+          <div className="flex-1 max-w-[1600px] mx-auto w-full px-4 md:px-6 py-4 overflow-y-auto">
+            <div className="h-full grid grid-cols-1 lg:grid-cols-[3fr_2fr_3fr] gap-4 md:gap-6 lg:gap-10">
+              {/* Left Deck (A) */}
+              <DeckControls label="A" deck={mixer.deckA} playing={aPlaying} fileName={aFileName} bpm={aBpm} progress={aProg} onBpmChange={setABpm} onLoad={handleALoad} onPlay={handleAPlay} onPause={handleAPause} onCue={handleACue} />
+
+              {/* Center Mixer */}
+              <MixerCenter mixer={mixer} crossfader={xf} onCrossfaderChange={handleCrossfaderChange} masterVol={masterVol} onMasterVolChange={handleMasterVolChange} aBpm={aBpm} bBpm={bBpm} onSync={syncBtoA} isRecording={isRecording} />
+
+              {/* Right Deck (B) */}
+              <DeckControls label="B" deck={mixer.deckB} playing={bPlaying} fileName={bFileName} bpm={bBpm} progress={bProg} onBpmChange={setBBpm} onLoad={handleBLoad} onPlay={handleBPlay} onPause={handleBPause} onCue={handleBCue} />
+            </div>
+          </div>
+
+          {/* AI MIX ASSISTANT */}
+          <AIMixAssistant
+            trackAFile={aFile}
+            trackBFile={bFile}
+            geminiApiKey={import.meta.env.VITE_GEMINI_API_KEY}
+            trackADuration={mixer.deckA.buffer?.duration || 0}
+            trackBDuration={mixer.deckB.buffer?.duration || 0}
+            onSuggestionsChange={setAiSuggestions}
+            onCoPilotToggle={setCoPilotActive}
+          />
+        </TabsContent>
+
+        {/* Floating Co-Pilot Button - Always visible when suggestions exist (rendered at page level) */}
+        {aiSuggestions && !coPilotActive && activeTab === 'studio' && (
+          <button
+            onClick={() => {
+              console.log('Starting Co-Pilot mode...')
+              setCoPilotActive(true)
+            }}
+            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 rounded-full shadow-2xl shadow-primary/50 text-white font-semibold transition-all hover:scale-105 active:scale-95 animate-in slide-in-from-bottom-8 duration-500"
+          >
+            <Bot className="w-5 h-5 animate-pulse" />
+            <span>AI Co-Pilot ({aiSuggestions.compatibilityScore}%)</span>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          </button>
+        )}
+
+        {/* AI Co-Pilot V2 Panel - Always visible when active (rendered at page level) */}
+        {activeTab === 'studio' && (
+          <AICoPilotV2
+            suggestions={aiSuggestions}
+            isActive={coPilotActive}
+            onToggle={setCoPilotActive}
+          />
+        )}
+
+        {/* AI Mix Tab - Beginner-friendly auto-generation */}
+        <TabsContent value="aimix" className="flex-1 m-0 overflow-y-auto">
+          <div className="border-t border-rmxrborder bg-surface/50">
         <button onClick={() => setShowAIPanel(!showAIPanel)} className="w-full px-4 py-3 flex items-center justify-between hover:bg-surface/70 transition-colors">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-cyan" />
@@ -537,12 +647,16 @@ export default function DJ() {
               </p>
             </div>
           </div>}
-      </div>
+          </div>
+        </TabsContent>
 
-      {/* LIBRARY BAND - Responsive Height */}
-      <div className="h-48 md:h-64 border-t border-rmxrborder bg-surface">
-        <LibraryBrowser onLoadA={handleALoad} onLoadB={handleBLoad} />
-      </div>
+        {/* Library Tab - Full power user track browser */}
+        <TabsContent value="library" className="flex-1 m-0 overflow-hidden">
+          <div className="h-full bg-surface">
+            <LibraryBrowser onLoadA={handleALoad} onLoadB={handleBLoad} />
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Tutorial Tooltip */}
       {showTutorial && <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -613,5 +727,5 @@ export default function DJ() {
             </div>
           </div>
         </div>}
-    </div>;
+    </div>
 }
