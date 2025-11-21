@@ -98,7 +98,7 @@ export default function DeckControls({
   }
 
   return (
-    <div className={`rounded-2xl border border-white/5 bg-gradient-to-b from-[#0a0a0f] to-[#1a1a24] shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden h-full flex flex-col ${playing ? 'deck--active' : ''}`}>
+    <div className={`rounded-2xl border border-white/5 bg-gradient-to-b from-[#0a0a0f] to-[#1a1a24] shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col ${playing ? 'deck--active' : ''}`}>
       {/* Deck Header with mini waveform */}
       <DeckHeader
         title={fileName}
@@ -110,7 +110,7 @@ export default function DeckControls({
       />
 
       {/* Main content area - Optimized spacing */}
-      <div className="flex-1 p-4 space-y-3 flex flex-col overflow-y-auto">
+      <div className="p-4 space-y-3 flex flex-col min-h-0">
         {/* Deck label */}
         <div className="text-xs font-semibold text-muted tracking-widest uppercase">
           Deck {label}
