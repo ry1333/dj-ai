@@ -519,8 +519,8 @@ export default function DJ() {
               <DeckControls label="B" deck={mixer.deckB} playing={bPlaying} fileName={bFileName} bpm={bBpm} progress={bProg} onBpmChange={setBBpm} onLoad={handleBLoad} onPlay={handleBPlay} onPause={handleBPause} onCue={handleBCue} />
             </div>
 
-            {/* AI MIX ASSISTANT */}
-            <div className="max-w-[1600px]">
+            {/* AI MIX ASSISTANT - Hidden, only used for analysis */}
+            <div className="hidden">
               <AIMixAssistant
                 trackAFile={aFile}
                 trackBFile={bFile}
