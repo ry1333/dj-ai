@@ -15,15 +15,15 @@ export function FilterChips({ activeFilters, onFilterChange }: FilterChipsProps)
   const chipClasses = (isActive: boolean) =>
     `px-3 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer ${
       isActive
-        ? 'bg-gradient-to-r from-cyan to-magenta text-ink border-transparent shadow-glow-cyan'
-        : 'border border-line text-secondary hover:border-cyan/30 hover:bg-surface hover:text-primary'
+        ? 'bg-gradient-to-r from-accentFrom to-accentTo text-ink border-transparent'
+        : 'border border-line text-muted hover:border-line/50 hover:bg-white/5'
     }`
 
   return (
     <div className="space-y-3">
       {/* Level filters */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-secondary font-semibold uppercase tracking-wider mr-2">
+        <span className="text-xs text-muted font-semibold uppercase tracking-wider mr-2">
           Level:
         </span>
         {levels.map((level) => (
@@ -41,7 +41,7 @@ export function FilterChips({ activeFilters, onFilterChange }: FilterChipsProps)
 
       {/* Duration filters */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-secondary font-semibold uppercase tracking-wider mr-2">
+        <span className="text-xs text-muted font-semibold uppercase tracking-wider mr-2">
           Duration:
         </span>
         {durations.map((duration) => (
@@ -59,7 +59,7 @@ export function FilterChips({ activeFilters, onFilterChange }: FilterChipsProps)
 
       {/* Topic filters */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-secondary font-semibold uppercase tracking-wider mr-2">
+        <span className="text-xs text-muted font-semibold uppercase tracking-wider mr-2">
           Topic:
         </span>
         {topics.map((topic) => (
@@ -83,7 +83,7 @@ export function FilterChips({ activeFilters, onFilterChange }: FilterChipsProps)
             onFilterChange('duration', null)
             onFilterChange('topic', null)
           }}
-          className="text-xs text-secondary hover:text-primary underline transition-colors"
+          className="text-xs text-muted hover:text-text underline transition-colors"
         >
           Clear all filters
         </button>

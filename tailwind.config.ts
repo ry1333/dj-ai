@@ -14,52 +14,65 @@ export default {
     },
     extend: {
       colors: {
-        // Base colors - HIGH CONTRAST
-        ink: 'hsl(var(--bg))',
-        surface: 'hsl(var(--surface))',
-        elevated: 'hsl(var(--surface-2))',
-        line: 'hsl(var(--border))',
+        // Electric Night - DJ Theme
+        ink: '#0A0A0F',        // deep black background
+        surface: '#1A1A24',    // elevated dark purple-black
+        elevated: '#252530',   // card surface
+        line: 'rgba(255,255,255,0.06)',  // subtle borders
+        text: '#F5F7FA',       // primary text
+        muted: 'rgba(255,255,255,0.4)',  // secondary text
 
-        // Text colors - HIGH CONTRAST
-        text: 'hsl(var(--text))',              // Bright white
-        'text-secondary': 'hsl(var(--text-secondary))', // Readable gray
-        'text-muted': 'hsl(var(--text-muted))',         // Muted gray
-
-        // Accent colors - Use sparingly!
+        // Accent colors
         cyan: {
-          DEFAULT: 'hsl(var(--accent-cyan))',
+          DEFAULT: '#00E5FF',
           50: '#E0F9FF',
           100: '#B3F0FF',
+          200: '#80E7FF',
+          300: '#4DDDFF',
+          400: '#26D4FF',
           500: '#00E5FF',
           600: '#00C2E0',
+          700: '#009FB8',
+          800: '#007C90',
+          900: '#005968',
         },
         magenta: {
-          DEFAULT: 'hsl(var(--accent-magenta))',
+          DEFAULT: '#E11D84',
           50: '#FFF0F7',
+          100: '#FFE0EF',
+          200: '#FFC1DF',
+          300: '#FFA2CF',
+          400: '#F563A7',
           500: '#E11D84',
           600: '#C0156F',
-        },
-        purple: {
-          DEFAULT: 'hsl(var(--accent-purple))',
-          500: '#9D5CFF',
+          700: '#9F0F5A',
+          800: '#7E0945',
+          900: '#5D0330',
         },
 
-        // Semantic colors
-        success: 'hsl(var(--success))',
-        warning: 'hsl(var(--warning))',
-        error: 'hsl(var(--error))',
-        info: 'hsl(var(--info))',
+        // Status colors
+        success: '#10B981',
+        warning: '#F59E0B',
+        error: '#EF4444',
+        info: '#3B82F6',
 
-        // Legacy compatibility
-        muted: 'hsl(var(--text-muted))',
-        rmxrtext: 'hsl(var(--text))',
-        rmxrborder: 'hsl(var(--border))',
+        // RMXR Theme Colors (legacy)
+        bg: "var(--bg)",
+        surface2: "var(--surface-2)",
+        rmxrborder: "var(--border)",
+        rmxrtext: "var(--text)",
         accent: {
           DEFAULT: "var(--accent)",
+          500: "var(--accent-500)",
+          400: "var(--accent-400)",
+          300: "var(--accent-300)",
         },
+        ok: "var(--ok)",
+        warn: "var(--warn)",
+        danger: "var(--danger)",
 
         // Shadcn compatibility
-        border: "hsl(var(--border))",
+        border: "var(--border)",  // --border is rgba, not HSL
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -95,20 +108,21 @@ export default {
         'gradient-radial': 'radial-gradient(circle, hsl(var(--gradient-cyan) / 0.2), transparent 70%)',
       },
       boxShadow: {
-        // Subtle elevation (cards, panels)
-        'elevation-1': '0 2px 8px rgba(0, 0, 0, 0.4)',
-        'elevation-2': '0 4px 16px rgba(0, 0, 0, 0.5)',
-        'elevation-3': '0 8px 32px rgba(0, 0, 0, 0.6)',
+        // Elevation system
+        'elevation-1': '0 2px 8px rgba(0, 0, 0, 0.3)',
+        'elevation-2': '0 4px 16px rgba(0, 0, 0, 0.4)',
+        'elevation-3': '0 8px 32px rgba(0, 0, 0, 0.5)',
+        'elevation-4': '0 16px 64px rgba(0, 0, 0, 0.6)',
 
-        // REDUCED glow effects (40-60% less intense)
-        'glow-cyan': '0 0 12px rgba(0, 229, 255, 0.25)',        // Was 0.4
-        'glow-magenta': '0 0 12px rgba(225, 29, 132, 0.25)',   // Was 0.4
-        'glow-cyan-strong': '0 0 20px rgba(0, 229, 255, 0.4)', // Was 0.6
-        'glow-magenta-strong': '0 0 20px rgba(225, 29, 132, 0.4)', // Was 0.6
+        // Glow effects
+        'glow-cyan': '0 0 20px rgba(0, 229, 255, 0.4), 0 0 40px rgba(0, 229, 255, 0.2)',
+        'glow-magenta': '0 0 20px rgba(225, 29, 132, 0.4), 0 0 40px rgba(225, 29, 132, 0.2)',
+        'glow-cyan-strong': '0 0 30px rgba(0, 229, 255, 0.6), 0 0 60px rgba(0, 229, 255, 0.3)',
+        'glow-magenta-strong': '0 0 30px rgba(225, 29, 132, 0.6), 0 0 60px rgba(225, 29, 132, 0.3)',
 
-        // Subtle neon effects - only for active states
-        'neon-cyan': '0 0 8px rgba(0, 229, 255, 0.3), inset 0 0 8px rgba(0, 229, 255, 0.1)',
-        'neon-magenta': '0 0 8px rgba(225, 29, 132, 0.3), inset 0 0 8px rgba(225, 29, 132, 0.1)',
+        // Neon effects
+        'neon-cyan': '0 0 20px rgba(0, 229, 255, 0.5), 0 0 40px rgba(0, 229, 255, 0.3)',
+        'neon-magenta': '0 0 20px rgba(225, 29, 132, 0.5), 0 0 40px rgba(225, 29, 132, 0.3)',
         'inner-glow': 'inset 0 0 20px rgba(255, 255, 255, 0.1)',
         'inner-dark': 'inset 0 2px 8px rgba(0, 0, 0, 0.4)',
       },

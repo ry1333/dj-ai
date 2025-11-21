@@ -93,47 +93,47 @@ export default function AuthPage() {
     <div className="min-h-screen grid lg:grid-cols-2 bg-ink">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex flex-col justify-center items-center p-12 bg-gradient-to-br from-surface via-ink to-ink relative overflow-hidden">
-        {/* Animated background orbs - SUBTLE */}
-        <div className="absolute top-20 left-20 w-64 h-64 bg-cyan/10 rounded-full blur-3xl animate-morph" />
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-magenta/10 rounded-full blur-3xl animate-morph" style={{ animationDelay: '4s' }} />
+        {/* Animated background orbs */}
+        <div className="absolute top-20 left-20 w-64 h-64 bg-accentFrom/20 rounded-full blur-3xl animate-morph" />
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-accentTo/20 rounded-full blur-3xl animate-morph" style={{ animationDelay: '4s' }} />
 
         <div className="relative z-10 max-w-md">
           <Link to="/" className="inline-block mb-8">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan to-magenta flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accentFrom to-accentTo flex items-center justify-center">
                   <svg className="w-10 h-10 text-ink animate-vinyl-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <circle cx="12" cy="12" r="10" strokeWidth="2" />
                     <circle cx="12" cy="12" r="3" fill="currentColor" />
                     <path d="M12 2v4M12 18v4M2 12h4M18 12h4" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </div>
-                <div className="absolute inset-0 bg-cyan/20 blur-xl rounded-full animate-pulse-ring" />
+                <div className="absolute inset-0 bg-accentFrom/30 blur-xl rounded-full animate-pulse-ring" />
               </div>
-              <h1 className="text-5xl font-bold gradient-text-cyan-magenta">RMXR</h1>
+              <h1 className="text-5xl font-bold gradient-text">RMXR</h1>
             </div>
           </Link>
 
-          <h2 className="text-4xl font-bold text-primary mb-4">
+          <h2 className="text-4xl font-bold text-text mb-4">
             Mix. Learn. Share.
           </h2>
-          <p className="text-secondary text-lg mb-8">
+          <p className="text-muted text-lg mb-8">
             The social platform for DJ creators. Create amazing mixes, learn from the pros, and share with the community.
           </p>
 
           {/* Social Proof */}
-          <div className="grid grid-cols-3 gap-6 p-6 rounded-2xl bg-surface/50 border border-line backdrop-blur-xl">
+          <div className="grid grid-cols-3 gap-6 p-6 rounded-2xl glass">
             <div>
-              <div className="text-3xl font-bold gradient-text-cyan-magenta">10K+</div>
-              <div className="text-sm text-secondary mt-1">Creators</div>
+              <div className="text-3xl font-bold gradient-text">10K+</div>
+              <div className="text-sm text-muted mt-1">Creators</div>
             </div>
             <div>
-              <div className="text-3xl font-bold gradient-text-cyan-magenta">50K+</div>
-              <div className="text-sm text-secondary mt-1">Mixes</div>
+              <div className="text-3xl font-bold gradient-text">50K+</div>
+              <div className="text-sm text-muted mt-1">Mixes</div>
             </div>
             <div>
-              <div className="text-3xl font-bold gradient-text-cyan-magenta">1M+</div>
-              <div className="text-sm text-secondary mt-1">Plays</div>
+              <div className="text-3xl font-bold gradient-text">1M+</div>
+              <div className="text-sm text-muted mt-1">Plays</div>
             </div>
           </div>
         </div>
@@ -145,23 +145,23 @@ export default function AuthPage() {
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan to-magenta flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accentFrom to-accentTo flex items-center justify-center">
                 <svg className="w-6 h-6 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <circle cx="12" cy="12" r="10" strokeWidth="2" />
                   <circle cx="12" cy="12" r="3" fill="currentColor" />
                 </svg>
               </div>
-              <span className="text-3xl font-bold gradient-text-cyan-magenta">RMXR</span>
+              <span className="text-3xl font-bold gradient-text">RMXR</span>
             </Link>
           </div>
 
-          {/* Auth Form - SUBTLE GLOW */}
-          <form onSubmit={handleSubmit} className="rounded-2xl border border-line bg-surface/50 backdrop-blur-xl p-8 space-y-5 shadow-glow-cyan">
+          {/* Auth Form */}
+          <form onSubmit={handleSubmit} className="rounded-2xl border border-line glass p-8 space-y-5 shadow-neon-cyan">
             <div>
-              <h2 className="text-2xl font-bold text-primary mb-1">
+              <h2 className="text-2xl font-bold text-text mb-1">
                 {mode === 'signIn' ? 'Sign In' : 'Create Account'}
               </h2>
-              <p className="text-secondary text-sm">
+              <p className="text-muted text-sm">
                 {mode === 'signIn' ? 'Enter your credentials to continue' : 'Start creating amazing mixes today'}
               </p>
             </div>

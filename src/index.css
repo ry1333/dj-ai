@@ -8,62 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Base colors - Deep charcoal instead of pure black for better contrast */
-    --bg: 222 25% 8%;              /* #0F1014 - Slightly lighter dark */
-    --surface: 222 22% 12%;         /* #1A1C24 - Cards/panels */
-    --surface-2: 222 20% 16%;       /* #242730 - Elevated surfaces */
-    --border: 0 0% 100% / 0.08;     /* Subtle white border */
+    /* Electric Night - DJ Theme */
+    --bg: #0A0A0F;          /* deep black */
+    --surface: #1A1A24;     /* elevated dark */
+    --surface-2: #252530;   /* card surface */
+    --border: rgba(255,255,255,0.06);
+    --text: #F5F7FA;
+    --muted: rgba(255,255,255,0.4);
 
-    /* Text - High contrast whites and grays */
-    --text: 0 0% 98%;               /* #FAFAFA - Primary text (bright white) */
-    --text-secondary: 0 0% 70%;     /* #B3B3B3 - Secondary text (readable gray) */
-    --text-muted: 0 0% 50%;         /* #808080 - Muted text */
-
-    /* Accent colors - Use SPARINGLY */
-    --accent-cyan: 188 100% 50%;    /* #00E5FF - Primary actions */
-    --accent-magenta: 330 80% 51%;  /* #E11D84 - Secondary actions */
-    --accent-purple: 270 70% 60%;   /* #9D5CFF - Tertiary */
-
-    /* Legacy hex values for compatibility */
-    --accent: #E11D84;      /* magenta */
+    /* Accent colors */
+    --accent: #E11D84;      /* magenta primary */
+    --accent-500: #E11D84;
+    --accent-400: #F563A7;
+    --accent-300: #FFA2CF;
     --cyan: #00E5FF;        /* electric cyan */
 
-    /* Semantic colors */
-    --success: 152 69% 39%;         /* Green */
-    --warning: 38 92% 50%;          /* Amber */
-    --error: 0 84% 60%;             /* Red */
-    --info: 217 91% 60%;            /* Blue */
-
-    /* Glow intensities - REDUCED */
-    --glow-subtle: 0 0 8px;
-    --glow-medium: 0 0 16px;
-    --glow-strong: 0 0 24px;
+    /* Status colors */
+    --ok: #10B981;          /* success green */
+    --warn: #F59E0B;        /* warning amber */
+    --danger: #EF4444;      /* error red */
+    --info: #3B82F6;        /* info blue */
 
     /* Gradients */
-    --gradient-cyan: 188 100% 50%;
-    --gradient-magenta: 330 80% 51%;
+    --gradient-cyan: 188 100% 50%;     /* cyan for HSL */
+    --gradient-magenta: 330 80% 51%;   /* magenta for HSL */
     --gradient-primary: linear-gradient(135deg, #00E5FF 0%, #E11D84 100%);
 
-    /* Shadcn compatibility - updated for better contrast */
-    --background: 222 25% 8%;
-    --foreground: 0 0% 98%;
-    --card: 222 22% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 222 22% 12%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 188 100% 50%;        /* Cyan as primary */
-    --primary-foreground: 222 25% 8%;
-    --secondary: 222 20% 16%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 222 20% 16%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 330 80% 51%;          /* Magenta as accent */
-    --accent-foreground: 0 0% 98%;
+    /* Glow colors */
+    --glow-cyan: 188 100% 50%;
+    --glow-magenta: 330 80% 51%;
+
+    /* Shadcn compatibility (HSL) */
+    --background: 243 25% 5%;
+    --foreground: 240 7% 93%;
+    --card: 243 25% 8%;
+    --card-foreground: 240 7% 93%;
+    --popover: 243 25% 8%;
+    --popover-foreground: 240 7% 93%;
+    --primary: 330 80% 51%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 243 22% 13%;
+    --secondary-foreground: 240 7% 93%;
+    --muted-foreground: 243 7% 65%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --input: 222 20% 20%;
-    --ring: 188 100% 50%;
-    --radius: 0.75rem;
+    --input: 243 20% 22%;
+    --ring: 330 80% 51%;
+    --radius: 1rem;
   }
 }
 
@@ -79,19 +70,6 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  /* Text hierarchy - high contrast */
-  .text-primary {
-    color: hsl(var(--text));
-  }
-
-  .text-secondary {
-    color: hsl(var(--text-secondary));
-  }
-
-  .text-muted {
-    color: hsl(var(--text-muted));
-  }
-
   /* Gradient utilities */
   .gradient-text {
     background: linear-gradient(135deg, #00E5FF, #E11D84);
@@ -112,34 +90,6 @@ All colors MUST be HSL.
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-
-  .gradient-text-cyan-magenta {
-    background: linear-gradient(135deg, hsl(var(--accent-cyan)), hsl(var(--accent-magenta)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Reduced glow effects */
-  .glow-subtle {
-    box-shadow: var(--glow-subtle) hsl(var(--accent-cyan) / 0.3);
-  }
-
-  .glow-cyan {
-    box-shadow: var(--glow-medium) hsl(var(--accent-cyan) / 0.4);
-  }
-
-  .glow-magenta {
-    box-shadow: var(--glow-medium) hsl(var(--accent-magenta) / 0.4);
-  }
-
-  .glow-cyan-strong {
-    box-shadow: var(--glow-strong) hsl(var(--accent-cyan) / 0.5);
-  }
-
-  .glow-magenta-strong {
-    box-shadow: var(--glow-strong) hsl(var(--accent-magenta) / 0.5);
   }
 
   .gradient-bg {
