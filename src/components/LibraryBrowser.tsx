@@ -77,9 +77,9 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-ink">
+    <div className="flex-1 flex flex-col bg-ink overflow-hidden">
       {/* Library Header */}
-      <div className="px-6 py-4 border-b border-line bg-surface">
+      <div className="px-6 py-4 border-b border-line bg-surface shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-text">Library</h2>
           <span className="text-sm text-muted">{filteredTracks.length} tracks</span>
@@ -98,7 +98,7 @@ export default function LibraryBrowser({ onLoadA, onLoadB }: Props) {
       </div>
 
       {/* Genre Filter Pills */}
-      <div className="px-6 py-3 border-b border-line bg-surface flex items-center gap-2 overflow-x-auto">
+      <div className="px-6 py-3 border-b border-line bg-surface flex items-center gap-2 overflow-x-auto shrink-0">
         <span className="text-xs text-muted font-semibold uppercase tracking-wider mr-2 shrink-0">
           Genre:
         </span>
