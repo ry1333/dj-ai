@@ -11,6 +11,7 @@ import MixerCenter from '../components/MixerCenter';
 import LibraryBrowser from '../components/LibraryBrowser';
 import AIMixAssistant from '../components/AIMixAssistant';
 import AICoPilotV2 from '../components/AICoPilotV2';
+import StudioDock from '../components/StudioDock';
 import type { MixingSuggestion } from '../lib/ai/mixingSuggestions';
 import { Headphones, Music, Sparkles, ChevronDown, ChevronUp, Home, Mic, Flame, Moon, Zap, Wind, Circle, Maximize, Radio, BookOpen, Bot } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -506,18 +507,26 @@ export default function DJ() {
 
         {/* Studio Tab - Primary DJ Interface */}
         <TabsContent value="studio" className="flex-1 flex flex-col m-0 p-0 overflow-hidden">
-          {/* DJ STUDIO */}
-          <div className="w-full px-2 md:px-4 py-2 md:py-4 overflow-y-auto">
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-2 md:gap-4 lg:gap-6 items-start max-w-full">
-              {/* Left Deck (A) */}
-              <DeckControls label="A" deck={mixer.deckA} playing={aPlaying} fileName={aFileName} bpm={aBpm} progress={aProg} onBpmChange={setABpm} onLoad={handleALoad} onPlay={handleAPlay} onPause={handleAPause} onCue={handleACue} />
+          {/* DJ STUDIO - STAGE + DOCK LAYOUT */}
+          <main className="flex-1 flex flex-col items-center px-4 md:px-6 pb-4 overflow-hidden">
+            {/* STAGE - Performance Layer (Decks + Mixer) */}
+            <section className="w-full max-w-7xl flex-1 flex items-center justify-center mb-4">
+              <div className="w-full h-full max-h-[600px]">
+                <div className="grid h-full grid-cols-[1fr_auto_1fr] gap-3 md:gap-4 lg:gap-6 items-start">
+                  {/* Left Deck (A) */}
+                  <DeckControls label="A" deck={mixer.deckA} playing={aPlaying} fileName={aFileName} bpm={aBpm} progress={aProg} onBpmChange={setABpm} onLoad={handleALoad} onPlay={handleAPlay} onPause={handleAPause} onCue={handleACue} />
 
-              {/* Center Mixer */}
-              <MixerCenter mixer={mixer} crossfader={xf} onCrossfaderChange={handleCrossfaderChange} masterVol={masterVol} onMasterVolChange={handleMasterVolChange} aBpm={aBpm} bBpm={bBpm} onSync={syncBtoA} isRecording={isRecording} />
+                  {/* Center Mixer */}
+                  <MixerCenter mixer={mixer} crossfader={xf} onCrossfaderChange={handleCrossfaderChange} masterVol={masterVol} onMasterVolChange={handleMasterVolChange} aBpm={aBpm} bBpm={bBpm} onSync={syncBtoA} isRecording={isRecording} />
 
-              {/* Right Deck (B) */}
-              <DeckControls label="B" deck={mixer.deckB} playing={bPlaying} fileName={bFileName} bpm={bBpm} progress={bProg} onBpmChange={setBBpm} onLoad={handleBLoad} onPlay={handleBPlay} onPause={handleBPause} onCue={handleBCue} />
-            </div>
+                  {/* Right Deck (B) */}
+                  <DeckControls label="B" deck={mixer.deckB} playing={bPlaying} fileName={bFileName} bpm={bBpm} progress={bProg} onBpmChange={setBBpm} onLoad={handleBLoad} onPlay={handleBPlay} onPause={handleBPause} onCue={handleBCue} />
+                </div>
+              </div>
+            </section>
+
+            {/* DOCK - Support Layer (Library, AI Mix, Assistant) */}
+            <StudioDock className="w-full max-w-7xl" onLoadTrackA={handleALoad} onLoadTrackB={handleBLoad} />
 
             {/* AI MIX ASSISTANT - Hidden, only used for analysis */}
             <div className="hidden">
@@ -531,7 +540,7 @@ export default function DJ() {
                 onCoPilotToggle={setCoPilotActive}
               />
             </div>
-          </div>
+          </main>
         </TabsContent>
 
         {/* Floating Co-Pilot Button - Always visible when suggestions exist (rendered at page level) */}
