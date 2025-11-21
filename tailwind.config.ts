@@ -14,15 +14,18 @@ export default {
     },
     extend: {
       colors: {
-        // Electric Night - DJ Theme
-        ink: '#0A0A0F',        // deep black background
-        surface: '#1A1A24',    // elevated dark purple-black
-        elevated: '#252530',   // card surface
-        line: 'rgba(255,255,255,0.06)',  // subtle borders
-        text: '#F5F7FA',       // primary text
-        muted: 'rgba(255,255,255,0.4)',  // secondary text
+        // Base colors - HSL values for dark theme
+        ink: 'hsl(var(--bg))',              // Nearly black background
+        surface: 'hsl(var(--surface))',     // Elevated dark
+        elevated: 'hsl(var(--surface-2))',  // Card surface
+        line: 'hsl(var(--border))',         // Subtle borders
 
-        // Accent colors
+        // Text colors - HIGH CONTRAST
+        text: 'hsl(var(--text))',           // Bright white #FAFAFA
+        'text-secondary': 'hsl(var(--text-secondary))', // Gray #B3B3B3
+        muted: 'hsl(var(--muted))',         // Muted gray #808080
+
+        // Accent colors - Cyan/Magenta
         cyan: {
           DEFAULT: '#00E5FF',
           50: '#E0F9FF',
@@ -50,52 +53,54 @@ export default {
           900: '#5D0330',
         },
 
-        // Status colors
-        success: '#10B981',
-        warning: '#F59E0B',
-        error: '#EF4444',
-        info: '#3B82F6',
+        // Status colors - HSL
+        success: 'hsl(var(--ok))',
+        warning: 'hsl(var(--warn))',
+        error: 'hsl(var(--danger))',
+        info: 'hsl(var(--info))',
 
-        // RMXR Theme Colors (legacy)
-        bg: "var(--bg)",
-        surface2: "var(--surface-2)",
-        rmxrborder: "var(--border)",
-        rmxrtext: "var(--text)",
+        // Legacy compatibility (for existing components)
+        bg: 'hsl(var(--bg))',
+        surface2: 'hsl(var(--surface-2))',
+        rmxrborder: 'hsl(var(--border))',
+        rmxrtext: 'hsl(var(--text))',
         accent: {
-          DEFAULT: "var(--accent)",
-          500: "var(--accent-500)",
-          400: "var(--accent-400)",
-          300: "var(--accent-300)",
+          DEFAULT: 'var(--accent)',
+          500: 'var(--accent-500)',
+          400: 'var(--accent-400)',
+          300: 'var(--accent-300)',
         },
-        ok: "var(--ok)",
-        warn: "var(--warn)",
-        danger: "var(--danger)",
+        accentFrom: 'var(--accentFrom)',
+        accentTo: 'var(--accentTo)',
+        ok: 'hsl(var(--ok))',
+        warn: 'hsl(var(--warn))',
+        danger: 'hsl(var(--danger))',
 
-        // Shadcn compatibility
-        border: "var(--border)",  // --border is rgba, not HSL
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // Shadcn UI compatibility
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
         },
       },
       fontFamily: {

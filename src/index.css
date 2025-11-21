@@ -8,53 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Electric Night - DJ Theme */
-    --bg: #0A0A0F;          /* deep black */
-    --surface: #1A1A24;     /* elevated dark */
-    --surface-2: #252530;   /* card surface */
-    --border: rgba(255,255,255,0.06);
-    --text: #F5F7FA;
-    --muted: rgba(255,255,255,0.4);
+    /* Base colors - Pure black backgrounds with HSL values */
+    --bg: 0 0% 4%;                  /* #0A0A0A - Nearly black */
+    --surface: 0 0% 9%;             /* #171717 - Slightly elevated */
+    --surface-2: 0 0% 12%;          /* #1F1F1F - Cards */
+    --border: 0 0% 100% / 0.08;     /* Subtle white border */
 
-    /* Accent colors */
-    --accent: #E11D84;      /* magenta primary */
+    /* Text - HIGH CONTRAST for readability */
+    --text: 0 0% 98%;               /* #FAFAFA - Bright white for primary text */
+    --text-secondary: 0 0% 70%;     /* #B3B3B3 - Readable gray for secondary text */
+    --muted: 0 0% 50%;              /* #808080 - Muted gray */
+
+    /* Accent colors - Cyan/Magenta theme (HSL) */
+    --accent-cyan: 188 100% 50%;    /* #00E5FF */
+    --accent-magenta: 330 80% 51%;  /* #E11D84 */
+
+    /* Legacy hex values for components that expect them */
+    --accent: #E11D84;
     --accent-500: #E11D84;
     --accent-400: #F563A7;
     --accent-300: #FFA2CF;
-    --cyan: #00E5FF;        /* electric cyan */
+    --cyan: #00E5FF;
+    --accentFrom: #00E5FF;
+    --accentTo: #E11D84;
 
-    /* Status colors */
-    --ok: #10B981;          /* success green */
-    --warn: #F59E0B;        /* warning amber */
-    --danger: #EF4444;      /* error red */
-    --info: #3B82F6;        /* info blue */
+    /* Status colors (HSL) */
+    --ok: 152 69% 39%;              /* #10B981 - Success green */
+    --warn: 38 92% 50%;             /* #F59E0B - Warning amber */
+    --danger: 0 84% 60%;            /* #EF4444 - Error red */
+    --info: 217 91% 60%;            /* #3B82F6 - Info blue */
 
-    /* Gradients */
-    --gradient-cyan: 188 100% 50%;     /* cyan for HSL */
-    --gradient-magenta: 330 80% 51%;   /* magenta for HSL */
+    /* Gradient values */
+    --gradient-cyan: 188 100% 50%;
+    --gradient-magenta: 330 80% 51%;
     --gradient-primary: linear-gradient(135deg, #00E5FF 0%, #E11D84 100%);
 
     /* Glow colors */
     --glow-cyan: 188 100% 50%;
     --glow-magenta: 330 80% 51%;
 
-    /* Shadcn compatibility (HSL) */
-    --background: 243 25% 5%;
-    --foreground: 240 7% 93%;
-    --card: 243 25% 8%;
-    --card-foreground: 240 7% 93%;
-    --popover: 243 25% 8%;
-    --popover-foreground: 240 7% 93%;
+    /* Shadcn UI compatibility (HSL) */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
     --primary: 330 80% 51%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 243 22% 13%;
-    --secondary-foreground: 240 7% 93%;
-    --muted-foreground: 243 7% 65%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted-foreground: 0 0% 70%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --input: 243 20% 22%;
-    --ring: 330 80% 51%;
-    --radius: 1rem;
+    --input: 0 0% 12%;
+    --ring: 188 100% 50%;
+    --radius: 0.75rem;
   }
 }
 
