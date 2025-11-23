@@ -432,9 +432,19 @@ export default function DJ() {
   return <div className="h-screen flex flex-col bg-bg text-rmxrtext overflow-hidden">
       {/* PERSISTENT TOP CONTROLS BAR */}
       <div className="h-12 bg-surface border-b border-rmxrborder flex items-center justify-between px-8">
-        {/* Left: Brand (no link) */}
-        <div className="text-xl font-bold gradient-text">
-          RMXR
+        {/* Left: Home button + Brand */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => nav('/listen')}
+            className="p-2 rounded-lg text-muted hover:text-accent hover:bg-surface2 transition-all"
+            title="Return to Listen"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+          <div className="w-px h-6 bg-rmxrborder" />
+          <div className="text-xl font-bold gradient-text">
+            RMXR
+          </div>
         </div>
 
         {/* Center: Recording Timer (only when recording) */}

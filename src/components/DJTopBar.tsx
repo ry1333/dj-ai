@@ -1,4 +1,4 @@
-import { Circle, Settings, Maximize, BarChart3 } from 'lucide-react'
+import { Circle, Settings, Maximize, BarChart3, Home } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface DJTopBarProps {
@@ -6,9 +6,10 @@ interface DJTopBarProps {
   onRecordToggle: () => void
   vuLevel: number
   onSettingsClick?: () => void
+  onHomeClick?: () => void
 }
 
-export default function DJTopBar({ isRecording, onRecordToggle, vuLevel, onSettingsClick }: DJTopBarProps) {
+export default function DJTopBar({ isRecording, onRecordToggle, vuLevel, onSettingsClick, onHomeClick }: DJTopBarProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
@@ -54,8 +55,20 @@ export default function DJTopBar({ isRecording, onRecordToggle, vuLevel, onSetti
 
       {/* Content */}
       <div className="relative h-full px-4 flex items-center justify-between">
-        {/* Left: Title */}
+        {/* Left: Home button + Title */}
         <div className="flex items-center gap-3">
+          {/* Home button */}
+          <button
+            onClick={onHomeClick}
+            className="p-2 rounded-lg text-muted hover:text-magenta hover:bg-card transition-all"
+            title="Return to Listen"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-line" />
+
           <h1 className="text-lg font-bold text-text">DJ STUDIO</h1>
         </div>
 
