@@ -137,15 +137,15 @@ export default function LocalTrackLibrary({ onSelect }: LocalTrackLibraryProps) 
   return (
     <div className="space-y-3">
       {/* Genre Filter */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         {genres.map((genre) => (
           <button
             key={genre}
             onClick={() => setSelectedGenre(genre)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+            className={`px-3 py-1 rounded-full border text-xs transition-colors whitespace-nowrap ${
               selectedGenre === genre
-                ? 'bg-gradient-to-r from-cyan to-magenta text-ink shadow-glow-cyan'
-                : 'bg-surface border border-line text-muted hover:text-text hover:border-accent/50'
+                ? 'border-zinc-500 bg-zinc-800 text-white shadow-lg'
+                : 'border-zinc-700 bg-zinc-900/50 text-zinc-400 hover:text-white hover:border-zinc-500'
             }`}
           >
             {genre.charAt(0).toUpperCase() + genre.slice(1)}
@@ -154,45 +154,26 @@ export default function LocalTrackLibrary({ onSelect }: LocalTrackLibraryProps) 
       </div>
 
       {/* Track List */}
-      <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-accent/30 scrollbar-track-surface">
+      <div className="space-y-1 max-h-64 overflow-y-auto pr-1">
         {filteredTracks.map((track) => (
           <button
             key={track.fileName}
             onClick={() => handleTrackClick(track)}
-            className="w-full p-3 rounded-lg border border-line hover:border-cyan bg-surface/50 hover:bg-surface text-left transition-all group"
+            className="group w-full px-2 py-3 rounded-lg hover:bg-zinc-800/50 transition-colors border-l-2 border-transparent hover:border-cyan text-left"
           >
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-3">
+              <div className="w-2 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full text-cyan opacity-0 group-hover:opacity-100">•</div>
+              </div>
+
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-text text-sm truncate group-hover:text-cyan transition-colors">
-                  {track.title}
-                </div>
-                <div className="text-xs text-muted/80 truncate">
-                  {track.artist}
-                </div>
-                <div className="flex items-center gap-2 mt-1 text-xs text-muted">
-                  <span className="px-1.5 py-0.5 rounded bg-cyan/10 text-cyan font-medium">
-                    {track.bpm} BPM
-                  </span>
-                  <span>•</span>
-                  <span>{track.genre}</span>
-                  <span>•</span>
-                  <span>{track.key}</span>
-                  {track.duration && (
-                    <>
-                      <span>•</span>
-                      <span>{track.duration}</span>
-                    </>
-                  )}
-                </div>
-                {track.license && (
-                  <div className="text-[10px] text-muted/60 mt-1">
-                    {track.license}
-                  </div>
-                )}
+                <div className="text-sm font-medium text-zinc-200">{track.title}</div>
+                <div className="text-xs text-zinc-500">{track.artist}</div>
               </div>
-              <div className="flex items-center gap-2">
-                <Play className="w-4 h-4 text-cyan opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
+
+              <div className="text-xs font-mono text-zinc-400">{track.bpm.toFixed(1)}</div>
+              <div className="text-xs font-mono text-zinc-400 w-8">{track.key}</div>
+              <div className="text-xs font-mono text-zinc-400">{track.duration || '0:15'}</div>
             </div>
           </button>
         ))}

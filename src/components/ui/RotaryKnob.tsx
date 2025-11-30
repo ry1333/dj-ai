@@ -9,6 +9,7 @@ type Props = {
   label?: string
   unit?: string
   size?: number
+  deckId?: 'A' | 'B'
 }
 
 export default function RotaryKnob({
@@ -19,7 +20,8 @@ export default function RotaryKnob({
   onChange,
   label,
   unit = '',
-  size = 64
+  size = 64,
+  deckId
 }: Props) {
   const knobRef = useRef<HTMLDivElement>(null)
   const startY = useRef<number>(0)
@@ -79,93 +81,63 @@ export default function RotaryKnob({
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      {/* Label */}
-      {label && (
-        <div className="text-[10px] uppercase text-muted font-semibold tracking-wider">
-          {label}
-        </div>
-      )}
-
-      {/* Knob */}
+    <div className="flex flex-col items-center gap-2 select-none group">
+      {/* Knob Container with Progress Ring */}
       <div
         ref={knobRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        className="relative cursor-ns-resize select-none"
-        style={{ width: size, height: size, touchAction: 'none' }}
+        className="relative cursor-ns-resize"
+        style={{ width: size + 8, height: size + 8, touchAction: 'none' }}
       >
-        {/* SVG Knob */}
-        <svg
-          width={size}
-          height={size}
-          viewBox="0 0 100 100"
-          className="transform transition-transform duration-100"
-          style={{ transform: `rotate(${angle}deg)` }}
-        >
-          <defs>
-            {/* Metallic gray gradient */}
-            <radialGradient id={`knobGradient-${label}`} cx="30%" cy="30%">
-              <stop offset="0%" stopColor="#71717a" />
-              <stop offset="50%" stopColor="#52525b" />
-              <stop offset="100%" stopColor="#3f3f46" />
-            </radialGradient>
-            {/* Highlight */}
-            <radialGradient id={`highlightGradient-${label}`} cx="30%" cy="20%">
-              <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
-              <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-            </radialGradient>
-          </defs>
-
-          {/* Main knob body - gray metallic */}
+        {/* Progress Ring Background */}
+        <svg className="absolute w-full h-full p-1 rotate-[135deg]" viewBox="0 0 100 100">
+          {/* Background arc */}
           <circle
             cx="50"
             cy="50"
-            r="45"
-            fill={`url(#knobGradient-${label})`}
-            stroke="rgba(0,0,0,0.6)"
-            strokeWidth="2"
+            r="42"
+            fill="none"
+            stroke="#27272a"
+            strokeWidth="6"
+            strokeDasharray="264"
+            strokeDashoffset="66"
           />
-
-          {/* Highlight overlay */}
+          {/* Progress arc - magenta/cyan based on deckId */}
           <circle
             cx="50"
             cy="50"
-            r="45"
-            fill={`url(#highlightGradient-${label})`}
-          />
-
-          {/* Position indicator line - white */}
-          <line
-            x1="50"
-            y1="15"
-            x2="50"
-            y2="35"
-            stroke="white"
-            strokeWidth="3"
+            r="42"
+            fill="none"
+            stroke={deckId === 'A' ? '#d946ef' : deckId === 'B' ? '#06b6d4' : '#71717a'}
+            strokeWidth="6"
             strokeLinecap="round"
-          />
-
-          {/* Center dot */}
-          <circle
-            cx="50"
-            cy="50"
-            r="6"
-            fill="rgba(0,0,0,0.6)"
-            stroke="rgba(255,255,255,0.2)"
-            strokeWidth="1"
+            strokeDasharray="264"
+            strokeDashoffset={264 - percentage * 198}
+            className="transition-all duration-75"
           />
         </svg>
 
-        {/* Subtle outer shadow */}
+        {/* Knob Body */}
         <div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            boxShadow: '0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
-          }}
-        />
+          className="absolute inset-0 m-auto w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full bg-dark-700 shadow-inner-knob flex items-start justify-center pt-1"
+          style={{ transform: `rotate(${angle}deg)` }}
+        >
+          {/* Position indicator */}
+          <div className="w-1 h-3 rounded-full bg-white"></div>
+        </div>
+
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 m-auto w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
       </div>
+
+      {/* Label */}
+      {label && (
+        <span className="text-xs font-mono text-zinc-400 group-hover:text-white transition-colors">
+          {label}
+        </span>
+      )}
 
       {/* Value Display */}
       <div className="text-xs font-mono font-bold text-white">

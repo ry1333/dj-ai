@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Deck } from '../dj/components/Deck'
-import { Mixer } from '../dj/components/Mixer'
+import { StudioDeck } from '../dj/components/StudioDeck'
+import { StudioMixer } from '../dj/components/StudioMixer'
 import { StudioFooter } from '../dj/components/StudioFooter'
 import { useDJ } from '../dj/store'
 
@@ -17,106 +17,49 @@ export default function DJStudio() {
   }, [updatePositions])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ink via-surface to-ink text-text pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-ink via-surface to-ink text-text">
       {/* Header */}
       <div className="border-b border-line bg-surface/50 backdrop-blur-lg sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accentFrom to-accentTo bg-clip-text text-transparent">
-                DJ Studio
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent">
+                RMXR
               </h1>
-              <p className="text-sm text-muted mt-1">Load, mix, record, and publish — all in one place</p>
+              <div className="flex gap-1">
+                <button className="px-6 py-2 text-sm font-medium text-text border-b-2 border-pink-500">
+                  Studio
+                </button>
+                <button className="px-6 py-2 text-sm font-medium text-muted hover:text-text">
+                  AI Mix
+                </button>
+                <button className="px-6 py-2 text-sm font-medium text-muted hover:text-text">
+                  Library
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="hidden sm:block text-xs text-muted">
-                <div className="font-semibold text-text">Pro Workflow</div>
-                <div>Dual decks • 3-band EQ • Live recording</div>
-              </div>
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-sm font-medium text-text">REC</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Studio Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Desktop: 3-column grid */}
-        <div className="hidden lg:grid lg:grid-cols-3 gap-6">
-          <Deck id="A" />
-          <Mixer />
-          <Deck id="B" />
+      {/* Main Studio Layout: 3-Column Horizontal */}
+      <div className="h-[calc(100vh-73px)] grid grid-cols-[1fr,auto,1fr] gap-6 p-6">
+        {/* Left: Deck A */}
+        <StudioDeck id="A" />
+
+        {/* Center: Mixer */}
+        <div className="w-[500px]">
+          <StudioMixer />
         </div>
 
-        {/* Tablet: 2-column grid with mixer below */}
-        <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-6">
-          <Deck id="A" />
-          <Deck id="B" />
-          <div className="md:col-span-2">
-            <Mixer />
-          </div>
-        </div>
-
-        {/* Mobile: stacked layout */}
-        <div className="md:hidden space-y-6">
-          <Mixer />
-          <Deck id="A" />
-          <Deck id="B" />
-        </div>
-
-        {/* Quick Start Guide */}
-        <div className="mt-8 rounded-2xl border border-line bg-card/30 backdrop-blur-sm p-6">
-          <h3 className="text-lg font-bold text-text mb-4">Quick Start Guide</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accentFrom to-accentTo flex items-center justify-center text-ink font-bold">
-                1
-              </div>
-              <div className="font-semibold text-text">Load Tracks</div>
-              <div className="text-muted">Click "Load" on each deck to upload audio files</div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accentFrom to-accentTo flex items-center justify-center text-ink font-bold">
-                2
-              </div>
-              <div className="font-semibold text-text">Prepare Mix</div>
-              <div className="text-muted">Adjust pitch and EQ on both decks</div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accentFrom to-accentTo flex items-center justify-center text-ink font-bold">
-                3
-              </div>
-              <div className="font-semibold text-text">Mix & Record</div>
-              <div className="text-muted">Play tracks, use crossfader, hit Record</div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accentFrom to-accentTo flex items-center justify-center text-ink font-bold">
-                4
-              </div>
-              <div className="font-semibold text-text">Publish</div>
-              <div className="text-muted">Stop recording and share your mix</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tips Card */}
-        <div className="mt-6 rounded-xl border border-line/50 bg-surface/20 p-4 text-sm">
-          <div className="font-semibold text-text mb-2">💡 Pro Tips</div>
-          <ul className="text-muted space-y-1 list-disc list-inside">
-            <li>Match BPMs using pitch controls before mixing</li>
-            <li>Cut lows on one track when mixing two bass-heavy tracks</li>
-            <li>Use the crossfader during breakdowns for smooth transitions</li>
-            <li>Record multiple takes - you can always delete and try again</li>
-            <li>Need tracks? Try the <span className="text-accentFrom font-semibold">AI Generate Mix</span> button below</li>
-          </ul>
-        </div>
+        {/* Right: Deck B */}
+        <StudioDeck id="B" />
       </div>
-
-      {/* Footer with Recording Controls */}
-      <StudioFooter />
     </div>
   )
 }

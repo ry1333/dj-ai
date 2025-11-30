@@ -12,11 +12,14 @@ import LibraryBrowser from '../components/LibraryBrowser';
 import AIMixAssistant from '../components/AIMixAssistant';
 import AICoPilotV2 from '../components/AICoPilotV2';
 import type { MixingSuggestion } from '../lib/ai/mixingSuggestions';
-import { Headphones, Music, Sparkles, ChevronDown, ChevronUp, Home, Mic, Flame, Moon, Zap, Wind, Circle, Maximize, Radio, BookOpen, Bot, Check, Play, ExternalLink } from 'lucide-react';
+import { Headphones, Music, Sparkles, ChevronDown, ChevronUp, Home, Mic, Flame, Moon, Zap, Wind, Circle, Maximize, Radio, BookOpen, Bot, Check, Play, ExternalLink, Disc } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { useMixer } from '../contexts/MixerContext';
+import StudioWrapper from '../components/StudioWrapper';
 // TopBar removed for clean immersive DJ interface
 import { selectLoopsForMix, getTargetBPM, getCrossfaderAutomation, getEQAutomation, type MixPreferences } from '../lib/audio/autoMixGenerator';
+import { generateAIMix } from '../lib/ai/mockAIMix';
+import type { AIMixResponse } from '../lib/ai/types';
 export default function DJ() {
   const nav = useNavigate();
   const [searchParams] = useSearchParams();
@@ -62,6 +65,8 @@ export default function DJ() {
   const [energy, setEnergy] = useState<'chill' | 'medium' | 'club'>('medium');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStatus, setGenerationStatus] = useState('');
+  const [mixDescription, setMixDescription] = useState('');
+  const [aiMixResult, setAiMixResult] = useState<AIMixResponse | null>(null);
   const raf = useRef<number | null>(null);
 
   // Tab state
@@ -283,112 +288,41 @@ export default function DJ() {
     setCaption('');
   }
 
-  // AI Generation
+  // AI Generation - New Mock API Flow
   async function handleAIGenerate() {
     setIsGenerating(true);
-    setGenerationStatus('Selecting perfect loops...');
+    setGenerationStatus('Analyzing your vibe...');
+    setAiMixResult(null); // Clear previous result
+
     try {
-      const prefs: MixPreferences = {
-        genre,
-        energy,
-        length: 30
+      // Map energy values: 'medium' → 'groove', keep 'chill' and 'club'
+      const energyMapping = {
+        'chill': 'chill' as const,
+        'medium': 'groove' as const,
+        'club': 'club' as const
       };
-      const {
-        deckA,
-        deckB
-      } = selectLoopsForMix(prefs);
-      setGenerationStatus(`Loading ${deckA.name} and ${deckB.name}...`);
 
-      // Load into decks
-      await mixer.deckA.loadFromUrl(deckA.path);
-      await mixer.deckB.loadFromUrl(deckB.path);
-      setAFileName(deckA.name);
-      setBFileName(deckB.name);
-      setABpm(deckA.bpm);
-      setBBpm(deckB.bpm);
-      setGenerationStatus('Mixing tracks...');
+      // Call new AI Mix API
+      const response = await generateAIMix({
+        description: mixDescription,
+        genreHint: genre,
+        energyHint: energyMapping[energy],
+        lengthSeconds: 30
+      });
 
-      // Set target BPM and sync
-      const targetBPM = getTargetBPM(energy);
-      const rateA = targetBPM / deckA.bpm;
-      const rateB = targetBPM / deckB.bpm;
-      mixer.deckA.setRate(rateA);
-      mixer.deckB.setRate(rateB);
-
-      // Start both decks
-      mixer.deckA.play();
-      mixer.deckB.play();
-      setAPlaying(true);
-      setBPlaying(true);
-
-      // Start recording
-      mixer.startRecording();
-      setIsRecording(true);
-      setRecordingTime(0);
-
-      // Start recording timer
-      recordingTimerRef.current = window.setInterval(() => {
-        setRecordingTime(prev => {
-          const newTime = prev + 1;
-          if (newTime >= MAX_RECORDING_TIME) {
-            handleRecord(); // Auto-stop
-          }
-          return newTime;
-        });
-      }, 1000);
-
-      // Apply automated mixing over time
-      const length = 30;
-      const automationSteps = 60;
-      const stepDuration = length * 1000 / automationSteps;
-      const crossfaderPoints = getCrossfaderAutomation(length);
-      const eqAPoints = getEQAutomation('A', length);
-      const eqBPoints = getEQAutomation('B', length);
-      for (let i = 0; i <= automationSteps; i++) {
-        const currentTime = i / automationSteps * length;
-
-        // Interpolate crossfader
-        const cfValue = interpolateAutomation(crossfaderPoints, currentTime);
-        mixer.setCrossfade(cfValue);
-        setXf(cfValue);
-
-        // Interpolate EQ for deck A
-        const eqA = interpolateEQAutomation(eqAPoints, currentTime);
-        mixer.deckA.setEQ(eqA);
-
-        // Interpolate EQ for deck B
-        const eqB = interpolateEQAutomation(eqBPoints, currentTime);
-        mixer.deckB.setEQ(eqB);
-
-        // Update status
-        if (i % 10 === 0) {
-          const progress = Math.round(i / automationSteps * 100);
-          setGenerationStatus(`Mixing... ${progress}%`);
-        }
-        await new Promise(resolve => setTimeout(resolve, stepDuration));
+      if (response.success) {
+        setAiMixResult(response);
+        setGenerationStatus('');
+        toast.success('AI mix generated! Listen below.');
+      } else {
+        throw new Error(response.error || 'Generation failed');
       }
-      setGenerationStatus('Finalizing mix...');
-
-      // Stop recording
-      const blob = await mixer.stopRecording();
-      setRecordedBlob(blob);
-      setIsRecording(false);
-      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-      mixer.deckA.pause();
-      mixer.deckB.pause();
-      setAPlaying(false);
-      setBPlaying(false);
-      setGenerationStatus('Mix ready!');
-      toast.success('AI mix generated! Click publish to share.');
-      setShowPublishModal(true);
-      setShowAIPanel(false);
     } catch (error) {
       console.error('Generation error:', error);
       toast.error('Failed to generate mix. Please try again.');
       setGenerationStatus('');
-      setIsRecording(false);
-      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
     }
+
     setIsGenerating(false);
   }
   function interpolateAutomation(points: Array<{
@@ -514,33 +448,10 @@ export default function DJ() {
           </TabsList>
         </div>
 
-        {/* Studio Tab - Primary DJ Interface */}
-        <TabsContent value="studio" className="flex-1 flex flex-col m-0 p-0 overflow-hidden">
-          {/* DJ STUDIO */}
-          <div className="w-full px-2 md:px-4 py-2 md:py-4 overflow-y-auto">
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-2 md:gap-4 lg:gap-6 items-start max-w-full">
-              {/* Left Deck (A) */}
-              <DeckControls label="A" deck={mixer.deckA} playing={aPlaying} fileName={aFileName} bpm={aBpm} progress={aProg} onBpmChange={setABpm} onLoad={handleALoad} onPlay={handleAPlay} onPause={handleAPause} onCue={handleACue} />
-
-              {/* Center Mixer */}
-              <MixerCenter mixer={mixer} crossfader={xf} onCrossfaderChange={handleCrossfaderChange} masterVol={masterVol} onMasterVolChange={handleMasterVolChange} aBpm={aBpm} bBpm={bBpm} onSync={syncBtoA} isRecording={isRecording} />
-
-              {/* Right Deck (B) */}
-              <DeckControls label="B" deck={mixer.deckB} playing={bPlaying} fileName={bFileName} bpm={bBpm} progress={bProg} onBpmChange={setBBpm} onLoad={handleBLoad} onPlay={handleBPlay} onPause={handleBPause} onCue={handleBCue} />
-            </div>
-
-            {/* AI MIX ASSISTANT - Hidden, only used for analysis */}
-            <div className="hidden">
-              <AIMixAssistant
-                trackAFile={aFile}
-                trackBFile={bFile}
-                geminiApiKey={import.meta.env.VITE_GEMINI_API_KEY}
-                trackADuration={mixer.deckA.buffer?.duration || 0}
-                trackBDuration={mixer.deckB.buffer?.duration || 0}
-                onSuggestionsChange={setAiSuggestions}
-                onCoPilotToggle={setCoPilotActive}
-              />
-            </div>
+        {/* Studio Tab - Pro Studio Interface */}
+        <TabsContent value="studio" className="flex-1 m-0 p-0 overflow-hidden">
+          <div className="h-full w-full bg-[#0f0f11] p-4 overflow-y-auto">
+            <StudioWrapper />
           </div>
         </TabsContent>
 
@@ -592,13 +503,31 @@ export default function DJ() {
                   </div>
                 </div>
 
+                {/* Description Input */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-text">
+                    Describe your vibe
+                    <span className="text-xs text-muted font-normal ml-2">(or use the presets below)</span>
+                  </label>
+                  <textarea
+                    value={mixDescription}
+                    onChange={(e) => setMixDescription(e.target.value)}
+                    placeholder="Dark Travis Scott-style trap, heavy 808s, spacey pads, big drop around 0:20..."
+                    className="w-full bg-surface border border-line rounded-xl px-4 py-3 text-sm text-text placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-cyan/50 focus:border-cyan transition-all resize-none"
+                    rows={3}
+                    disabled={isGenerating}
+                  />
+                </div>
+
                 {/* Dynamic Vibe Summary */}
-                {!isGenerating && (
+                {!isGenerating && (mixDescription || genre || energy) && (
                   <div className="px-4 py-3 rounded-lg bg-ink/50 border border-line/50">
                     <p className="text-sm text-text/80">
-                      You're about to get a <span className="font-semibold text-cyan">{genre.charAt(0).toUpperCase() + genre.slice(1)}</span> • <span className="font-semibold text-magenta">{energy === 'chill' ? 'Chill' : energy === 'medium' ? 'Groove' : 'Club'}</span> • <span className="font-semibold text-text">
-                        {energy === 'chill' ? '80–100' : energy === 'medium' ? '110–120' : '120–130'} BPM
-                      </span> mix. We'll keep it {energy === 'chill' ? 'smooth and laid-back' : energy === 'medium' ? 'punchy but smooth' : 'energetic and club-ready'}.
+                      {mixDescription ? (
+                        <>AI will interpret: <span className="font-semibold text-cyan italic">"{mixDescription.slice(0, 100)}{mixDescription.length > 100 ? '...' : ''}"</span></>
+                      ) : (
+                        <>You're about to get a <span className="font-semibold text-cyan">{genre.charAt(0).toUpperCase() + genre.slice(1)}</span> • <span className="font-semibold text-magenta">{energy === 'chill' ? 'Chill' : energy === 'medium' ? 'Groove' : 'Club'}</span> mix</>
+                      )}
                     </p>
                   </div>
                 )}
@@ -739,8 +668,8 @@ export default function DJ() {
                 </div>
               </div>
 
-              {/* Result Card - Shows after generation */}
-              {recordedBlob && !isGenerating && (
+              {/* Result Card - Shows after AI generation */}
+              {aiMixResult && !isGenerating && (
                 <div className="mt-6 rounded-2xl border border-cyan/30 bg-gradient-to-b from-surface to-ink shadow-[0_8px_32px_rgba(0,230,255,0.15)] p-6 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan to-magenta flex items-center justify-center">
@@ -748,24 +677,42 @@ export default function DJ() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-base font-bold text-text">Mix Ready!</h3>
-                      <p className="text-xs text-muted">
-                        {genre.charAt(0).toUpperCase() + genre.slice(1)} • {energy === 'chill' ? 'Chill' : energy === 'medium' ? 'Groove' : 'Club'} • 30 seconds
-                      </p>
+                      <p className="text-xs text-muted">{aiMixResult.message}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs text-muted">
-                    <div className="flex items-center gap-1.5">
-                      <Music className="w-3.5 h-3.5 text-cyan" />
-                      <span>Tracks: {aFileName && bFileName ? `${aFileName.split('.')[0]}, ${bFileName.split('.')[0]}` : 'Mixed'}</span>
+                  {/* Mix Details */}
+                  <div className="flex flex-wrap items-center gap-3 text-xs">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-cyan/10 text-cyan border border-cyan/20">
+                      <Music className="w-3.5 h-3.5" />
+                      <span>{aiMixResult.styleSpec.genre}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-magenta/10 text-magenta border border-magenta/20">
+                      <Zap className="w-3.5 h-3.5" />
+                      <span>{aiMixResult.styleSpec.energy}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-ink/50 text-muted border border-line">
+                      <Circle className="w-3.5 h-3.5" />
+                      <span>{aiMixResult.styleSpec.bpm} BPM</span>
                     </div>
                   </div>
 
+                  {/* Mood Tags */}
+                  {aiMixResult.styleSpec.mood && aiMixResult.styleSpec.mood.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {aiMixResult.styleSpec.mood.map((tag, i) => (
+                        <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-surface border border-line text-muted">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       onClick={() => {
-                        const audioUrl = URL.createObjectURL(recordedBlob);
-                        const audio = new Audio(audioUrl);
+                        const audio = new Audio(aiMixResult.audioUrl);
                         audio.play();
                         toast.success('Playing preview');
                       }}
@@ -775,9 +722,20 @@ export default function DJ() {
                       Play Preview
                     </button>
                     <button
-                      onClick={() => {
-                        // Navigate to Studio tab - the mix is already loaded in the decks
-                        toast.success('Mix is already loaded in Studio!');
+                      onClick={async () => {
+                        try {
+                          // Load the generated audio into Deck A
+                          await mixer.deckA.loadFromUrl(aiMixResult.audioUrl);
+                          setAFileName(`AI Mix - ${aiMixResult.styleSpec.genre}`);
+                          setABpm(aiMixResult.styleSpec.bpm);
+
+                          // Switch to Studio tab
+                          setActiveTab('studio');
+                          toast.success('Mix loaded into Deck A!');
+                        } catch (error) {
+                          console.error('Failed to load mix:', error);
+                          toast.error('Failed to load mix into studio');
+                        }
                       }}
                       className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-cyan to-magenta hover:shadow-glow-cyan text-ink font-bold text-sm transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
                     >

@@ -53,6 +53,16 @@ export default {
           900: '#5D0330',
         },
 
+        // Google Studio DJ colors
+        deckA: '#d946ef', // Pink/Fuchsia for Deck A
+        deckB: '#06b6d4', // Cyan for Deck B
+        dark: {
+          900: '#0f0f11',
+          800: '#18181b',
+          700: '#27272a',
+          600: '#3f3f46',
+        },
+
         // Status colors - HSL
         success: 'hsl(var(--ok))',
         warning: 'hsl(var(--warn))',
@@ -130,6 +140,12 @@ export default {
         'neon-magenta': '0 0 20px rgba(225, 29, 132, 0.5), 0 0 40px rgba(225, 29, 132, 0.3)',
         'inner-glow': 'inset 0 0 20px rgba(255, 255, 255, 0.1)',
         'inner-dark': 'inset 0 2px 8px rgba(0, 0, 0, 0.4)',
+
+        // Google Studio DJ shadows
+        'glow-A': '0 0 15px -3px rgba(217, 70, 239, 0.3)',
+        'glow-B': '0 0 15px -3px rgba(6, 182, 212, 0.3)',
+        'knob': '2px 2px 5px rgba(0,0,0,0.5), -1px -1px 2px rgba(255,255,255,0.05)',
+        'inner-knob': 'inset 2px 2px 5px rgba(0,0,0,0.8), inset -1px -1px 2px rgba(255,255,255,0.1)',
       },
       animation: {
         // Glow & pulse

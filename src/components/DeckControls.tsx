@@ -7,6 +7,7 @@ import LoopCluster from './LoopCluster'
 import VerticalFader from './ui/VerticalFader'
 import TrackLibrary from './TrackLibrary'
 import LocalTrackLibrary from './LocalTrackLibrary'
+import StudioJogWheel from './ui/StudioJogWheel'
 
 type Props = {
   label: string
@@ -98,8 +99,14 @@ export default function DeckControls({
     }
   }
 
+  const accentColor = label === 'A' ? 'deckA' : 'deckB'
+  const glowColor = label === 'A' ? 'rgba(217,70,239,0.5)' : 'rgba(6,182,212,0.5)'
+
   return (
-    <div className={`rounded-2xl border border-white/5 bg-gradient-to-b from-[#0a0a0f] to-[#1a1a24] shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col ${playing ? 'deck--active' : ''}`}>
+    <div className={`rounded-2xl border border-white/5 bg-gradient-to-b from-[#0a0a0f] to-[#1a1a24] shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col relative ${playing ? 'deck--active' : ''}`}>
+      {/* Glow effect background */}
+      <div className={`absolute -top-20 -left-20 w-64 h-64 bg-${accentColor} blur-[100px] opacity-10 pointer-events-none`}></div>
+
       {/* Deck Header with mini waveform */}
       <DeckHeader
         title={fileName}
@@ -111,75 +118,15 @@ export default function DeckControls({
       />
 
       {/* Main content area - Optimized spacing */}
-      <div className="p-4 space-y-3 flex flex-col min-h-0">
+      <div className="p-4 space-y-3 flex flex-col min-h-0 relative z-10">
         {/* Deck label */}
-        <div className="text-xs font-semibold text-muted tracking-widest uppercase">
-          Deck {label}
+        <div className={`text-2xl font-bold text-${accentColor}`}>
+          {label}
         </div>
 
-        {/* Enhanced Vinyl Turntable - Compact Size */}
+        {/* Jog Wheel */}
         <div className="flex items-center justify-center">
-          <div className={`
-            relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full
-            ${playing ? 'animate-spin-slow' : ''}
-            transition-all duration-500
-          `}>
-            {/* Outer Glow Effect when playing */}
-            {playing && (
-              <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-accent/20 via-purple-500/10 to-transparent blur-xl animate-pulse" />
-            )}
-
-            {/* Vinyl Record */}
-            <div className={`
-              relative w-full h-full rounded-full
-              bg-gradient-to-br from-gray-900 via-gray-800 to-black
-              border-4 ${playing ? 'border-accent/50 shadow-[0_0_30px_rgba(225,29,132,0.5)]' : 'border-white/10'}
-              transition-all duration-300
-            `}>
-              {/* Vinyl grooves - multiple rings */}
-              <div className="absolute inset-4 rounded-full border border-white/5" />
-              <div className="absolute inset-7 rounded-full border border-white/5" />
-              <div className="absolute inset-10 rounded-full border border-white/5" />
-              <div className="absolute inset-[3.25rem] rounded-full border border-white/5" />
-              <div className="absolute inset-14 rounded-full border border-white/5" />
-              <div className="absolute inset-[3.75rem] rounded-full border border-white/5" />
-              <div className="absolute inset-16 rounded-full border border-white/5" />
-              <div className="absolute inset-[4.25rem] rounded-full border border-white/5" />
-              <div className="absolute inset-[4.5rem] rounded-full border border-white/5" />
-
-              {/* Center label area */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`
-                  w-20 h-20 rounded-full
-                  bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900
-                  border-2 ${playing ? 'border-accent/80' : 'border-white/20'}
-                  flex items-center justify-center
-                  shadow-[inset_0_2px_8px_rgba(0,0,0,0.8)]
-                  transition-all duration-300
-                `}>
-                  {/* Spindle hole */}
-                  <div className="w-4 h-4 rounded-full bg-black border border-white/30" />
-                </div>
-              </div>
-
-              {/* Tonearm indicator dot (rotates with vinyl) */}
-              <div className="absolute top-8 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-accent shadow-[0_0_8px_rgba(225,29,132,0.8)]" />
-
-              {/* Track name label on vinyl */}
-              {fileName && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-[10px] text-center text-white/60 px-3 max-w-[100px] truncate font-semibold tracking-wider">
-                    {fileName.split('.')[0].substring(0, 12)}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Playback indicator LED */}
-            {playing && (
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent shadow-[0_0_12px_rgba(225,29,132,1)] animate-pulse" />
-            )}
-          </div>
+          <StudioJogWheel id={label as 'A' | 'B'} playing={playing} />
         </div>
 
         {/* Enhanced Transport Controls - Unified Style */}

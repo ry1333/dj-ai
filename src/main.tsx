@@ -8,6 +8,7 @@ import AppShell from './AppShell'
 import Stream from './pages/Stream'
 import DJ from './pages/DJ'
 import DJStudio from './pages/DJStudio'
+import ProStudio from './pages/ProStudio'
 import Create from './pages/Create'
 import Learn from './pages/Learn'
 import Profile from './pages/Profile'
@@ -43,6 +44,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <Route path="/stream" element={<Stream />} />
               <Route path="/dj" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
               <Route path="/dj-new" element={<ProtectedRoute><DJStudio /></ProtectedRoute>} />
+              <Route path="/pro-studio" element={<ProtectedRoute><ProStudio /></ProtectedRoute>} />
               <Route path="/create" element={<ProtectedRoute><Create /></ProtectedRoute>} />
               <Route path="/compose" element={<ProtectedRoute><Create /></ProtectedRoute>} />
               <Route path="/learn" element={<Learn />} />
