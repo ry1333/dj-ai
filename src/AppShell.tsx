@@ -8,10 +8,11 @@ export default function AppShell() {
   const location = useLocation()
   const isStreamPage = location.pathname === '/stream'
   const isDJPage = location.pathname === '/dj' || location.pathname === '/dj-new'
+  const isListenPage = location.pathname === '/listen'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(isStreamPage)
 
-  // DJ pages get full-screen treatment without chrome
-  if (isDJPage) {
+  // DJ and Listen pages get full-screen treatment without chrome
+  if (isDJPage || isListenPage) {
     return <Outlet />
   }
 

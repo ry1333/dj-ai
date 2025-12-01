@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { MixerProvider } from './contexts/MixerContext'
 import AppShell from './AppShell'
 import Stream from './pages/Stream'
+import Listen from './pages/Listen'
 import DJ from './pages/DJ'
 import DJStudio from './pages/DJStudio'
 import ProStudio from './pages/ProStudio'
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route element={<AppShell />}>
               <Route index element={<Stream />} />
               <Route path="/stream" element={<Stream />} />
+              <Route path="/listen" element={<Listen />} />
               <Route path="/dj" element={<ProtectedRoute><DJ /></ProtectedRoute>} />
               <Route path="/dj-new" element={<ProtectedRoute><DJStudio /></ProtectedRoute>} />
               <Route path="/pro-studio" element={<ProtectedRoute><ProStudio /></ProtectedRoute>} />

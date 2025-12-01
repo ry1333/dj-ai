@@ -1,7 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { MixerState, DeckState, DeckId } from '../types';
 import Knob from './Knob';
 import Fader from './Fader';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
 interface MixerProps {
   state: MixerState;
@@ -12,170 +17,213 @@ interface MixerProps {
   onDeckVolumeChange: (deckId: DeckId, vol: number) => void;
 }
 
-// Crossfader component with drag support
-const CrossfaderComponent: React.FC<{ value: number; onChange: (val: number) => void }> = ({ value, onChange }) => {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    updateValue(e.clientX);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      updateValue(e.clientX);
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const updateValue = (clientX: number) => {
-    if (!trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    // Map 0-100% to -1 to 1
-    const newValue = (percentage / 50) - 1;
-    onChange(Math.max(-1, Math.min(1, newValue)));
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  }, [isDragging]);
-
-  return (
-    <div className="w-full px-4 pt-2 pb-4">
-      <div
-        ref={trackRef}
-        className="relative h-12 bg-dark-900 rounded border border-zinc-700 flex items-center px-4 cursor-pointer"
-        onMouseDown={handleMouseDown}
-      >
-        <div className="absolute top-1/2 left-4 right-4 h-1 bg-zinc-800 -translate-y-1/2 rounded-full"></div>
-        {/* Crossfader Handle */}
-        <div
-          className="absolute w-8 h-10 bg-gradient-to-b from-zinc-600 to-zinc-800 border border-zinc-500 rounded shadow-lg top-1 cursor-grab active:cursor-grabbing hover:bg-zinc-600 transition-colors pointer-events-none"
-          style={{
-            left: `${((value + 1) / 2) * 100}%`, // Map -1..1 to 0..100
-            transform: 'translateX(-50%)'
-          }}
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-6 bg-deckA shadow-[0_0_5px_currentColor] opacity-50"></div>
-        </div>
-      </div>
-      <div className="flex justify-between text-xs text-zinc-500 mt-1 font-mono">
-        <span>&lt; A</span>
-        <span>B &gt;</span>
-      </div>
-    </div>
-  );
-};
-
-const Mixer: React.FC<MixerProps> = ({ 
-  state, deckAState, deckBState, onMixerChange, onDeckEqChange, onDeckVolumeChange 
+const Mixer: React.FC<MixerProps> = ({
+  state, deckAState, deckBState, onMixerChange, onDeckEqChange, onDeckVolumeChange
 }) => {
+  // Convert -1 to 1 range to 0-100 for slider
+  const crossfaderValue = ((state.crossfader + 1) / 2) * 100;
+
   return (
-    <div className="bg-dark-800 rounded-2xl p-4 border border-zinc-800 flex flex-col gap-6 items-center shadow-2xl h-full">
-       
-       {/* Top Master Controls */}
-       <div className="w-full bg-dark-900 rounded-xl p-3 border border-zinc-700/50 flex gap-4">
-          <div className="flex-1">
-             <div className="text-[10px] text-zinc-500 uppercase text-center mb-2">Master Volume</div>
-             <input 
-              type="range" 
-              className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-white" 
-              value={state.masterVolume}
-              onChange={(e) => onMixerChange({ masterVolume: Number(e.target.value) })}
-            />
-          </div>
-          <div className="flex-1">
-             <div className="text-[10px] text-zinc-500 uppercase text-center mb-2">Booth Monitor</div>
-             <input 
-              type="range" 
-              className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-white" 
-              value={state.boothMonitor}
-              onChange={(e) => onMixerChange({ boothMonitor: Number(e.target.value) })}
-             />
-          </div>
-       </div>
+    <TooltipProvider>
+      <Card className="bg-zinc-900/80 border-zinc-800 h-full">
+        <CardContent className="p-4 flex flex-col gap-6 items-center h-full">
+          {/* Top Master Controls */}
+          <Card className="w-full bg-zinc-950 border-zinc-700/50">
+            <CardContent className="p-3 flex gap-4">
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-zinc-500 uppercase">Master Volume</Label>
+                  <Badge variant="outline" className="text-xs font-mono h-5">{state.masterVolume}</Badge>
+                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Slider
+                        value={[state.masterVolume]}
+                        onValueChange={([v]) => onMixerChange({ masterVolume: v })}
+                        max={100}
+                        step={1}
+                        className="[&_[role=slider]]:bg-white [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Main output level</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] text-zinc-500 uppercase">Booth Monitor</Label>
+                  <Badge variant="outline" className="text-xs font-mono h-5">{state.boothMonitor}</Badge>
+                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Slider
+                        value={[state.boothMonitor]}
+                        onValueChange={([v]) => onMixerChange({ boothMonitor: v })}
+                        max={100}
+                        step={1}
+                        className="[&_[role=slider]]:bg-white [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>DJ booth monitor level</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </CardContent>
+          </Card>
 
-       {/* EQ Section */}
-       <div className="flex-1 grid grid-cols-2 gap-8 w-full px-2">
-          {/* Deck A EQs */}
-          <div className="flex flex-col items-center justify-between gap-2">
-             <div className="text-xl font-bold text-deckA mb-2">A</div>
-             <Knob 
-                label="High" 
-                value={deckAState.eq.high} 
-                onChange={(val) => onDeckEqChange(DeckId.A, { high: val })}
-                deckId={DeckId.A}
-             />
-             <Knob 
-                label="Mid" 
-                value={deckAState.eq.mid} 
-                onChange={(val) => onDeckEqChange(DeckId.A, { mid: val })}
-                deckId={DeckId.A}
-             />
-             <Knob 
-                label="Low" 
-                value={deckAState.eq.low} 
-                onChange={(val) => onDeckEqChange(DeckId.A, { low: val })}
-                deckId={DeckId.A}
-             />
-             <div className="mt-4 w-full flex justify-center h-48">
-                 <Fader 
-                    value={deckAState.volume} 
-                    onChange={(val) => onDeckVolumeChange(DeckId.A, val)} 
-                    deckId={DeckId.A}
-                    height="h-full"
-                 />
-             </div>
+          {/* EQ Section */}
+          <div className="flex-1 grid grid-cols-2 gap-8 w-full px-2">
+            {/* Deck A EQs */}
+            <div className="flex flex-col items-center justify-between gap-2">
+              <div className="text-xl font-bold text-pink-500 mb-2">A</div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Knob
+                      label="High"
+                      value={deckAState.eq.high}
+                      onChange={(val) => onDeckEqChange(DeckId.A, { high: val })}
+                      deckId={DeckId.A}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>High frequencies (treble)</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Knob
+                      label="Mid"
+                      value={deckAState.eq.mid}
+                      onChange={(val) => onDeckEqChange(DeckId.A, { mid: val })}
+                      deckId={DeckId.A}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Mid frequencies (vocals)</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Knob
+                      label="Low"
+                      value={deckAState.eq.low}
+                      onChange={(val) => onDeckEqChange(DeckId.A, { low: val })}
+                      deckId={DeckId.A}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Low frequencies (bass)</p>
+                </TooltipContent>
+              </Tooltip>
+              <div className="mt-4 w-full flex justify-center h-48">
+                <Fader
+                  value={deckAState.volume}
+                  onChange={(val) => onDeckVolumeChange(DeckId.A, val)}
+                  deckId={DeckId.A}
+                  height="h-full"
+                />
+              </div>
+            </div>
+
+            {/* Deck B EQs */}
+            <div className="flex flex-col items-center justify-between gap-2">
+              <div className="text-xl font-bold text-cyan-400 mb-2">B</div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Knob
+                      label="High"
+                      value={deckBState.eq.high}
+                      onChange={(val) => onDeckEqChange(DeckId.B, { high: val })}
+                      deckId={DeckId.B}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>High frequencies (treble)</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Knob
+                      label="Mid"
+                      value={deckBState.eq.mid}
+                      onChange={(val) => onDeckEqChange(DeckId.B, { mid: val })}
+                      deckId={DeckId.B}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Mid frequencies (vocals)</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Knob
+                      label="Low"
+                      value={deckBState.eq.low}
+                      onChange={(val) => onDeckEqChange(DeckId.B, { low: val })}
+                      deckId={DeckId.B}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Low frequencies (bass)</p>
+                </TooltipContent>
+              </Tooltip>
+              <div className="mt-4 w-full flex justify-center h-48">
+                <Fader
+                  value={deckBState.volume}
+                  onChange={(val) => onDeckVolumeChange(DeckId.B, val)}
+                  deckId={DeckId.B}
+                  height="h-full"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Deck B EQs */}
-          <div className="flex flex-col items-center justify-between gap-2">
-             <div className="text-xl font-bold text-deckB mb-2">B</div>
-             <Knob 
-                label="High" 
-                value={deckBState.eq.high} 
-                onChange={(val) => onDeckEqChange(DeckId.B, { high: val })}
-                deckId={DeckId.B}
-             />
-             <Knob 
-                label="Mid" 
-                value={deckBState.eq.mid} 
-                onChange={(val) => onDeckEqChange(DeckId.B, { mid: val })}
-                deckId={DeckId.B}
-             />
-             <Knob 
-                label="Low" 
-                value={deckBState.eq.low} 
-                onChange={(val) => onDeckEqChange(DeckId.B, { low: val })}
-                deckId={DeckId.B}
-             />
-             <div className="mt-4 w-full flex justify-center h-48">
-                 <Fader 
-                    value={deckBState.volume} 
-                    onChange={(val) => onDeckVolumeChange(DeckId.B, val)} 
-                    deckId={DeckId.B}
-                    height="h-full"
-                 />
-             </div>
+          {/* Crossfader */}
+          <div className="w-full px-4 pt-2 pb-4 space-y-2">
+            <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
+              <span className={state.crossfader < -0.3 ? 'text-pink-500 font-bold' : ''}>A</span>
+              <Badge variant="outline" className="text-xs font-mono">{state.crossfader.toFixed(2)}</Badge>
+              <span className={state.crossfader > 0.3 ? 'text-cyan-400 font-bold' : ''}>B</span>
+            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative py-2">
+                  <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-gradient-to-r from-pink-500 via-zinc-800 to-cyan-400 rounded-full -z-10" />
+                  <Slider
+                    value={[crossfaderValue]}
+                    onValueChange={([v]) => onMixerChange({ crossfader: (v / 50) - 1 })}
+                    max={100}
+                    step={1}
+                    className="[&_[role=slider]]:h-10 [&_[role=slider]]:w-8 [&_[role=slider]]:rounded-md [&_[role=slider]]:bg-gradient-to-b [&_[role=slider]]:from-zinc-500 [&_[role=slider]]:to-zinc-700 [&_[role=slider]]:border [&_[role=slider]]:border-zinc-400 [&_[role=slider]]:shadow-lg [&_.bg-primary]:bg-transparent"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Blend between Deck A and Deck B</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
-       </div>
-
-       {/* Crossfader */}
-       <CrossfaderComponent value={state.crossfader} onChange={(val) => onMixerChange({ crossfader: val })} />
-    </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 };
 
